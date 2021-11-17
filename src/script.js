@@ -47,7 +47,7 @@ function create ()
   platforms.create(50, 250, 'ground');
   platforms.create(750, 220, 'ground');
 
-  keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
+ keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
 
   for(let i=0; i<nNote; i++){
     nextStep = ((step / 2) + i*step);
