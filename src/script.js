@@ -37,15 +37,17 @@ var player;
 var cursors;
 var arrayStep=[];
 var nextStep;
+var stars;
+var notes = [];
 
 function create ()
 {
   this.add.image(400, 300, 'sky');
   platforms = this.physics.add.staticGroup();
   platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-  platforms.create(600, 400, 'ground');
-  platforms.create(50, 250, 'ground');
-  platforms.create(750, 220, 'ground');
+  //platforms.create(600, 400, 'ground');
+  //platforms.create(50, 250, 'ground');
+  //platforms.create(750, 220, 'ground');
 
  keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
 
@@ -84,7 +86,27 @@ this.physics.add.collider(player, platforms);
 
 cursors = this.input.keyboard.createCursorKeys();
 
+stars = this.physics.add.group({
+  key: 'star',
+  repeat: 2,
+  setXY: { x: -10, y: 0, stepY: -100}
+});
 
+for(let i=0; i<3; i++){
+  notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
+  stars.getChildren()[i].x = notes[i];
+}
+
+
+stars.children.iterate(function (child) {
+
+  child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+});
+
+stars.setVelocityY(100);
+
+this.physics.add.overlap(player, stars, collectStar, null, this);
 
 }
 
@@ -146,3 +168,11 @@ if (cursors.up.isDown && player.body.touching.down)
     player.setVelocityY(-330);
 }
 }
+
+function collectStar (player, star)
+    {
+        star.disableBody(true, true);
+
+        //score += 10;
+        //scoreText.setText('Score: ' + score);
+    }
