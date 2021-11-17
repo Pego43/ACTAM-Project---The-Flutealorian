@@ -30,11 +30,11 @@ var notes = [];
 var score = 0;
 var scoreText;
 
-function Note(name, duration, pause) {
+/*function Note(name, duration, pause) {
   this.noteName = name;
   this.duration = duration;
   this.pause = pause;
-}
+}*/
 
 function preload ()
 {
@@ -51,68 +51,52 @@ function create ()
   this.add.image(400, 300, 'sky');
   platforms = this.physics.add.staticGroup();
   platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-  //platforms.create(600, 400, 'ground');
-  //platforms.create(50, 250, 'ground');
-  //platforms.create(750, 220, 'ground');
 
  keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
 
+  //stores the note steps in an array
   for(let i=0; i<nNote; i++){
     nextStep = ((step / 2) + i*step);
-    arrayStep[i]=nextStep;
+    arrayStep[i] = nextStep;
   }
-  console.log(arrayStep);
 
   player = this.physics.add.sprite(100, 512, 'dude');
 
-  player.setBounce(0.2);
-  player.setCollideWorldBounds(true);
-
-  this.anims.create({
-  key: 'left',
-  frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3}),
-  frameRate: 10,
-  repear: -1
-  });
+  //player.setBounce(0.2);
+  //player.setCollideWorldBounds(true);
 
   this.anims.create({
     key: 'turn',
     frames: [ { key: 'dude', frame: 4 } ],
     frameRate: 20
-});
+  });
 
-this.anims.create({
-    key: 'right',
-    frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-    frameRate: 10,
-    repeat: -1
-});
+  this.physics.add.collider(player, platforms);
 
-this.physics.add.collider(player, platforms);
-
-stars = this.physics.add.group({
-  key: 'star',
-  repeat: 10,
-  setXY: { x: -10, y: 0, stepY: -100}
-});
-
-for(let i=0; i<11; i++){
-  notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
-  stars.getChildren()[i].x = notes[i];
-}
+  stars = this.physics.add.group({
+    key: 'star',
+    repeat: 10,
+    setXY: { x: -10, y: 0, stepY: -100}
+  });
+  
+  //set random positions of stars in the x axis
+  for(let i=0; i<11; i++){
+    notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
+    stars.getChildren()[i].x = notes[i];
+  }
 
 
-stars.children.iterate(function (child) {
+  stars.children.iterate(function (child) {
+    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+  });
 
-  child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+  stars.setVelocityY(100);
 
-});
+  this.physics.add.overlap(player, stars, collectStar, null, this);
 
-stars.setVelocityY(100);
+  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
-this.physics.add.overlap(player, stars, collectStar, null, this);
-
-scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+  player.anims.play('turn');
 }
 
 function update ()
@@ -145,39 +129,12 @@ function update ()
     }else if(keys.K.isDown){
       player.x = arrayStep[12];
     }
-
-
-  
-
-  if (cursors.left.isDown)
-{
-    player.setVelocityX(-160);
-
-    player.anims.play('left', true);
-}
-else if (cursors.right.isDown)
-{
-    player.setVelocityX(160);
-
-    player.anims.play('right', true);
-}
-else
-{
-    player.setVelocityX(0);
-
-    player.anims.play('turn');
-}
-
-if (cursors.up.isDown && player.body.touching.down)
-{
-    player.setVelocityY(-330);
-}
 }
 
 function collectStar (player, star)
-    {
-        star.disableBody(true, true);
+{
+  star.disableBody(true, true);
 
-        score += 10;
-        scoreText.setText('Score: ' + score);
-    }
+  score += 10;
+  scoreText.setText('Score: ' + score);
+}
