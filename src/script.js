@@ -21,7 +21,20 @@ var keys;
 var canvasWidth = 800;
 var nNote = 13;
 var step = ((canvasWidth/nNote));
-console.log(step);
+var platforms;
+var player;
+var arrayStep=[];
+var nextStep;
+var stars;
+var notes = [];
+var score = 0;
+var scoreText;
+
+function Note(name, duration, pause) {
+  this.noteName = name;
+  this.duration = duration;
+  this.pause = pause;
+}
 
 function preload ()
 {
@@ -32,13 +45,6 @@ function preload ()
   this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 
 }
-var platforms;
-var player;
-var cursors;
-var arrayStep=[];
-var nextStep;
-var stars;
-var notes = [];
 
 function create ()
 {
@@ -84,15 +90,13 @@ this.anims.create({
 
 this.physics.add.collider(player, platforms);
 
-cursors = this.input.keyboard.createCursorKeys();
-
 stars = this.physics.add.group({
   key: 'star',
-  repeat: 2,
+  repeat: 10,
   setXY: { x: -10, y: 0, stepY: -100}
 });
 
-for(let i=0; i<3; i++){
+for(let i=0; i<11; i++){
   notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
   stars.getChildren()[i].x = notes[i];
 }
@@ -108,6 +112,7 @@ stars.setVelocityY(100);
 
 this.physics.add.overlap(player, stars, collectStar, null, this);
 
+scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 }
 
 function update ()
@@ -173,6 +178,6 @@ function collectStar (player, star)
     {
         star.disableBody(true, true);
 
-        //score += 10;
-        //scoreText.setText('Score: ' + score);
+        score += 10;
+        scoreText.setText('Score: ' + score);
     }
