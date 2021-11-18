@@ -1,7 +1,10 @@
+var canvasWidth = 800;
+var canvasHeight = 600;
+
 var config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: canvasWidth,
+  height: canvasHeight,
   physics:{
     default: 'arcade',
     arcade:{
@@ -18,17 +21,17 @@ var config = {
 
 var game = new Phaser.Game(config);
 var keys;
-var canvasWidth = 800;
 var nNote = 13;
 var step = ((canvasWidth/nNote));
 var platforms;
 var player;
 var arrayStep=[];
 var nextStep;
-var stars;
+var coins;
 var notes = [];
 var score = 0;
 var scoreText;
+var background;
 
 /*function Note(name, duration, pause) {
   this.noteName = name;
@@ -41,18 +44,23 @@ function preload ()
   this.load.image('sky', 'assets/sky.png');
   this.load.image('ground', 'assets/platform.png');
   this.load.image('star', 'assets/star.png');
-  this.load.image('bomb', 'assets/bomb.png');
   this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-
+  this.load.image('space1', 'assets/Space1.jpg');
+  this.load.image('space2', 'assets/Space2.jpg');
+  this.load.image('coin', 'assets/money_flute.png');
+  this.load.spritesheet('character', 'assets/M_step.png', { frameWidth: 200, frameHeight: 300 });
 }
 
 function create ()
 {
   this.add.image(400, 300, 'sky');
-  platforms = this.physics.add.staticGroup();
-  platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+  //background = this.physics.add.sprite(400, 300, 'sky');
+  //background.setVelocityX(-10);
 
- keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
+  //platforms = this.physics.add.staticGroup();
+  //platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+
+  keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
 
   //stores the note steps in an array
   for(let i=0; i<nNote; i++){
@@ -60,43 +68,37 @@ function create ()
     arrayStep[i] = nextStep;
   }
 
-  player = this.physics.add.sprite(100, 512, 'dude');
+  player = this.physics.add.sprite(100, 512, 'character').setScale(0.25);
+  
+  //this.physics.add.collider(player, platforms);
 
-  //player.setBounce(0.2);
-  //player.setCollideWorldBounds(true);
-
+  //ANIMATION
   this.anims.create({
-    key: 'turn',
-    frames: [ { key: 'dude', frame: 4 } ],
-    frameRate: 20
+    key: 'flying',
+    frames: this.anims.generateFrameNumbers('character', { start: 0, end: 2 }),
+    frameRate: 20,
+    repeat: -1
   });
+  player.anims.play('flying');
 
-  this.physics.add.collider(player, platforms);
-
-  stars = this.physics.add.group({
-    key: 'star',
+  coins = this.physics.add.group({
+    key: 'coin',
     repeat: 10,
-    setXY: { x: -10, y: 0, stepY: -100}
+    setXY: { x: -10, y: 0, stepY: -100},
+    setScale: 0.5
   });
   
   //set random positions of stars in the x axis
   for(let i=0; i<11; i++){
     notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
-    stars.getChildren()[i].x = notes[i];
+    coins.getChildren()[i].x = notes[i];
   }
 
+  coins.setVelocityY(100);
 
-  stars.children.iterate(function (child) {
-    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-  });
-
-  stars.setVelocityY(100);
-
-  this.physics.add.overlap(player, stars, collectStar, null, this);
+  this.physics.add.overlap(player, coins, collectCoin, null, this);
 
   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
-  player.anims.play('turn');
 }
 
 function update ()
@@ -131,9 +133,9 @@ function update ()
     }
 }
 
-function collectStar (player, star)
+function collectCoin (player, coin)
 {
-  star.disableBody(true, true);
+  coin.disableBody(true, true);
 
   score += 10;
   scoreText.setText('Score: ' + score);
