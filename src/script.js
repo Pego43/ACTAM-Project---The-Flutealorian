@@ -1,5 +1,9 @@
-var canvasWidth = 800;
-var canvasHeight = 600;
+// For scale the background
+const backgroundHeight = 2000;
+const backgroundWidth = 3000;
+var canvasWidth = 1000;
+var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
+// For scale the background
 
 var config = {
   type: Phaser.AUTO,
@@ -31,7 +35,8 @@ var coins;
 var notes = [];
 var score = 0;
 var scoreText;
-var background;
+var background1;
+var background2;
 
 /*function Note(name, duration, pause) {
   this.noteName = name;
@@ -39,9 +44,11 @@ var background;
   this.pause = pause;
 }*/
 
-//
-var x = 0;
-var y = 0;
+//Variables for background
+var setBackgroundScale = canvasWidth/backgroundWidth;
+var x1 = 0;
+var x2 = canvasWidth;
+var backgroundSpeed = 2;
 //
 
 function preload ()
@@ -58,9 +65,14 @@ function preload ()
 
 function create ()
 {
-  this.add.image(400, 300, 'sky');
-  //background = this.physics.add.sprite(400, 300, 'sky');
-  //background.setVelocityX(-10);
+  background1 = this.physics.add.sprite(x1, 0, 'space1').setOrigin(0,0);
+  background2 = this.physics.add.sprite(x2, 0, 'space2').setOrigin(0,0);
+  background1.setScale(setBackgroundScale);
+  background2.setScale(setBackgroundScale);
+  background1.setVelocityX(- backgroundSpeed);
+  background2.setVelocityX(- backgroundSpeed);
+
+  //background.setVelocityX(+1);
 
   //platforms = this.physics.add.staticGroup();
   //platforms.create(400, 568, 'ground').setScale(2).refreshBody();
@@ -136,6 +148,13 @@ function update ()
     }else if(keys.K.isDown){
       player.x = arrayStep[12];
     }
+  
+  if (background1.x < -canvasWidth) background1.x = canvasWidth + background2.x - backgroundSpeed;
+  else background1.x = background1.x - backgroundSpeed; 
+  
+  if (background2.x < -canvasWidth) background2.x = canvasWidth + background1.x - backgroundSpeed;
+  else background2.x = background2.x - backgroundSpeed; 
+      
 }
 
 function collectCoin (player, coin)
