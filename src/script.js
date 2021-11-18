@@ -39,6 +39,11 @@ var background;
   this.pause = pause;
 }*/
 
+//
+var x = 0;
+var y = 0;
+//
+
 function preload ()
 {
   this.load.image('sky', 'assets/sky.png');
