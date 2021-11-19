@@ -85,7 +85,7 @@ function create ()
     arrayStep[i] = nextStep;
   }
 
-  player = this.physics.add.sprite(100, 512, 'character').setScale(0.25);
+  player = this.physics.add.sprite(100, 512, 'character').setScale(0.35);
   
   //this.physics.add.collider(player, platforms);
 
@@ -93,7 +93,7 @@ function create ()
   this.anims.create({
     key: 'flying',
     frames: this.anims.generateFrameNumbers('character', { start: 0, end: 2 }),
-    frameRate: 20,
+    frameRate: 5,
     repeat: -1
   });
   player.anims.play('flying');
