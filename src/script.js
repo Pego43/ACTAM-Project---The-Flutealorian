@@ -1,3 +1,5 @@
+var canvasWidth = 800;
+var canvasHeight = 600;
 // For scale the background
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
