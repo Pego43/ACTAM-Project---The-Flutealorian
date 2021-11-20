@@ -6,6 +6,9 @@ const backgroundWidth = 3000;
 var canvasWidth = 1000;
 var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
 
+//KEYBOARD
+var keys = "awsedftgyhujk";
+
 var config = {
   type: Phaser.AUTO,
   width: canvasWidth,
@@ -36,8 +39,7 @@ var coins;
 var notes = [];
 var score = 0;
 var scoreText;
-var background1;
-var background2;
+var background1,background2,backgroundV1,backgroundV2;
 
 /*function Note(name, duration, pause) {
   this.noteName = name;
@@ -49,7 +51,8 @@ var background2;
 var setBackgroundScale = canvasWidth/backgroundWidth;
 var x1 = 0;
 var x2 = canvasWidth;
-var backgroundSpeed = 2;
+var x3 = canvasHeight
+var backgroundSpeed = 1;
 
 //Audio variables
 var c = new AudioContext()
@@ -65,27 +68,38 @@ function preload ()
   this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
   this.load.image('space1', 'assets/Space1.jpg');
   this.load.image('space2', 'assets/Space2.jpg');
+  this.load.image('spaceV1', 'assets/Space1V.jpg');
+  this.load.image('spaceV2', 'assets/Space1V.jpg');
   this.load.image('coin', 'assets/money_flute.png');
   this.load.spritesheet('character', 'assets/M_step.png', { frameWidth: 200, frameHeight: 300 });
 }
 
 function create ()
 {
-  //BACKGROUND
+/* Orizontal background movement */
+/*
   background1 = this.physics.add.sprite(x1, 0, 'space1').setOrigin(0,0);
   background2 = this.physics.add.sprite(x2, 0, 'space2').setOrigin(0,0);
   background1.setScale(setBackgroundScale);
   background2.setScale(setBackgroundScale);
   background1.setVelocityX(- backgroundSpeed);
   background2.setVelocityX(- backgroundSpeed);
+*/
+ 
+/* Vertical background movement */
+  
+backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0,0);
+backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0,0);
+
+backgroundV1.setScale(setBackgroundScale);
+backgroundV2.setScale(setBackgroundScale);
+backgroundV1.setVelocityY(- backgroundSpeed);
+backgroundV2.setVelocityY(- backgroundSpeed);
 
   //background.setVelocityX(+1);
 
   //platforms = this.physics.add.staticGroup();
   //platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-  //KEYBOARD
-  keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
 
   //stores the note steps in an array
   for(let i=0; i<nNote; i++){
@@ -141,39 +155,27 @@ function create ()
 
 function update ()
 {
-  if (keys.A.isDown){
-    player.x = arrayStep[0];}
-    else if(keys.W.isDown){
-      player.x = arrayStep[1];
-    }else if(keys.S.isDown){
-      player.x = arrayStep[2];
-    }else if(keys.E.isDown){
-      player.x = arrayStep[3];
-    }else if(keys.D.isDown){
-      player.x = arrayStep[4];
-    }else if(keys.F.isDown){
-      player.x = arrayStep[5];
-    }else if(keys.T.isDown){
-      player.x = arrayStep[6];
-    }else if(keys.G.isDown){
-      player.x = arrayStep[7];
-    }else if(keys.Y.isDown){
-      player.x = arrayStep[8];
-    }else if(keys.H.isDown){
-      player.x = arrayStep[9];
-    }else if(keys.U.isDown){
-      player.x = arrayStep[10];
-    }else if(keys.J.isDown){
-      player.x = arrayStep[11];
-    }else if(keys.K.isDown){
-      player.x = arrayStep[12];
-    }
+/* Movement of the character */
+window.addEventListener("keypress", (e) => {
+  player.x = arrayStep[keys.indexOf(e.key)];
+});
   
+  /*Background movement controlled orizontally */
+  /*
   if (background1.x < -canvasWidth) background1.x = canvasWidth + background2.x - backgroundSpeed;
   else background1.x = background1.x - backgroundSpeed; 
   
   if (background2.x < -canvasWidth) background2.x = canvasWidth + background1.x - backgroundSpeed;
-  else background2.x = background2.x - backgroundSpeed; 
+  else background2.x = background2.x - backgroundSpeed;
+  */
+
+  /*Background movement controlled vertically */
+  
+  if (backgroundV1.y > canvasHeight) backgroundV1.y = -canvasHeight + backgroundV2.y - backgroundSpeed;
+  else backgroundV1.y = backgroundV1.y + backgroundSpeed;
+  
+  if (backgroundV2.y > canvasHeight) backgroundV2.y = -canvasHeight + backgroundV1.y - backgroundSpeed;
+  else backgroundV2.y = backgroundV2.y + backgroundSpeed; 
       
 }
 
