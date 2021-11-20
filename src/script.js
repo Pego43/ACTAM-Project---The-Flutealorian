@@ -157,7 +157,9 @@ function update ()
 {
 /* Movement of the character */
 window.addEventListener("keypress", (e) => {
-  player.x = arrayStep[keys.indexOf(e.key)];
+  if(keys.indexOf(e.key)>=0 && keys.indexOf(e.key)<keys.length){
+    player.x = arrayStep[keys.indexOf(e.key)];
+  }
 });
   
   /*Background movement controlled orizontally */
