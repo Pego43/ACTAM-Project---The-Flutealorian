@@ -1,11 +1,10 @@
 var canvasWidth = 800;
 var canvasHeight = 600;
-// For scale the background
+// To scale the background
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
 var canvasWidth = 1000;
 var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
-// For scale the background
 
 var config = {
   type: Phaser.AUTO,
@@ -51,7 +50,12 @@ var setBackgroundScale = canvasWidth/backgroundWidth;
 var x1 = 0;
 var x2 = canvasWidth;
 var backgroundSpeed = 2;
-//
+
+//Audio variables
+var c = new AudioContext()
+var g
+var attack = 0.04;
+var decay = 0.1;
 
 function preload ()
 {
@@ -67,6 +71,7 @@ function preload ()
 
 function create ()
 {
+  //BACKGROUND
   background1 = this.physics.add.sprite(x1, 0, 'space1').setOrigin(0,0);
   background2 = this.physics.add.sprite(x2, 0, 'space2').setOrigin(0,0);
   background1.setScale(setBackgroundScale);
@@ -79,6 +84,7 @@ function create ()
   //platforms = this.physics.add.staticGroup();
   //platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 
+  //KEYBOARD
   keys = this.input.keyboard.addKeys('A,W,S,E,D,F,T,G,Y,H,U,J,K');
 
   //stores the note steps in an array
@@ -87,8 +93,8 @@ function create ()
     arrayStep[i] = nextStep;
   }
 
+  //PLAYER
   player = this.physics.add.sprite(100, 512, 'character').setScale(0.35);
-  
   //this.physics.add.collider(player, platforms);
 
   //ANIMATION
@@ -100,6 +106,7 @@ function create ()
   });
   player.anims.play('flying');
 
+  //COINS
   coins = this.physics.add.group({
     key: 'coin',
     repeat: 10,
@@ -107,7 +114,7 @@ function create ()
     setScale: 0.5
   });
   
-  //set random positions of stars in the x axis
+  //set random positions of coins in the x axis
   for(let i=0; i<11; i++){
     notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
     coins.getChildren()[i].x = notes[i];
@@ -117,12 +124,23 @@ function create ()
 
   this.physics.add.overlap(player, coins, collectCoin, null, this);
 
+  //SCORE
   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+
+  //SOUND
+  CreateGain();
+
+  //this.time.events.loop(Phaser.Timer.SECOND, play(440*Math.pow(2,0/12)), this)
+  this.time.addEvent({
+    delay: 100, // ms
+    callback: console.log("played sound"),
+    callbackScope: this,
+    loop: true
+  });
 }
 
 function update ()
 {
-
   if (keys.A.isDown){
     player.x = arrayStep[0];}
     else if(keys.W.isDown){
@@ -165,4 +183,21 @@ function collectCoin (player, coin)
 
   score += 10;
   scoreText.setText('Score: ' + score);
+}
+
+function CreateGain() {
+  g = c.createGain()
+  g.connect(c.destination)
+}
+
+function play(f){
+  var o = c.createOscillator()
+  o.connect(g)
+  o.frequency.value = f
+  o.type = "sine"
+  o.start() 
+  g.gain.setValueAtTime(0,c.currentTime)
+  g.gain.linearRampToValueAtTime(1, c.currentTime+attack)
+  g.gain.linearRampToValueAtTime(0, c.currentTime+attack+decay)
+  o.stop(c.currentTime+attack+decay)
 }
