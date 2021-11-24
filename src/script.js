@@ -8,11 +8,12 @@ var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
 
 //KEYBOARD
 var keys = "awsedftgyhujk";
+var blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0];
 
 var config = {
   type: Phaser.AUTO,
   width: canvasWidth,
-  height: canvasHeight,
+  height: canvasHeight, 
   physics:{
     default: 'arcade',
     arcade:{
@@ -76,25 +77,24 @@ function preload ()
 
 function create ()
 {
-/* Orizontal background movement */
-/*
-  background1 = this.physics.add.sprite(x1, 0, 'space1').setOrigin(0,0);
-  background2 = this.physics.add.sprite(x2, 0, 'space2').setOrigin(0,0);
-  background1.setScale(setBackgroundScale);
-  background2.setScale(setBackgroundScale);
-  background1.setVelocityX(- backgroundSpeed);
-  background2.setVelocityX(- backgroundSpeed);
-*/
- 
-/* Vertical background movement */
+  /* Orizontal background movement */
+  /*
+    background1 = this.physics.add.sprite(x1, 0, 'space1').setOrigin(0,0);
+    background2 = this.physics.add.sprite(x2, 0, 'space2').setOrigin(0,0);
+    background1.setScale(setBackgroundScale);
+    background2.setScale(setBackgroundScale);
+    background1.setVelocityX(- backgroundSpeed);
+    background2.setVelocityX(- backgroundSpeed);
+  */
   
-backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0,0);
-backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0,0);
+  /* Vertical background movement */  
+  backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0,0);
+  backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0,0);
 
-backgroundV1.setScale(setBackgroundScale);
-backgroundV2.setScale(setBackgroundScale);
-backgroundV1.setVelocityY(- backgroundSpeed);
-backgroundV2.setVelocityY(- backgroundSpeed);
+  backgroundV1.setScale(setBackgroundScale);
+  backgroundV2.setScale(setBackgroundScale);
+  backgroundV1.setVelocityY(- backgroundSpeed);
+  backgroundV2.setVelocityY(- backgroundSpeed);
 
   //background.setVelocityX(+1);
 
@@ -105,10 +105,11 @@ backgroundV2.setVelocityY(- backgroundSpeed);
   for(let i=0; i<nNote; i++){
     nextStep = ((step / 2) + i*step);
     arrayStep[i] = nextStep;
+    createDivKey(arrayStep[i], i);
   }
 
   //PLAYER
-  player = this.physics.add.sprite(100, 512, 'character').setScale(0.35);
+  player = this.physics.add.sprite(100, 512, 'character').setScale(0.30);
   //this.physics.add.collider(player, platforms);
 
   //ANIMATION
@@ -125,7 +126,7 @@ backgroundV2.setVelocityY(- backgroundSpeed);
     key: 'coin',
     repeat: 10,
     setXY: { x: -10, y: 0, stepY: -100},
-    setScale: 0.5
+    setScale: { x: 0.7, y: 0.7}
   });
   
   //set random positions of coins in the x axis
@@ -139,7 +140,7 @@ backgroundV2.setVelocityY(- backgroundSpeed);
   this.physics.add.overlap(player, coins, collectCoin, null, this);
 
   //SCORE
-  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
   //SOUND
   CreateGain();
@@ -155,12 +156,12 @@ backgroundV2.setVelocityY(- backgroundSpeed);
 
 function update ()
 {
-/* Movement of the character */
-window.addEventListener("keypress", (e) => {
-  if(keys.indexOf(e.key)>=0 && keys.indexOf(e.key)<keys.length){
-    player.x = arrayStep[keys.indexOf(e.key)];
-  }
-});
+  /* Movement of the character */
+  window.addEventListener("keypress", (e) => {
+    if(keys.indexOf(e.key)>=0 && keys.indexOf(e.key)<keys.length){
+      player.x = arrayStep[keys.indexOf(e.key)];
+    }
+  });
   
   /*Background movement controlled orizontally */
   /*
@@ -204,4 +205,16 @@ function play(f){
   g.gain.linearRampToValueAtTime(1, c.currentTime+attack)
   g.gain.linearRampToValueAtTime(0, c.currentTime+attack+decay)
   o.stop(c.currentTime+attack+decay)
+}
+
+function createDivKey(pos, index){
+  const key = document.createElement("div")
+  key.classList.add("key")
+  var position = pos-step/2;
+  key.style.left = position + "px";
+  key.style.width = step + "px";
+  if(blackKeys[index]){
+    key.style.backgroundColor = "black";
+  }
+  keyBar.appendChild(key)
 }
