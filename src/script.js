@@ -1,3 +1,5 @@
+//const { Sound } = require("phaser");
+
 var canvasWidth = 800;
 var canvasHeight = 600;
 // To scale the background
@@ -69,9 +71,11 @@ var backgroundSpeed = 1;
 
 //Audio variables
 var c = new AudioContext()
-var g
-var attack = 0.04;
-var decay = 0.1;
+var g;
+var attack = 0.02;
+var decay = 0.06;
+var music;
+//var sound = new Sound(this, 'metronome', 1, true);
 
 function preload ()
 {
@@ -85,6 +89,7 @@ function preload ()
   this.load.image('spaceV2', 'assets/Space1V.jpg');
   this.load.image('coin', 'assets/money_flute.png');
   this.load.spritesheet('character', 'assets/M_step.png', { frameWidth: 200, frameHeight: 300 });
+  this.load.audio('metronome', ['assets/metronomo_bip.wav']);
 }
 
 function create ()
@@ -154,13 +159,28 @@ function create ()
   //SOUND
   CreateGain();
 
-  //this.time.events.loop(Phaser.Timer.SECOND, play(440*Math.pow(2,0/12)), this)
-  this.time.addEvent({
-    delay: 100, // ms
-    callback: console.log("played sound"),
-    callbackScope: this,
+  //game.time.events.repeat(Phaser.Timer.SECOND, 10, play(440*Math.pow(2,0/12)), this)
+  music = this.sound.add('metronome');
+
+  /*var timerEvent = new TimerEvent({
+    callback: music.play(),
+    delay: 500,
     loop: true
-  });
+  })*/
+  //sound.play()
+  //music.play({
+  //  loop: 3
+  //});
+  /*this.time.addEvent({ // ms
+    duration:500,
+    callback: music.play(),
+    callbackScope: game,
+    loop: 2
+  });*/
+  //setInterval(play(440*Math.pow(2,0/12)), 500)
+  //this.song_replay_timer = this.game.time.create(false);
+  //this.song_replay_timer.loop(this.replay_speed, this.replaySongData, this);
+  //this.song_replay_timer.start();
 }
 
 function update ()
@@ -177,15 +197,12 @@ function update ()
     for (var input of midi.inputs.values()){
       input.onmidimessage = function (message){
         player.x = arrayStep[midi_notes.indexOf(message.data[1])];
+        if(message.data[0] == 144){
+          play((261.63)*Math.pow(2,midi_notes.indexOf(message.data[1])/12))
+        }
       }
-     }
+    }
   //message.data[1]->value of the note pressed
-  
-
-   
-  
-
-
   
   /*Background movement controlled orizontally */
   /*
@@ -243,7 +260,6 @@ function createDivKey(pos, index){
   keyBar.appendChild(key)
 }
 
-<<<<<<< Updated upstream
 function melodyToSpace(){
   melodySpace[0] = 0;
   var totalDuration = melody[0].duration;
@@ -260,11 +276,3 @@ function notesToCoins(){
     coins.create(x, y, 'coin');
   }
 }
-=======
-
-
-
-
-
- 
->>>>>>> Stashed changes
