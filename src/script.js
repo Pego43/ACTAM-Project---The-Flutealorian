@@ -9,6 +9,7 @@ var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
 //KEYBOARD
 var keys = "awsedftgyhujk";
 var blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0];
+var noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
 
 var config = {
   type: Phaser.AUTO,
@@ -42,11 +43,16 @@ var score = 0;
 var scoreText;
 var background1,background2,backgroundV1,backgroundV2;
 
-/*function Note(name, duration, pause) {
-  this.noteName = name;
-  this.duration = duration;
-  this.pause = pause;
-}*/
+class Note {
+  constructor(duration, name, pause){
+    this.duration = duration*100;
+    this.name = name;
+    this.pause = false;
+  }
+}
+
+var melody = [new Note(1, 'C3'), new Note(1, 'D3'), new Note(1, 'E3')]
+var melodySpace = []
 
 //Variables for background
 var setBackgroundScale = canvasWidth/backgroundWidth;
@@ -122,18 +128,15 @@ function create ()
   player.anims.play('flying');
 
   //COINS
-  coins = this.physics.add.group({
-    key: 'coin',
-    repeat: 10,
-    setXY: { x: -10, y: 0, stepY: -100},
-    setScale: { x: 0.7, y: 0.7}
-  });
+  coins = this.physics.add.group();
+  melodyToSpace();
+  notesToCoins();
   
   //set random positions of coins in the x axis
-  for(let i=0; i<11; i++){
+  /*for(let i=0; i<11; i++){
     notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
     coins.getChildren()[i].x = notes[i];
-  }
+  }*/
 
   coins.setVelocityY(100);
 
@@ -217,4 +220,21 @@ function createDivKey(pos, index){
     key.style.backgroundColor = "black";
   }
   keyBar.appendChild(key)
+}
+
+function melodyToSpace(){
+  melodySpace[0] = 0;
+  var totalDuration = melody[0].duration;
+  for(let i = 1; i < melody.length; i++){
+    melodySpace[i] = totalDuration;
+    totalDuration = totalDuration + melody[i].duration;
+  }
+}
+
+function notesToCoins(){
+  for(let i = 0; i < melody.length; i++){
+    var x = arrayStep[noteNames.indexOf(melody[i].name)];
+    var y = -melodySpace[i];
+    coins.create(x, y, 'coin');
+  }
 }

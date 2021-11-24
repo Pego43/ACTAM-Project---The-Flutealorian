@@ -1,10 +1,10 @@
 .key {
     height:40px;
-    border-radius: 5px;
+    border-style: solid;
     display: inline-block;
     background-color: white;
     position: absolute;
     top:560px;
     border:4px;
-    border-color: white;
+    border-color: black;
   }
