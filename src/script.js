@@ -38,7 +38,6 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-var keys;
 var nNote = 13;
 var step = ((canvasWidth/nNote));
 var platforms;
@@ -90,7 +89,8 @@ function preload ()
   this.load.image('spaceV1', 'assets/Space1V.jpg');
   this.load.image('spaceV2', 'assets/Space1V.jpg');
   this.load.image('coin', 'assets/money_flute.png');
-  this.load.spritesheet('character', 'assets/M_step.png', { frameWidth: 200, frameHeight: 300 });
+  this.load.spritesheet('character_right', 'assets/M_steps_R.png', { frameWidth: 200, frameHeight: 300 });
+  this.load.spritesheet('character_left', 'assets/M_steps_L.png', { frameWidth: 200, frameHeight: 300 });
   this.load.audio('metronome', ['assets/metronomo_bip.wav']);
   this.load.image('line', 'assets/lineaACTAM.png');
 }
@@ -129,17 +129,25 @@ function create ()
   }
 
   //PLAYER
-  player = this.physics.add.sprite(100, 512, 'character').setScale(0.30);
+  player = this.physics.add.sprite(100, 512, 'character_right').setScale(0.30);
   line = this.physics.add.sprite(100, 466, 'line').setScale(0.30);
 
   //ANIMATION
   this.anims.create({
-    key: 'flying',
-    frames: this.anims.generateFrameNumbers('character', { start: 0, end: 2 }),
+    key: 'flying_right',
+    frames: this.anims.generateFrameNumbers('character_right', { start: 0, end: 2 }),
     frameRate: 5,
     repeat: -1
   });
-  player.anims.play('flying');
+  this.anims.create({
+    key: 'flying_left',
+    frames: this.anims.generateFrameNumbers('character_left', { start: 0, end: 2 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
+  //INITIALIZATION OF THE CHARACTER
+  player.anims.play('flying_right');
 
   //COINS
   coins = this.physics.add.group();
@@ -186,13 +194,28 @@ function create ()
 
 function update ()
 {
-  /* Movement of the character with keybords 
-  window.addEventListener("keypress", (e) => {
+  // Movement of the character with keybord
+  /*
+    window.addEventListener("keypress", (e) => {
     if(keys.indexOf(e.key)>=0 && keys.indexOf(e.key)<keys.length){
-      player.x = arrayStep[keys.indexOf(e.key)];
-    }
-  });
+      if(player.x <= arrayStep[keys.indexOf(e.key)]){
+           //Movement to the right
+           player.anims.play('flying_right');
+      }else{
+           //Movement to the left
+           player.anims.play('flying_left');
+          }
+        }
+      });
+
+    window.addEventListener("keyup", (e) => {
+    if(keys.indexOf(e.key)>=0 && keys.indexOf(e.key)<keys.length){
+        //Change of position
+        player.x = arrayStep[keys.indexOf(e.key)];
+      }
+    });
   */
+
   // Movement with the MIDI 
     for (var input of midi.inputs.values()){
       input.onmidimessage = function (message){
@@ -207,24 +230,25 @@ function update ()
         }
       }
     }
+  
   //message.data[1]->value of the note pressed
   
-  /*Background movement controlled orizontally */
+  // Background movement controlled orizontally
   /*
-  if (background1.x < -canvasWidth) background1.x = canvasWidth + background2.x - backgroundSpeed;
-  else background1.x = background1.x - backgroundSpeed; 
+    if (background1.x < -canvasWidth) background1.x = canvasWidth + background2.x - backgroundSpeed;
+    else background1.x = background1.x - backgroundSpeed; 
   
-  if (background2.x < -canvasWidth) background2.x = canvasWidth + background1.x - backgroundSpeed;
-  else background2.x = background2.x - backgroundSpeed;
+    if (background2.x < -canvasWidth) background2.x = canvasWidth + background1.x - backgroundSpeed;
+    else background2.x = background2.x - backgroundSpeed;
   */
 
-  /*Background movement controlled vertically */
+  // Background movement controlled vertically
   
-  if (backgroundV1.y > canvasHeight) backgroundV1.y = -canvasHeight + backgroundV2.y - backgroundSpeed;
-  else backgroundV1.y = backgroundV1.y + backgroundSpeed;
+    if (backgroundV1.y > canvasHeight) backgroundV1.y = -canvasHeight + backgroundV2.y - backgroundSpeed;
+    else backgroundV1.y = backgroundV1.y + backgroundSpeed;
   
-  if (backgroundV2.y > canvasHeight) backgroundV2.y = -canvasHeight + backgroundV1.y - backgroundSpeed;
-  else backgroundV2.y = backgroundV2.y + backgroundSpeed; 
+    if (backgroundV2.y > canvasHeight) backgroundV2.y = -canvasHeight + backgroundV1.y - backgroundSpeed;
+    else backgroundV2.y = backgroundV2.y + backgroundSpeed; 
       
 }
 
