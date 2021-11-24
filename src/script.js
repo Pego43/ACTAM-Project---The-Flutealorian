@@ -1,5 +1,4 @@
 //const { Sound } = require("phaser");
-
 var canvasWidth = 800;
 var canvasHeight = 600;
 // To scale the background
@@ -17,6 +16,7 @@ var noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3',
 var midi;
 midi = await navigator.requestMIDIAccess();
 var midi_notes = [48,49,50,51,52,53,54,55,56,57,58,59,60];
+var noteOn = false;
 //48 is C, and 60 is the major C
 
 var config = {
@@ -50,6 +50,7 @@ var notes = [];
 var score = 0;
 var scoreText;
 var background1,background2,backgroundV1,backgroundV2;
+var line;
 
 class Note {
   constructor(duration, name, pause){
@@ -91,6 +92,7 @@ function preload ()
   this.load.image('coin', 'assets/money_flute.png');
   this.load.spritesheet('character', 'assets/M_step.png', { frameWidth: 200, frameHeight: 300 });
   this.load.audio('metronome', ['assets/metronomo_bip.wav']);
+  this.load.image('line', 'assets/lineaACTAM.png');
 }
 
 function create ()
@@ -128,7 +130,7 @@ function create ()
 
   //PLAYER
   player = this.physics.add.sprite(100, 512, 'character').setScale(0.30);
-  //this.physics.add.collider(player, platforms);
+  line = this.physics.add.sprite(100, 466, 'line').setScale(0.30);
 
   //ANIMATION
   this.anims.create({
@@ -143,6 +145,7 @@ function create ()
   coins = this.physics.add.group();
   melodyToSpace();
   notesToCoins();
+  coins.setVelocityY(100);
   
   //set random positions of coins in the x axis
   /*for(let i=0; i<11; i++){
@@ -150,19 +153,16 @@ function create ()
     coins.getChildren()[i].x = notes[i];
   }*/
 
-  coins.setVelocityY(60);
-
-  this.physics.add.overlap(player, coins, collectCoin, null, this);
-
   //SCORE
   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
   //SOUND
   CreateGain();
 
-  //game.time.events.repeat(Phaser.Timer.SECOND, 10, play(440*Math.pow(2,0/12)), this)
   music = this.sound.add('metronome');
 
+  this.physics.add.overlap(line, coins, collectCoin, null, this);
+  //game.time.events.repeat(Phaser.Timer.SECOND, 10, play(440*Math.pow(2,0/12)), this)
   /*var timerEvent = new TimerEvent({
     callback: music.play(),
     delay: 500,
@@ -193,13 +193,17 @@ function update ()
     }
   });
   */
-
   // Movement with the MIDI 
     for (var input of midi.inputs.values()){
       input.onmidimessage = function (message){
         player.x = arrayStep[midi_notes.indexOf(message.data[1])];
+        line.x = arrayStep[midi_notes.indexOf(message.data[1])];
+        //if note on
         if(message.data[0] == 144){
           play((261.63)*Math.pow(2,midi_notes.indexOf(message.data[1])/12))
+          noteOn = true;
+        } else if(message.data[0] == 128){
+          noteOn = false;
         }
       }
     }
@@ -226,9 +230,11 @@ function update ()
 
 function collectCoin (player, coin)
 {
-  coin.disableBody(true, true);
+  if(noteOn){
+    coin.disableBody(true, true);
+    score += 10;
+  }
 
-  score += 10;
   scoreText.setText('Score: ' + score);
 }
 
