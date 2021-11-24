@@ -11,6 +11,12 @@ var keys = "awsedftgyhujk";
 var blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0];
 var noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
 
+//MIDI input
+var midi;
+midi = await navigator.requestMIDIAccess();
+var midi_notes = [48,49,50,51,52,53,54,55,56,57,58,59,60];
+//48 is C, and 60 is the major C
+
 var config = {
   type: Phaser.AUTO,
   width: canvasWidth,
@@ -159,12 +165,27 @@ function create ()
 
 function update ()
 {
-  /* Movement of the character */
+  /* Movement of the character with keybords 
   window.addEventListener("keypress", (e) => {
     if(keys.indexOf(e.key)>=0 && keys.indexOf(e.key)<keys.length){
       player.x = arrayStep[keys.indexOf(e.key)];
     }
   });
+  */
+
+  // Movement with the MIDI 
+    for (var input of midi.inputs.values()){
+      input.onmidimessage = function (message){
+        player.x = arrayStep[midi_notes.indexOf(message.data[1])];
+      }
+     }
+  //message.data[1]->value of the note pressed
+  
+
+   
+  
+
+
   
   /*Background movement controlled orizontally */
   /*
@@ -222,6 +243,7 @@ function createDivKey(pos, index){
   keyBar.appendChild(key)
 }
 
+<<<<<<< Updated upstream
 function melodyToSpace(){
   melodySpace[0] = 0;
   var totalDuration = melody[0].duration;
@@ -238,3 +260,11 @@ function notesToCoins(){
     coins.create(x, y, 'coin');
   }
 }
+=======
+
+
+
+
+
+ 
+>>>>>>> Stashed changes
