@@ -11,7 +11,7 @@ var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
 //KEYBOARD
 var keys = "awsedftgyhujk";
 var blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0];
-var noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
+var noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
 
 //MIDI input
 var midi;
