@@ -53,13 +53,14 @@ var background1,background2,backgroundV1,backgroundV2;
 
 class Note {
   constructor(duration, name, pause){
-    this.duration = duration*100;
+    this.duration = duration*50;
     this.name = name;
     this.pause = false;
   }
 }
 
-var melody = [new Note(1, 'C3'), new Note(1, 'D3'), new Note(1, 'E3')]
+var melody = [new Note(1, 'F3'),new Note(1, 'F3'),new Note(1, 'F3'), new Note(1, 'C3'), new Note(1, 'D3'),new Note(1, 'D3'), 
+new Note(1, 'C3'), new Note(1, 'C3'), new Note(1, 'A3'), new Note(1, 'A3'), new Note(1, 'G3'), new Note(1, 'G3'), new Note(1, 'F3'), ]
 var melodySpace = []
 
 //Variables for background
@@ -149,7 +150,7 @@ function create ()
     coins.getChildren()[i].x = notes[i];
   }*/
 
-  coins.setVelocityY(100);
+  coins.setVelocityY(60);
 
   this.physics.add.overlap(player, coins, collectCoin, null, this);
 
