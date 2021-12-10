@@ -12,7 +12,6 @@ var keys = "awsedftgyhujk";
 
 //MIDI input (da gestire perchè inizialmente da errore)
 var midi = await navigator.requestMIDIAccess();
-
 var midi_notes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60];
 var noteOn = false;
 //48 is C, and 60 is the upper C
@@ -28,7 +27,9 @@ var score = 0;
 var scoreText;
 var background1, background2, backgroundV1, backgroundV2;
 var line;
-var song_replay_timer;
+var pressedOnce = false;
+var consumedBar = 0;
+var prevCoin = null;
 
 //Variables for background
 var setBackgroundScale = canvasWidth / backgroundWidth;
@@ -38,8 +39,6 @@ var x3 = canvasHeight
 var backgroundSpeed = 1;
 const sound = new CustomSound();
 const custom = new CustomFunctions();
-
-
 
 export class PlayScene extends Phaser.Scene {
   constructor() {
@@ -57,7 +56,7 @@ export class PlayScene extends Phaser.Scene {
     this.load.image('space2', 'assets/Space2.jpg');
     this.load.image('spaceV1', 'assets/Space1V.jpg');
     this.load.image('spaceV2', 'assets/Space1V.jpg');
-    this.load.image('coin', 'assets/money_flute.png');
+    this.load.image('coin', 'assets/money_square.png');
     this.load.spritesheet('character_right', 'assets/M_steps_R.png', { frameWidth: 200, frameHeight: 300 });
     this.load.spritesheet('character_left', 'assets/M_steps_L.png', { frameWidth: 200, frameHeight: 300 });
     this.load.audio('metronome', ['assets/metronomo_bip.wav']);
@@ -88,7 +87,7 @@ export class PlayScene extends Phaser.Scene {
     for (let i = 0; i < nNote; i++) {
       nextStep = ((step / 2) + i * step);
       arrayStep[i] = nextStep;
-      custom.createDivKey(arrayStep[i], i, step);
+      //custom.createDivKey(arrayStep[i], i, step);
     }
 
     //PLAYER
@@ -130,32 +129,45 @@ export class PlayScene extends Phaser.Scene {
     //SOUND
     sound.createGain();
 
-    this.physics.add.overlap(line, coins, function(){
-      if (noteOn) {
-        coin.disableBody(true, true);
+    this.physics.add.overlap(line, coins, function(player, coin){
+
+      if(noteOn && pressedOnce){
+        //coin.disableBody(true, true);
         score += 10;
+        consumedBar += 0.01;
+        //console.log(coin.displayHeight)
+        coin.setScale(1, (coin.displayHeight/50)-consumedBar);
       }
-    
+      if(coin != prevCoin){
+        consumedBar = 0;
+      }
       scoreText.setText('Score: ' + score);
+      prevCoin = coin;
+
     }, null, this);
   }
 
   update() {
     // Movement of the character with keybord
-    window.addEventListener("keypress", (e) => {
+    window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
-      if (noteIndex >= 0 && noteIndex < keys.length) {
-        player.x = arrayStep[noteIndex];
-        line.x = arrayStep[noteIndex];
-        sound.play(noteIndex);
-        noteOn = true;
-        if (player.x <= arrayStep[noteIndex]) {
-          player.anims.play('flying_right');
-        } else {
-          //Movement to the left
-          player.anims.play('flying_left');
-        }
+      if(!e.repeat){
+        if (noteIndex >= 0 && noteIndex < keys.length) {
+          player.x = arrayStep[noteIndex];
+          line.x = arrayStep[noteIndex];
+          sound.play(noteIndex);
+          noteOn = true;
+          if (player.x <= arrayStep[noteIndex]) {
+            player.anims.play('flying_right');
+          } else {
+            //Movement to the left
+            player.anims.play('flying_left');
+          }
       }
+      pressedOnce = true;
+      } else {
+      pressedOnce = false;
+    }
     });
 
     window.addEventListener("keyup", (e) => {
