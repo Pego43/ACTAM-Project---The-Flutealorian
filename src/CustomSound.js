@@ -1,4 +1,4 @@
-class CustomSound{
+export class CustomSound{
     //var sound = new Sound(this, 'metronome', 1, true);
     constructor(){
         //Audio variables

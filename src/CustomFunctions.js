@@ -1,4 +1,4 @@
-class Note {
+export class Note {
     constructor(duration, name, pause){
       this.duration = duration*50;
       this.name = name;
@@ -6,12 +6,13 @@ class Note {
     }
   }
 
-class CustomFunctions{
+export class CustomFunctions{
 
     constructor(){
         this.melody = [new Note(1, 'F3'),new Note(1, 'F3'),new Note(1, 'F3'), new Note(1, 'C3'), new Note(1, 'D3'),new Note(1, 'D3'), 
             new Note(1, 'C3'), new Note(1, 'C3'), new Note(1, 'A3'), new Note(1, 'A3'), new Note(1, 'G3'), new Note(1, 'G3'), new Note(1, 'F3'), ]
         this.melodySpace = []
+        this.keyBar = []
         this.noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
         this.blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0];
     }
