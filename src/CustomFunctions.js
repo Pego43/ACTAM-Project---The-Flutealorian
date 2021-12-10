@@ -8,9 +8,11 @@ export class Note {
 
 export class CustomFunctions{
 
-    constructor(){
-        this.melody = [new Note(3, 'F3'), new Note(1, 'C3'), new Note(2, 'D3'), 
-            new Note(1, 'C3'), new Note(1, 'C3'), new Note(1, 'A3'), new Note(1, 'A3'), new Note(1, 'G3'), new Note(1, 'G3'), new Note(1, 'F3'), ]
+    constructor(durArray, noteArray){
+        this.melody = []
+        this.durArray = durArray;
+        this.noteArray = noteArray;
+        this.melody = this.createMelody();
         this.melodySpace = []
         this.keyBar = []
         this.noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
@@ -28,6 +30,16 @@ export class CustomFunctions{
         }
         keyBar.appendChild(key)
     }
+    createMelody(){
+      var melody = [];
+      for(let i = 0; i < this.durArray.length; i++){
+
+        melody[i] = new Note(this.durArray[i], this.noteArray[i]);
+        
+ 
+      }
+      return melody;
+  }
       
     melodyToSpace(){
         this.melodySpace[0] = 0;
@@ -45,4 +57,7 @@ export class CustomFunctions{
           coins.create(x, y, 'coin').setOrigin(0,0).setScale(1,this.melody[i].duration/60).refreshBody();
         }
     }
+
+    
+
 }

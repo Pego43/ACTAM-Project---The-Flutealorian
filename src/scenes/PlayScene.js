@@ -1,7 +1,7 @@
 import { CST } from "./CST.js";
 import { CustomFunctions } from "../CustomFunctions.js";
 import { CustomSound } from "../CustomSound.js";
-
+import { DB } from "../Firebase.js";
 
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
@@ -37,8 +37,15 @@ var x1 = 0;
 var x2 = canvasWidth;
 var x3 = canvasHeight
 var backgroundSpeed = 1;
+var db = new DB();
 const sound = new CustomSound();
-const custom = new CustomFunctions();
+var custom = null;
+
+
+
+//promise.then( (db.getNotes()) => custom = new CustomFunction(db.getNotes(), db.getDuration()));
+//var custom = new CustomFunctions(db.getNotes(), db.getDuration());
+
 
 export class PlayScene extends Phaser.Scene {
   constructor() {
@@ -73,7 +80,6 @@ export class PlayScene extends Phaser.Scene {
       background1.setVelocityX(- backgroundSpeed);
       background2.setVelocityX(- backgroundSpeed);
     */
-
     /* Vertical background movement */
     backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0, 0);
     backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0, 0);
@@ -113,9 +119,15 @@ export class PlayScene extends Phaser.Scene {
 
     //COINS
     coins = this.physics.add.group();
+    //custom.createMelody();
+    db.getDataInCustom(function(duration, notes){
+    custom = new CustomFunctions(duration, notes);
     custom.melodyToSpace();
     custom.notesToCoins(arrayStep, coins);
     coins.setVelocityY(100);
+    })
+    
+    
 
     //set random positions of coins in the x axis
     /*for(let i=0; i<11; i++){

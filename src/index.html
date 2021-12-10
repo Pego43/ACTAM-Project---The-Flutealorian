@@ -4,12 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBw4yueSosPMIWNkEAWI1zi_9RdTr2jGt4",
+          authDomain: "provamelody.firebaseapp.com",
+          projectId: "provamelody",
+          storageBucket: "provamelody.appspot.com",
+          messagingSenderId: "173143885954",
+          appId: "1:173143885954:web:40e739ff4d5f0160c30c9b"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+      </script>
+      <script src="https://www.gstatic.com/firebasejs/8.0/firebase-app.js"></script>
+      <script defer src="https://www.gstatic.com/firebasejs/8.0/firebase-firestore.js"></script>
     <script type="module" src="microphone.js"></script>
     <script type="module" src="CustomSound.js"></script>
     <script type="module" src="CustomFunctions.js"></script>
     <script type="module" src="scenes/LoadScene.js"></script>
     <script type="module" src="scenes/MenuScene.js"></script>
     <script type="module" src="scenes/PlayScene.js"></script>
+    <script type="module" src="Firebase.js"></script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <title>Document</title>
 </head>
