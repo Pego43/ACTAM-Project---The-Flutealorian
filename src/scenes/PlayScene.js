@@ -30,6 +30,9 @@ var line;
 var pressedOnce = false;
 var consumedBar = 0;
 var prevCoin = null;
+var overlapping = false;
+var particles;
+var emitter;
 
 //Variables for background
 var setBackgroundScale = canvasWidth / backgroundWidth;
@@ -68,6 +71,7 @@ export class PlayScene extends Phaser.Scene {
     this.load.spritesheet('character_left', 'assets/M_steps_L.png', { frameWidth: 200, frameHeight: 300 });
     this.load.audio('metronome', ['assets/metronomo_bip.wav']);
     this.load.image('line', 'assets/lineaACTAM.png');
+    this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
   }
 
   create() {
@@ -97,8 +101,8 @@ export class PlayScene extends Phaser.Scene {
     }
 
     //PLAYER
-    player = this.physics.add.sprite(100, 512, 'character_right').setScale(0.30);
-    line = this.physics.add.sprite(100, 466, 'line').setScale(0.30);
+    player = this.physics.add.sprite(100, 548, 'character_right').setScale(0.30);
+    line = this.physics.add.sprite(100, 500, 'line').setScale(0.30);
 
     //ANIMATION
     this.anims.create({
@@ -114,26 +118,29 @@ export class PlayScene extends Phaser.Scene {
       repeat: -1
     });
 
-    //INITIALIZATION OF THE CHARACTER
+    //CHARACTER INITIALIZATION
     player.anims.play('flying_right');
 
     //COINS
+    const layer1 = this.add.layer();
+    
+    const pianoSprite = this.add.sprite(0, 500, 'ground').setOrigin(0,0).setScale(3,6);
+
+    layer1.add([ pianoSprite]);
+
     coins = this.physics.add.group();
-    //custom.createMelody();
+
     db.getDataInCustom(function(duration, notes){
     custom = new CustomFunctions(duration, notes);
     custom.melodyToSpace();
     custom.notesToCoins(arrayStep, coins);
     coins.setVelocityY(100);
+    for (let i = 0; i < coins.getChildren().length; i++) {
+      layer1.add([coins.getChildren()[i]]);
+    }
     })
-    
-    
 
-    //set random positions of coins in the x axis
-    /*for(let i=0; i<11; i++){
-      notes[i] = arrayStep[Math.floor(Math.random()*nNote)];
-      coins.getChildren()[i].x = notes[i];
-    }*/
+    layer1.add([player, line]);
 
     //SCORE
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
@@ -141,21 +148,42 @@ export class PlayScene extends Phaser.Scene {
     //SOUND
     sound.createGain();
 
-    this.physics.add.overlap(line, coins, function(player, coin){
+    particles = this.add.particles('flares');
 
-      if(noteOn && pressedOnce){
-        //coin.disableBody(true, true);
-        score += 10;
-        consumedBar += 0.01;
-        //console.log(coin.displayHeight)
-        coin.setScale(1, (coin.displayHeight/50)-consumedBar);
+    emitter = particles.createEmitter({
+        frame: 'blue',
+        lifespan: 200,
+        speed: { min: 300, max: 500 },
+        angle: 270,
+        gravityY: 30,
+        scale: { start: 0.5, end: 0 },
+        quantity: 2,
+        blendMode: 'ADD',
+        visible: false
+    });
+    layer1.add([particles]);
+    layer1.sendToBack(particles);
+
+    this.physics.add.overlap(line, coins, function(player, coin){
+      overlapping = true;
+      if(noteOn){
+        if(pressedOnce){
+          prevCoin = coin;
+          score += 10;
+          layer1.sendToBack(coin);
+          emitter.setVisible(true);
+        }
+        if(coin != prevCoin && !pressedOnce){
+          emitter.setVisible(false);
+        } else if(coin == prevCoin && !pressedOnce){
+          score += 10;
+          layer1.sendToBack(coin);
+        }
       }
-      if(coin != prevCoin){
-        consumedBar = 0;
+      if((line.y-5) <= Math.round(coin.y-(coin.displayHeight/2))){
+        overlapping = false;
       }
       scoreText.setText('Score: ' + score);
-      prevCoin = coin;
-
     }, null, this);
   }
 
@@ -163,10 +191,14 @@ export class PlayScene extends Phaser.Scene {
     // Movement of the character with keybord
     window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
+      if(!overlapping){
+        emitter.setVisible(false);
+      }
       if(!e.repeat){
         if (noteIndex >= 0 && noteIndex < keys.length) {
           player.x = arrayStep[noteIndex];
           line.x = arrayStep[noteIndex];
+          emitter.setPosition(line.x, line.y);
           sound.play(noteIndex);
           noteOn = true;
           if (player.x <= arrayStep[noteIndex]) {
@@ -175,7 +207,7 @@ export class PlayScene extends Phaser.Scene {
             //Movement to the left
             player.anims.play('flying_left');
           }
-      }
+        }
       pressedOnce = true;
       } else {
       pressedOnce = false;
@@ -186,6 +218,7 @@ export class PlayScene extends Phaser.Scene {
       var noteIndex = keys.indexOf(e.key);
       if (noteIndex >= 0 && noteIndex < keys.length) {
         noteOn = false;
+        emitter.setVisible(false);
       }
     });
 
@@ -226,14 +259,4 @@ export class PlayScene extends Phaser.Scene {
     else backgroundV2.y = backgroundV2.y + backgroundSpeed;
 
   }
-/*
-    collectCoin(player, coin) {
-    if (noteOn) {
-      coin.disableBody(true, true);
-      score += 10;
-    }
-  
-    scoreText.setText('Score: ' + score);
-  } 
-    */
 }

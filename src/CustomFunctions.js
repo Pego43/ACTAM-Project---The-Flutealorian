@@ -54,7 +54,7 @@ export class CustomFunctions{
         for(let i = 0; i < this.melody.length; i++){
           var x = arrayStep[this.noteNames.indexOf(this.melody[i].name)];
           var y = -this.melodySpace[i];
-          coins.create(x, y, 'coin').setOrigin(0,0).setScale(1,this.melody[i].duration/60).refreshBody();
+          coins.create(x, y, 'coin').setScale(1,this.melody[i].duration/60).refreshBody();
         }
     }
 
