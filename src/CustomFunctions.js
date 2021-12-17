@@ -1,6 +1,6 @@
 export class Note {
     constructor(duration, name, pause){
-      this.duration = duration*60;
+      this.duration = duration*50;
       this.name = name;
       this.pause = false;
     }
@@ -15,8 +15,8 @@ export class CustomFunctions{
         this.melody = this.createMelody();
         this.melodySpace = []
         this.keyBar = []
-        this.noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
-        this.blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0];
+        this.noteNames = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4', 'P'];
+        this.blackKeys = [0,1,0,1,0,0,1,0,1,0,1,0,0,0];
     }
     
     createDivKey(pos, index, step){
@@ -54,7 +54,11 @@ export class CustomFunctions{
         for(let i = 0; i < this.melody.length; i++){
           var x = arrayStep[this.noteNames.indexOf(this.melody[i].name)];
           var y = -this.melodySpace[i];
-          coins.create(x, y, 'coin').setScale(1,this.melody[i].duration/60).refreshBody();
+          if(this.noteArray[i] =='P'){
+          coins.pause}
+          else
+          coins.create(x, y, 'coin').setScale(1,this.melody[i].duration/50).refreshBody();
+
         }
     }
 
