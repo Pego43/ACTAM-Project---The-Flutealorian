@@ -52,16 +52,33 @@ export class CustomFunctions{
       
     notesToCoins(arrayStep, coins){
         for(let i = 0; i < this.melody.length; i++){
-          var x = arrayStep[this.noteNames.indexOf(this.melody[i].name)];
-          var y = -this.melodySpace[i];
           if(this.noteArray[i] =='P'){
-          coins.pause}
-          else
-          coins.create(x, y, 'coin').setScale(1,this.melody[i].duration/50).refreshBody();
+            //coins.pause
+            var x = -100;
+          }
+          else{
+            var x = arrayStep[this.noteNames.indexOf(this.melody[i].name)];
+          }
+          var y = -this.melodySpace[i];
 
+          switch (this.melody[i].duration/50) {
+            case 1:
+              coins.create(x, y, 'coin 1').setOrigin(0.5, 1);
+              break;
+            case 2:
+              coins.create(x, y, 'coin 2').setOrigin(0.5, 1);
+              break;
+            case 3:
+              coins.create(x, y, 'coin 3').setOrigin(0.5, 1);
+              break;
+            case 4:
+              coins.create(x, y, 'coin 4').setOrigin(0.5, 1);
+              break;
+            
+            default:
+              break;
+          }
+          
         }
     }
-
-    
-
 }

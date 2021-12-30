@@ -5,17 +5,17 @@ import { DB } from "../Firebase.js";
 
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
-var canvasWidth = 1000;
-var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;      
+var canvasWidth = window.innerWidth-20;
+var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;;      
 //KEYBOARD input
-var keys = "awsedftgyhujk";
+var keys = "awsedftgyhujkolpòà";
 
 //MIDI input (da gestire perchè inizialmente da errore)
 var midi = await navigator.requestMIDIAccess();
-var midi_notes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60];
+var midi_notes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72];
 var noteOn = false;
 //48 is C, and 60 is the upper C
-var nNote = 13;
+var nNote = 25;
 var step = ((canvasWidth / nNote));
 var platforms;
 var player;
@@ -33,6 +33,7 @@ var prevCoin = null;
 var overlapping = false;
 var particles;
 var emitter;
+var startY = 650;
 
 //Variables for background
 var setBackgroundScale = canvasWidth / backgroundWidth;
@@ -66,7 +67,10 @@ export class PlayScene extends Phaser.Scene {
     this.load.image('space2', 'assets/Space2.jpg');
     this.load.image('spaceV1', 'assets/Space1V.jpg');
     this.load.image('spaceV2', 'assets/Space1V.jpg');
-    this.load.image('coin', 'assets/money_square.png');
+    this.load.image('coin 1', 'assets/money_square 1.png');
+    this.load.image('coin 2', 'assets/money_square 2.png');
+    this.load.image('coin 3', 'assets/money_square 3.png');
+    this.load.image('coin 4', 'assets/money_square 4.png');
     this.load.spritesheet('character_right', 'assets/M_steps_R.png', { frameWidth: 200, frameHeight: 300 });
     this.load.spritesheet('character_left', 'assets/M_steps_L.png', { frameWidth: 200, frameHeight: 300 });
     this.load.audio('metronome', ['assets/metronomo_bip.wav']);
@@ -101,8 +105,8 @@ export class PlayScene extends Phaser.Scene {
     }
 
     //PLAYER
-    player = this.physics.add.sprite(100, 548, 'character_right').setScale(0.30);
-    line = this.physics.add.sprite(100, 500, 'line').setScale(0.30);
+    player = this.physics.add.sprite(100, startY+48, 'character_right').setScale(0.30);
+    line = this.physics.add.sprite(100, startY, 'line').setScale(0.30);
 
     //ANIMATION
     this.anims.create({
@@ -124,20 +128,20 @@ export class PlayScene extends Phaser.Scene {
     //COINS
     const layer1 = this.add.layer();
     
-    const pianoSprite = this.add.sprite(0, 500, 'ground').setOrigin(0,0).setScale(3,6);
+    const pianoSprite = this.add.sprite(0, startY, 'ground').setOrigin(0,0).setScale(6,10);
 
-    layer1.add([ pianoSprite]);
+    layer1.add([pianoSprite]);
 
     coins = this.physics.add.group();
 
     db.getDataInCustom(function(duration, notes){
-    custom = new CustomFunctions(duration, notes);
-    custom.melodyToSpace();
-    custom.notesToCoins(arrayStep, coins);
-    coins.setVelocityY(100);
-    for (let i = 0; i < coins.getChildren().length; i++) {
-      layer1.add([coins.getChildren()[i]]);
-    }
+      custom = new CustomFunctions(duration, notes);
+      custom.melodyToSpace();
+      custom.notesToCoins(arrayStep, coins);
+      coins.setVelocityY(100);
+      for (let i = 0; i < coins.getChildren().length; i++) {
+        layer1.add([coins.getChildren()[i]]);
+      }
     })
 
     layer1.add([player, line]);
@@ -189,7 +193,8 @@ export class PlayScene extends Phaser.Scene {
 
   update() {
     // Movement of the character with keybord
-    window.addEventListener("keydown", (e) => {
+    
+    /* window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
       if(!overlapping){
         emitter.setVisible(false);
@@ -220,24 +225,24 @@ export class PlayScene extends Phaser.Scene {
         noteOn = false;
         emitter.setVisible(false);
       }
-    });
+    }); */
 
     // Movement with the MIDI 
-    /*
+    
       for (var input of midi.inputs.values()){
         input.onmidimessage = function (message){
-          var noteIndex = midi_notes.indexOf(message.data[1];
-          player.x = arrayStep[noteIndex)];
-          line.x = arrayStep[noteIndex)];
+          var noteIndex = midi_notes.indexOf(message.data[1]);
+          player.x = arrayStep[noteIndex];
+          line.x = arrayStep[noteIndex];
           //if note on
           if(message.data[0] == 144){
-            sound.play(noteIndex))
+            sound.play(noteIndex);
             noteOn = true;
           } else if(message.data[0] == 128){
             noteOn = false;
           }
         }
-      }*/
+      }
 
     //message.data[1]->value of the note pressed
 

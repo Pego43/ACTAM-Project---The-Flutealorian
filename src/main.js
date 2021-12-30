@@ -1,8 +1,8 @@
 /** @type {import("../typings/phaser")} */
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
-var canvasWidth = 1000;
-var canvasHeight = (canvasWidth*backgroundHeight)/backgroundWidth;
+var canvasWidth = window.innerWidth-20;
+var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;
 
 import { LoadScene } from "./scenes/LoadScene.js";
 import { MenuScene } from "./scenes/MenuScene.js";
