@@ -1,0 +1,101 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: black;
+}
+body{
+    background: black;
+}
+
+#detector{
+    margin: 0px;
+    width: 170px;
+    height: 100px;
+    margin-left: 1px;
+    background-color: black;
+    border: 5px solid grey;
+    border-radius: 8px;
+    text-align: left;
+    float: left;
+}
+
+#frequency{
+    margin-left: 5px;
+    margin-top: 5px;
+    padding-top: 1px;
+    padding-left: 5px;
+    width: 150px;
+    height: 25px;
+    border: 1px solid white;
+    border-radius: 8px;
+    color: white;
+}
+#notes{
+    margin-left: 5px;
+    margin-top: 2px;
+    padding-top: 1px;
+    padding-left: 5px;
+    width: 150px;
+    height: 25px;
+    border: 1px solid white;
+    border-radius: 8px;
+    color: white;
+}
+#life{
+    margin-left: 5px;
+    margin-top: 2px;
+    padding-top: 1px;
+    padding-left: 5px;
+    width: 150px;
+    height: 25px;
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+}
+
+#buttons{
+    margin: 1px;
+    margin-left: 7px;
+    width: 350px;
+    height: 100px;
+    background-color: black;
+    border: 5px solid grey;
+    border-radius: 8px;
+    float: left;
+}
+.myButton{
+    margin-top: 5px;
+    margin-left: 7px;
+    width: 100px;
+    height: 20px;
+    background-color:gold;
+    color: black;
+    border: 2px solid grey;
+    border-radius: 8px;
+}
+#reload{
+    background-color:orange;
+}
+#flute{
+    background-color:green;
+    color: white;
+}
+#waveform{
+    margin: 1px;
+    margin-left: 2px;
+    width: 500px;
+    height: 100px;
+    background-color: black;
+    border: 5px solid grey;
+    border-radius: 8px; 
+}
+#canvasGame{
+    background-color: black;
+    border: 5px solid grey;
+    clear: both;
+}
+
+
+
