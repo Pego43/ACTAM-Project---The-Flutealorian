@@ -203,6 +203,7 @@ export class PlayScene extends Phaser.Scene {
         if (noteIndex >= 0 && noteIndex < keys.length) {
           player.x = arrayStep[noteIndex];
           line.x = arrayStep[noteIndex];
+
           emitter.setPosition(line.x, line.y);
           sound.play(noteIndex);
           noteOn = true;
@@ -226,20 +227,38 @@ export class PlayScene extends Phaser.Scene {
         emitter.setVisible(false);
       }
     }); */
-
+    if(!overlapping){
+      emitter.setVisible(false);
+    }
     // Movement with the MIDI 
     
       for (var input of midi.inputs.values()){
+        
         input.onmidimessage = function (message){
           var noteIndex = midi_notes.indexOf(message.data[1]);
           player.x = arrayStep[noteIndex];
           line.x = arrayStep[noteIndex];
+          
           //if note on
           if(message.data[0] == 144){
-            sound.play(noteIndex);
             noteOn = true;
+            if(message.repeat){
+              pressedOnce = false;
+            } else {
+              pressedOnce = true;
+            }
+            
+            emitter.setPosition(line.x, line.y);
+            sound.play(noteIndex);
+            if (player.x <= arrayStep[noteIndex]) {
+              player.anims.play('flying_right');
+            } else {
+              //Movement to the left
+              player.anims.play('flying_left');
+            }
           } else if(message.data[0] == 128){
             noteOn = false;
+            emitter.setVisible(false);
           }
         }
       }
