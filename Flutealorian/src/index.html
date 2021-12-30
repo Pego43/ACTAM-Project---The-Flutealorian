@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutealorian</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script src="pitchdetect.js" defer></script>
+    <script src="melody.js" defer></script>
+
+
+	<div id="detector" class="pitchdetection">
+            <div id="frequency">Frequency: <span id="pitch">--</span> Hz</div>
+            <div id="notes">Note: <span id="note">--</span> , <span id ="number">-</span> </div>
+            <div id="life">LIFE:  <span id="numLife"></span> </div>
+	</div>
+    <div id="buttons">
+        <button 
+            class='myButton' id='reload'
+            onmouseover="document.getElementById('reload').style.backgroundColor='lightblue'; document.getElementById('reload').style.color='black';"
+            onmouseout="document.getElementById('reload').style.backgroundColor='gold'; document.getElementById('reload').style.color='black';"
+            onClick=" window.location.reload(); document.getElementById('reload').style.backgroundColor='red';"> PLAY AGAIN 
+        </button>
+        <button class='myButton' id='flute'
+            onmouseover="document.getElementById('flute').style.backgroundColor='lightblue'; document.getElementById('flute').style.color='black';"
+            onmouseout="modePlayedInstrument();"
+            onClick="fluteMode();">FLUTE
+        </button>
+        <button class='myButton' id='trumpet'
+            onmouseover="document.getElementById('trumpet').style.backgroundColor='lightblue'; document.getElementById('trumpet').style.color='black';"
+            onmouseout="modePlayedInstrument();"
+            onClick="trumpetMode();">TRUMPET
+        </button>
+        <button class='myButton'></button> 
+        <button class='myButton'></button>
+        <button class='myButton'></button>
+        <button class='myButton'></button>
+        <button class='myButton'></button>
+        <button class='myButton'></button>
+
+    </div>
+    </div>
+    <canvas id="waveform" defer></canvas>
+    <canvas id="canvasGame" defer></canvas>
+    <script src="player.js" defer></script>
+    <script src="particles.js" defer></script>
+    <script src="obstacles.js" defer></script>
+    <script src="background.js" defer></script>
+    <script src="main.js" defer></script>
+</body>
+</html>
