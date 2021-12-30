@@ -18,28 +18,33 @@
             <div id="life">LIFE:  <span id="numLife"></span> </div>
 	</div>
     <div id="buttons">
-        <button 
-            class='myButton' id='reload'
-            onmouseover="document.getElementById('reload').style.backgroundColor='lightblue'; document.getElementById('reload').style.color='black';"
-            onmouseout="document.getElementById('reload').style.backgroundColor='gold'; document.getElementById('reload').style.color='black';"
-            onClick=" window.location.reload(); document.getElementById('reload').style.backgroundColor='red';"> PLAY AGAIN 
+<!--
+    onmouseover="document.getElementById('reload').style.backgroundColor='lightskyblue';
+                        document.getElementById('reload').style.color='black';"
+            onmouseout="document.getElementById('reload').style.backgroundColor='orange';
+                        document.getElementById('reload').style.color='black';"
+-->
+        <button class='myButton'>---</button>
+        <button class='myButton' id='reload'
+            onClick="window.location.reload();"> PLAY AGAIN
         </button>
+        <button class='myButton'>---</button>
+
         <button class='myButton' id='flute'
-            onmouseover="document.getElementById('flute').style.backgroundColor='lightblue'; document.getElementById('flute').style.color='black';"
-            onmouseout="modePlayedInstrument();"
             onClick="fluteMode();">FLUTE
         </button>
         <button class='myButton' id='trumpet'
-            onmouseover="document.getElementById('trumpet').style.backgroundColor='lightblue'; document.getElementById('trumpet').style.color='black';"
-            onmouseout="modePlayedInstrument();"
             onClick="trumpetMode();">TRUMPET
         </button>
-        <button class='myButton'></button> 
-        <button class='myButton'></button>
-        <button class='myButton'></button>
-        <button class='myButton'></button>
-        <button class='myButton'></button>
-        <button class='myButton'></button>
+        <button class='myButton'>---</button>
+
+        <button class='myButton' id='spaceBackground'
+            onClick=" changeBackground(0);"> SPACE
+        </button> 
+        <button class='myButton' id='desertBackground'
+            onClick=" changeBackground(1);"> DESERT
+        </button>
+        <button class='myButton'>---</button>
 
     </div>
     </div>

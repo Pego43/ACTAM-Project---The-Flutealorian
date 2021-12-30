@@ -27,12 +27,12 @@ class Background{
                 case 1:
                     this.b1.src = 'D1.jpg';
                     this.b2.src = 'D2.jpg';
-                    this.colorText = 'black';
+                    buttonsBackground();
                     break;
                 default:
                     this.b1.src = 'Space_1.jpg';
                     this.b2.src = 'Space_2.jpg';
-                    this.colorText ='lightgray';
+                    buttonsBackground();
                     break;
             }
             //Background movement
@@ -99,4 +99,21 @@ function endGame(c){
     c.lineWidth = 2;
     c.strokeText('YOU WIN !! '+score+'/'+theMelody.stringNote.length, canvas.width/2,290);
 }
+
+function changeBackground(v){backgroundImage = v;}
+
+function buttonsBackground(){
+	if(backgroundImage==1){
+		document.getElementById('desertBackground').style.backgroundColor='green';
+		document.getElementById('desertBackground').style.color='white';
+		document.getElementById('spaceBackground').style.backgroundColor='gold';
+		document.getElementById('spaceBackground').style.color='black';
+	}else {
+		document.getElementById('spaceBackground').style.backgroundColor='green';
+		document.getElementById('spaceBackground').style.color='white';
+		document.getElementById('desertBackground').style.backgroundColor='gold';
+		document.getElementById('desertBackground').style.color='black';
+	}
+}
+
 

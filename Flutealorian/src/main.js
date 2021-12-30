@@ -29,8 +29,8 @@ var notesHeight = canvas.height / 12;
 var numLife = document.getElementById('numLife');
 var life = document.getElementById('life');
 var velocity = 4;
-var distance = 30*velocity;
-var backgroundSpeed = 1;
+var distance = 80*velocity;
+var backgroundSpeed = 5;
 var stack = 40;
 
 
@@ -43,7 +43,7 @@ let backgroundImage = 0;
 
 const noteStrings = ["C", "C#-Db", "D", "D#-Eb", "E", "F", "F#-Gb", "G", "G#-Ab", "A", "A#-Bb", "B"];
 
-const background = new Background(/*canvas.width*/2400,canvas.height,backgroundSpeed,player,score,backgroundSpeed);
+const background = new Background(2400,canvas.height,backgroundSpeed,player,score,backgroundSpeed);
 const bang = new Image();
 const mando = new Image();
 const laser = new Image();
