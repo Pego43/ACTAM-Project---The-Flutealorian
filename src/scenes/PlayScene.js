@@ -97,6 +97,8 @@ export class PlayScene extends Phaser.Scene {
     backgroundV1.setVelocityY(- backgroundSpeed);
     backgroundV2.setVelocityY(- backgroundSpeed);
 
+    const synth = new Tone.Synth().toDestination();
+
     //stores the note steps in an array
     for (let i = 0; i < nNote; i++) {
       nextStep = ((step / 2) + i * step);
@@ -262,7 +264,7 @@ export class PlayScene extends Phaser.Scene {
           }
         }
       }
-
+    
     //message.data[1]->value of the note pressed
 
     // Background movement controlled orizontally
