@@ -2,17 +2,21 @@ import { CST } from "./CST.js";
 import { CustomFunctions } from "../CustomFunctions.js";
 import { CustomSound } from "../CustomSound.js";
 import { DB } from "../Firebase.js";
+//import { Midi } from "tone";
+//import { Midi } from "tone";
+//import { Tone } from "tone/build/esm/core/Tone";
 
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
 var canvasWidth = window.innerWidth-20;
-var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;;      
+var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;    
 //KEYBOARD input
 var keys = "awsedftgyhujkolpòà";
 
 //MIDI input (da gestire perchè inizialmente da errore)
 var midi = await navigator.requestMIDIAccess();
 var midi_notes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72];
+var noteNames = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'];
 var noteOn = false;
 //48 is C, and 60 is the upper C
 var nNote = 25;
@@ -34,6 +38,7 @@ var overlapping = false;
 var particles;
 var emitter;
 var startY = 650;
+var synth = null;
 
 //Variables for background
 var setBackgroundScale = canvasWidth / backgroundWidth;
@@ -44,6 +49,7 @@ var backgroundSpeed = 1;
 var db = new DB();
 const sound = new CustomSound();
 var custom = null;
+var sampler;
 
 
 
@@ -97,7 +103,17 @@ export class PlayScene extends Phaser.Scene {
     backgroundV1.setVelocityY(- backgroundSpeed);
     backgroundV2.setVelocityY(- backgroundSpeed);
 
-    const synth = new Tone.Synth().toDestination();
+    synth = new Tone.PolySynth().toDestination();
+    //var midi = new Midi()
+    asyncMidiFunction();
+
+    /* sampler = new Tone.Sampler({
+      urls: {
+        A1: "A1.mp3",
+        A2: "A2.mp3",
+      },
+      baseUrl: "https://tonejs.github.io/audio/casio/",
+    }).toDestination(); */
 
     //stores the note steps in an array
     for (let i = 0; i < nNote; i++) {
@@ -251,7 +267,10 @@ export class PlayScene extends Phaser.Scene {
             }
             
             emitter.setPosition(line.x, line.y);
-            sound.play(noteIndex);
+            console.log(noteNames[noteIndex]);
+            //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
+            synth.triggerAttack(noteNames[noteIndex], Tone.now());
+
             if (player.x <= arrayStep[noteIndex]) {
               player.anims.play('flying_right');
             } else {
@@ -261,6 +280,8 @@ export class PlayScene extends Phaser.Scene {
           } else if(message.data[0] == 128){
             noteOn = false;
             emitter.setVisible(false);
+            //sampler.triggerRelease(noteNames[noteIndex], Tone.now());
+            synth.triggerRelease(noteNames[noteIndex], Tone.now());
           }
         }
       }
@@ -285,4 +306,34 @@ export class PlayScene extends Phaser.Scene {
     else backgroundV2.y = backgroundV2.y + backgroundSpeed;
 
   }
+}
+
+async function asyncMidiFunction() {
+  // load a midi file in the browser
+  const midi = await Midi.fromUrl("../provaMidiFile2.mid");
+  //the file name decoded from the first track
+  const name = midi.name
+  //get the tracks
+  midi.tracks.forEach(track => {
+    //tracks have notes and controlChanges
+
+    //notes are an array
+    const notes = track.notes
+    notes.forEach(note => {
+      //note.midi, note.time, note.duration, note.name
+      console.log(note.midi)
+      console.log(note.duration)
+      console.log(note.time)
+    })
+
+    //the control changes are an object
+    //the keys are the CC number
+    track.controlChanges[64]
+    //they are also aliased to the CC number's common name (if it has one)
+    /* track.controlChanges.sustain.forEach(cc => {
+      // cc.ticks, cc.value, cc.time
+    }) */
+    //the track also has a channel and instrument
+    //track.instrument.name
+  })
 }
