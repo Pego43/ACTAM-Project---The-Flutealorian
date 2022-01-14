@@ -72,7 +72,8 @@ class Obstacle{
         }
     }
     
-    update(){
+    update(v){
+        this.speed = v;
         this.x -= this.speed;
             if(!this.counted && (this.x+this.width) < 1 && this.note != -1){
                 indexCurrentPlayerNote++;
@@ -102,7 +103,7 @@ function handleObstacles(currentNote, currentDur, melodyLength){
     
     // I create my obstacle
         for(let i=0; i < obstaclesArray.length; i++){
-            obstaclesArray[i].update();
+            obstaclesArray[i].update(velocity);
         }
 
     //I delete an obstacle if the length of the array is more then a number

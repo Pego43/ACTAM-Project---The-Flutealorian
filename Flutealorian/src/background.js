@@ -27,12 +27,17 @@ class Background{
                 case 1:
                     this.b1.src = 'D1.jpg';
                     this.b2.src = 'D2.jpg';
-                    buttonsBackground();
+                    setThreeButtonColors('desertBackground','spaceBackground','shuttleBackground');
+                    break;
+                case 2:
+                    this.b1.src = 'Shuttle1.jpg';
+                    this.b2.src = 'Shuttle2.jpg';
+                    setThreeButtonColors('shuttleBackground','spaceBackground','desertBackground');
                     break;
                 default:
                     this.b1.src = 'Space_1.jpg';
                     this.b2.src = 'Space_2.jpg';
-                    buttonsBackground();
+                    setThreeButtonColors('spaceBackground','desertBackground','shuttleBackground');
                     break;
             }
             //Background movement
@@ -76,12 +81,12 @@ class Background{
         }
 }
 
-function gameEnd(c){
+function gameOver(c){
     c.drawImage(bang,player.x,player.y,100,100);
     c.font = "70px Georgia";
     c.strokeStyle = '#090';
     c.lineWidth = 3;
-    c.strokeText('Game Over, your score is ' + score, 290,290);
+    c.strokeText('Game Over', 290,290);
 }
 
 //Draw the score
@@ -104,25 +109,36 @@ function realLengthMelody(melody){
 function endGame(c){
     c.font = "70px Georgia";
     c.strokeStyle = 'white';
-    c.lineWidth = 2;
+    c.lineWidth = 3;
     c.strokeText('YOU WIN !! SCORE: '+score.innerText+'/'+countNotes(theMelody.stringNote), 300,290);
     ctx.drawImage(by,510, 160, 80, 80);
+    setTimeout(() => {
+        player.y = 290;
+    }, 1000);
 }
 
 function changeBackground(v){backgroundImage = v;}
 
-function buttonsBackground(){
-	if(backgroundImage==1){
-		document.getElementById('desertBackground').style.backgroundColor='green';
-		document.getElementById('desertBackground').style.color='white';
-		document.getElementById('spaceBackground').style.backgroundColor='gold';
-		document.getElementById('spaceBackground').style.color='black';
-	}else {
-		document.getElementById('spaceBackground').style.backgroundColor='green';
-		document.getElementById('spaceBackground').style.color='white';
-		document.getElementById('desertBackground').style.backgroundColor='gold';
-		document.getElementById('desertBackground').style.color='black';
-	}
+function setTwoButtonColors(on,off){
+    document.getElementById(on).style.backgroundColor='green';
+	document.getElementById(on).style.color='white';
+	document.getElementById(off).style.backgroundColor='gold';
+	document.getElementById(off).style.color='black';
+}
+
+function setThreeButtonColors(on,off1,off2){
+    document.getElementById(on).style.backgroundColor='green';
+	document.getElementById(on).style.color='white';
+	document.getElementById(off1).style.backgroundColor='gold';
+	document.getElementById(off1).style.color='black';
+    document.getElementById(off2).style.backgroundColor='gold';
+	document.getElementById(off2).style.color='black';
+
+}
+
+function buttonsGame(){
+    if(PlayAndStop) setTwoButtonColors('playButton','stopButton');
+	else setTwoButtonColors('stopButton','playButton');
 }
 
 function printLinesNotes(c){
@@ -137,5 +153,6 @@ function printLinesNotes(c){
 
             c.stroke();
 }
+
 
 

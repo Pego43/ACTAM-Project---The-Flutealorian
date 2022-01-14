@@ -31,6 +31,7 @@ let frame = 0;
 let indexObstacleMelody = 0;
 let indexCurrentPlayerNote = 0;
 let backgroundImage = 0;
+let PlayAndStop = true;
 
 const noteStrings = ["C", "C#-Db", "D", "D#-Eb", "E", "F", "F#-Gb", "G", "G#-Ab", "A", "A#-Bb", "B"];
 
@@ -59,6 +60,13 @@ function trueOrFalse(e){
     return e;
 }
 
+function PlayMe(){
+    if(!PlayAndStop){
+        PlayAndStop = true;
+        window.animate();
+    }
+}
+
 //Movement of the player
 function moveOne(n){
     if(n>=0 && n<12){
@@ -81,7 +89,7 @@ function handleCollision(){
                 life.style.backgroundColor = 'red';
 
                 if(score.innerText == 0){
-                    gameEnd(ctx);
+                    gameOver(ctx);
                     return true;
                 }else{
                     obstaclesArray[i].collision = true;
@@ -110,9 +118,6 @@ function animate(){
     //Winner condition
     if(obstaclesArray.length == 0 && indexObstacleMelody == theMelody.stringNote.length){
         //The player wins
-        setTimeout(() => {
-            player.y = 290;
-        }, 1000);
         endGame(ctx);    
     }else{
         //Update player position
@@ -125,14 +130,14 @@ function animate(){
     if(!player.collision && handleCollision()) return;
     drawUpdateScore(ctx);
     handleParticles();
-    requestAnimationFrame(animate);
+    if (PlayAndStop) requestAnimationFrame(animate);
     frame++;
-    console.log('counterMelody: '+indexObstacleMelody);
-    console.log('indexMelody: '+indexCurrentPlayerNote);
 }
 
 /* VIEW */
 animate();
+
+
 
 
 

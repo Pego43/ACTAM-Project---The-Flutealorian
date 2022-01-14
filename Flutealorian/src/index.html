@@ -18,33 +18,18 @@
             <div id="life">SCORE:  <span id="score"></span> </div>
 	</div>
     <div id="buttons">
-<!--
-    onmouseover="document.getElementById('reload').style.backgroundColor='lightskyblue';
-                        document.getElementById('reload').style.color='black';"
-            onmouseout="document.getElementById('reload').style.backgroundColor='orange';
-                        document.getElementById('reload').style.color='black';"
--->
-        <button class='myButton'>---</button>
-        <button class='myButton' id='reload'
-            onClick="window.location.reload();"> PLAY AGAIN
-        </button>
-        <button class='myButton'>---</button>
 
-        <button class='myButton' id='flute'
-            onClick="fluteMode();">FLUTE
-        </button>
-        <button class='myButton' id='trumpet'
-            onClick="trumpetMode();">TRUMPET
-        </button>
-        <button class='myButton'>---</button>
+        <button class='myButton' id='playButton' onClick="PlayMe(); buttonsGame();">PLAY</button>
+        <button class='myButton' id='reload' onClick="window.location.reload();">PLAY AGAIN</button>
+        <button class='myButton' id='stopButton' onClick="PlayAndStop = false; buttonsGame();">STOP</button>
 
-        <button class='myButton' id='spaceBackground'
-            onClick=" changeBackground(0);"> SPACE
-        </button> 
-        <button class='myButton' id='desertBackground'
-            onClick=" changeBackground(1);"> DESERT
-        </button>
-        <button class='myButton'>---</button>
+        <button class='myButton' id='flute'onClick="modePlayedInstrument(0)">FLUTE</button>
+        <button class='myButton' id='trumpet'onClick="modePlayedInstrument(1);">TRUMPET</button>
+        <button class='myButton' id='voice'onClick="modePlayedInstrument(2);">VOICE</button>
+
+        <button class='myButton' id='spaceBackground'onClick=" changeBackground(0);">SPACE</button> 
+        <button class='myButton' id='desertBackground'onClick=" changeBackground(1);">DESERT</button>
+        <button class='myButton' id='shuttleBackground'onClick=" changeBackground(2);">DARK DEATH</button>
 
     </div>
     </div>

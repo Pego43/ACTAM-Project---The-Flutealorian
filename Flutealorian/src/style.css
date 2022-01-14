@@ -83,6 +83,10 @@ body{
     background-color:green;
     color: white;
 }
+#playButton{
+    background-color:green;
+    color: white;
+}
 #waveform{
     margin: 1px;
     margin-left: 2px;

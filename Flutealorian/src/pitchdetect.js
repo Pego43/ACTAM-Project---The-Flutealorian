@@ -8,8 +8,8 @@ var theBuffer = null;
 var DEBUGCANVAS = null;
 var mediaStreamSource = null;
 var detectorElem, canvasElem,waveCanvas,pitchElem,noteElem,detuneElem,detuneAmount;
-var trumpetButton  = false;
-var frequencyValueFromDB = 450; //Per attutire la sensibilità
+var instrumentTrumpet  = false;
+var frequencySensibility = 450; //Per attutire la sensibilità
 
 window.onload = function() {
 	audioContext = new AudioContext();
@@ -168,36 +168,30 @@ function trumpetNoteFromPitch( frequency ) {
 	return Math.round( noteNum ) + 69;
 }
 
-/* Not used
-function centsOffFromPitch( frequency, note ) {
-	return Math.floor( 1200 * Math.log( frequency / frequencyFromNoteNumber( note ))/Math.log(2) );
-}
-*/
 
-function modePlayedInstrument(){
-	if(trumpetButton){
-		frequencyValueFromDB = 190;
-		document.getElementById('trumpet').style.backgroundColor='green';
-		document.getElementById('trumpet').style.color='white';
-		document.getElementById('flute').style.backgroundColor='gold';
-		document.getElementById('flute').style.color='black';
-	}else {
-		frequencyValueFromDB = 450;
-		document.getElementById('flute').style.backgroundColor='green';
-		document.getElementById('flute').style.color='white';
-		document.getElementById('trumpet').style.backgroundColor='gold';
-		document.getElementById('trumpet').style.color='black';
+function modePlayedInstrument(val){
+	switch(val){
+		case 0:
+			instrumentTrumpet = false;
+			frequencySensibility = 450;
+			setThreeButtonColors('flute','trumpet','voice');
+			break;
+		case 1:
+			instrumentTrumpet = true;
+			frequencySensibility = 450;
+			setThreeButtonColors('trumpet','flute','voice');
+			break;
+		case 2:
+			instrumentTrumpet =false;
+			frequencySensibility = 0;
+			setThreeButtonColors('voice','trumpet','flute');
+			break;
+		default:
+			instrumentTrumpet = false;
+			frequencySensibility = 450;
+			setThreeButtonColors('flute','trumpet','voice');
+			break;
 	}
-}
-
-function trumpetMode(){
-	trumpetButton = true;
-	modePlayedInstrument();
-}
-
-function fluteMode(){
-	trumpetButton = false;
-	modePlayedInstrument();
 }
 
 function autoCorrelate( buf, sampleRate ) {
@@ -281,9 +275,9 @@ function updatePitch() {
 		numberElem.innerText = "--";
  	} else{
 	 	pitch = ac;
-		 if(Math.round(pitch) >= frequencyValueFromDB){
+		 if(Math.round(pitch) >= frequencySensibility){
 			pitchElem.innerText = Math.round( pitch ) ;
-			if(trumpetButton) var note = trumpetNoteFromPitch(pitch);	
+			if(instrumentTrumpet) var note = trumpetNoteFromPitch(pitch);	
 			else var note =  noteFromPitch( pitch );
 		    noteElem.innerHTML = noteStrings[note%12];
 		    numberElem.innerText = note%12;
