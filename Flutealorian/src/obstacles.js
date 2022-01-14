@@ -35,10 +35,13 @@ class Obstacle{
             c.fillRect(this.x, 0, this.width, this.top);
             c.fillRect(this.x,canvas.height - this.bottom, this.width, this.bottom);    
         }else{
-            if(this.width<=60){
+            if (this.note == 11){
+                c.drawImage(tower, this.x, 0, this.width, this.top);
+                c.drawImage(tower, this.x, canvas.height - this.bottom, this.width, this.bottom);
+            } else if(this.width<=60){
                 c.drawImage(laser, this.x, 0, this.width, this.top);
                 c.drawImage(laser, this.x, canvas.height - this.bottom, this.width, this.bottom);
-            }else if( this.note == 0|| this.note == 11 ){
+            }else if(this.note == 0 ){
                 c.drawImage(grafite, this.x, 0, this.width, this.top);
                 c.drawImage(grafite, this.x, canvas.height - this.bottom, this.width, this.bottom);
             }else{

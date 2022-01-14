@@ -38,6 +38,7 @@ const background = new Background(2400,canvas.height,backgroundSpeed,player,back
 const bang = new Image();
 const mando = new Image();
 const laser = new Image();
+const tower = new Image();
 const grafite = new Image();
 const by = new Image();
 bang.src = 'bang.png';
@@ -45,6 +46,7 @@ mando.src = 'M_fly.png';
 laser.src = 'Ostacolo_1.png';
 grafite.src = 'Grafite.png';
 by.src = 'BY.png';
+tower.src = 'Ostacolo_2.png';
 
 score.innerText = countNotes(theMelody.stringNote);
 

@@ -54,8 +54,8 @@ myNotesDur =    [1,1,1,1,1,0.5,0.5,1,1,1,1,
                 ];
 
 
-myNotesChar = ['C3','--','D3'];
-myNotesDur = [1,2,1];
+//myNotesChar = ['C3','--','D3','B3','C3'];
+//myNotesDur = [1,2,1,1,3];
 //https://freshsheetmusic.com/whitney-houston-and-mariah-carey-when-you-believe-176295/
 
 
