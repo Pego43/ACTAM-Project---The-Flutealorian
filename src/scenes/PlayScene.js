@@ -2,12 +2,9 @@ import { CST } from "./CST.js";
 import { CustomFunctions } from "../CustomFunctions.js";
 import { CustomSound } from "../CustomSound.js";
 import { DB } from "../Firebase.js";
-//import { Midi } from "tone";
-//import { Midi } from "tone";
-//import { Tone } from "tone/build/esm/core/Tone";
 
 const backgroundHeight = 2000;
-const backgroundWidth = 3000;
+const backgroundWidth = window.innerWidth-20;
 var canvasWidth = window.innerWidth-20;
 var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;    
 //KEYBOARD input
@@ -37,7 +34,7 @@ var prevCoin = null;
 var overlapping = false;
 var particles;
 var emitter;
-var startY = 650;
+var startY = 350;
 var synth = null;
 
 //Variables for background
@@ -103,23 +100,10 @@ export class PlayScene extends Phaser.Scene {
     backgroundV1.setVelocityY(- backgroundSpeed);
     backgroundV2.setVelocityY(- backgroundSpeed);
 
-    synth = new Tone.PolySynth().toDestination();
-    //var midi = new Midi()
-    asyncMidiFunction();
-
-    /* sampler = new Tone.Sampler({
-      urls: {
-        A1: "A1.mp3",
-        A2: "A2.mp3",
-      },
-      baseUrl: "https://tonejs.github.io/audio/casio/",
-    }).toDestination(); */
-
     //stores the note steps in an array
     for (let i = 0; i < nNote; i++) {
       nextStep = ((step / 2) + i * step);
       arrayStep[i] = nextStep;
-      //custom.createDivKey(arrayStep[i], i, step);
     }
 
     //PLAYER
@@ -152,23 +136,41 @@ export class PlayScene extends Phaser.Scene {
 
     coins = this.physics.add.group();
 
-    db.getDataInCustom(function(duration, notes){
-      custom = new CustomFunctions(duration, notes);
-      custom.melodyToSpace();
-      custom.notesToCoins(arrayStep, coins);
-      coins.setVelocityY(100);
-      for (let i = 0; i < coins.getChildren().length; i++) {
-        layer1.add([coins.getChildren()[i]]);
-      }
-    })
-
+    const loadFromDatabase = async () => {
+      console.log("inizio async");
+      await db.asyncMidiFunction();
+      // do something else here after asyncMidiFunction completes
+      db.initializeLocalVariables();
+      db.getDataInCustom(function(duration, notes, time){
+        custom = new CustomFunctions(duration, notes, time);
+        custom.melodyToSpace();
+        custom.notesToCoins(arrayStep, coins);
+        coins.setVelocityY(120);
+        for (let i = 0; i < coins.getChildren().length; i++) {
+          layer1.add([coins.getChildren()[i]]);
+        }
+        console.log("fine async");
+      })
+    }
+    
+    loadFromDatabase();
+    console.log("finish");
+    
     layer1.add([player, line]);
 
     //SCORE
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //SOUND
-    sound.createGain();
+    //sound.createGain();
+    synth = new Tone.PolySynth().toDestination();
+    /* sampler = new Tone.Sampler({
+      urls: {
+        A1: "A1.mp3",
+        A2: "A2.mp3",
+      },
+      baseUrl: "https://tonejs.github.io/audio/casio/",
+    }).toDestination(); */
 
     particles = this.add.particles('flares');
 
@@ -187,6 +189,7 @@ export class PlayScene extends Phaser.Scene {
     layer1.sendToBack(particles);
 
     this.physics.add.overlap(line, coins, function(player, coin){
+      console.log(coin);
       overlapping = true;
       if(noteOn){
         if(pressedOnce){
@@ -246,9 +249,9 @@ export class PlayScene extends Phaser.Scene {
       }
     }); */
     if(!overlapping){
-      emitter.setVisible(false);
+        emitter.setVisible(false);
     }
-    // Movement with the MIDI 
+    // Movement with MIDI 
     
       for (var input of midi.inputs.values()){
         
@@ -267,7 +270,7 @@ export class PlayScene extends Phaser.Scene {
             }
             
             emitter.setPosition(line.x, line.y);
-            console.log(noteNames[noteIndex]);
+
             //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
             synth.triggerAttack(noteNames[noteIndex], Tone.now());
 
@@ -306,34 +309,4 @@ export class PlayScene extends Phaser.Scene {
     else backgroundV2.y = backgroundV2.y + backgroundSpeed;
 
   }
-}
-
-async function asyncMidiFunction() {
-  // load a midi file in the browser
-  const midi = await Midi.fromUrl("../provaMidiFile2.mid");
-  //the file name decoded from the first track
-  const name = midi.name
-  //get the tracks
-  midi.tracks.forEach(track => {
-    //tracks have notes and controlChanges
-
-    //notes are an array
-    const notes = track.notes
-    notes.forEach(note => {
-      //note.midi, note.time, note.duration, note.name
-      console.log(note.midi)
-      console.log(note.duration)
-      console.log(note.time)
-    })
-
-    //the control changes are an object
-    //the keys are the CC number
-    track.controlChanges[64]
-    //they are also aliased to the CC number's common name (if it has one)
-    /* track.controlChanges.sustain.forEach(cc => {
-      // cc.ticks, cc.value, cc.time
-    }) */
-    //the track also has a channel and instrument
-    //track.instrument.name
-  })
 }
