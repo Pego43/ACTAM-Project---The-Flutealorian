@@ -89,7 +89,15 @@ function drawUpdateScore(c){
     //Draw Score
     c.font = '40px Georgia';
     c.strokeStyle = "gold";
-    c.strokeText(score,canvas.width/2,35)
+}
+
+//Melody note length
+function realLengthMelody(melody){
+    var len = 0;
+    for(i=0;i<melody.length;i++){
+        if(melody[i]!= '-') l++;
+    }
+    return len;
 }
 
 //Draw end of the game
@@ -97,7 +105,7 @@ function endGame(c){
     c.font = "70px Georgia";
     c.strokeStyle = 'red';
     c.lineWidth = 2;
-    c.strokeText('YOU WIN !! '+score+'/'+theMelody.stringNote.length, canvas.width/2,290);
+    c.strokeText('YOU WIN !! SCORE: '+score.innerText+'/'+theMelody.stringNote.length, 300,290);
 }
 
 function changeBackground(v){backgroundImage = v;}
@@ -114,6 +122,19 @@ function buttonsBackground(){
 		document.getElementById('desertBackground').style.backgroundColor='gold';
 		document.getElementById('desertBackground').style.color='black';
 	}
+}
+
+function printLinesNotes(c){
+            let lineValue = fromCharToNote(document.getElementById("note").innerText);
+            c.strokeStyle = "grey";
+
+            c.moveTo(0, canvas.height - (notesHeight*lineValue) );
+            c.lineTo(canvas.width, canvas.height - (notesHeight*lineValue) );
+        
+            c.moveTo(0, canvas.height - (notesHeight*lineValue) - notesHeight  );
+	        c.lineTo(canvas.width, canvas.height - (notesHeight*lineValue) - notesHeight);
+
+            c.stroke();
 }
 
 

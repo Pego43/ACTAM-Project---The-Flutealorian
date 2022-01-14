@@ -1,7 +1,8 @@
 // TODO
 
-//Velocità fissata: durta degli ostacoli in base a grandezza dell'ostacolo e distanza tra un'ostacolo e la'ltro
-//La distanza tra un'ostacolo e l'altro può essere: distance * durata_nota_corrente
+// Sistemare lo score...per ora non si incrementa
+
+// https://tomhess.net/Tools/DelayCalculator.aspx
 
 /* SETUP */
 // Canvas setup
@@ -12,38 +13,28 @@ canvas.height = 600;
 
 //SetUp Melodies
 
-
-//Function for transform C3, C#3, Db#... into C,C#,Db....
-function popLastChar(originalArrayString){
-    var newArrayString = [];
-    for(let i=0;i<s.length;i++){
-        newArrayString[i] = originalArrayString[i].substring(0, originalArrayString[i].length - 1);
-    }
-    return newArrayString;
-}
-
 /* Elements for the game */
 
 var theMelody = new Melody(myNotesChar,myNotesDur);
 var notesHeight = canvas.height / 12;
-var numLife = document.getElementById('numLife');
+var score = document.getElementById('score');
 var life = document.getElementById('life');
 var velocity = 4;
-var distance = 80*velocity;
+var distance = 120;
 var backgroundSpeed = 5;
 var stack = 40;
+var charNoteObstacles = 0;
 
 
 let spacePressed = false;
 let frame = 0;
-let score = 0;
-let counterMelody = 0;
-let indexMelody = 0;
+let indexObstacleMelody = 0;
+let indexCurrentPlayerNote = 0;
 let backgroundImage = 0;
 
 const noteStrings = ["C", "C#-Db", "D", "D#-Eb", "E", "F", "F#-Gb", "G", "G#-Ab", "A", "A#-Bb", "B"];
 
-const background = new Background(2400,canvas.height,backgroundSpeed,player,score,backgroundSpeed);
+const background = new Background(2400,canvas.height,backgroundSpeed,player,backgroundSpeed);
 const bang = new Image();
 const mando = new Image();
 const laser = new Image();
@@ -51,8 +42,7 @@ bang.src = 'bang.png';
 mando.src = 'M_fly.png';
 laser.src = 'Ostacolo_1.png';
 
-//numLife.innerText =Math.ceil(theMelody.stringNote.length / 3);
-numLife.innerText = 500;
+score.innerText = countNotes(theMelody.stringNote);
 
 /* FUNCTIONS */
 
@@ -80,21 +70,21 @@ function handleCollision(){
                 ||
              (player.y+player.height > canvas.height-obstaclesArray[i].bottom && player.y+player.height <= canvas.height)
             )){
-                numLife.innerText = numLife.innerText - 1;
-                numLife.style.backgroundColor = 'red';
+                score.innerText = score.innerText - 1;
+                score.style.backgroundColor = 'red';
                 life.style.backgroundColor = 'red';
 
-                if(numLife.innerText == 0){
+                if(score.innerText == 0){
                     gameEnd(ctx);
                     return true;
                 }else{
                     obstaclesArray[i].collision = true;
                     player.collision = true;
                     setTimeout(() => {
-                        numLife.style.backgroundColor = 'black';
+                        score.style.backgroundColor = 'black';
                         life.style.backgroundColor = 'black';
                         player.collision = false;
-                    }, 500);
+                    }, 1000);
                 }
             }
     }
@@ -105,13 +95,14 @@ function handleCollision(){
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background.handleBackground(backgroundImage);
-    let theNote = fromCharToNote(theMelody.stringNote[counterMelody]);
-    let theDuration = theMelody.stringDuration[counterMelody];
+
+    let theNote = fromCharToNote(theMelody.stringNote[indexObstacleMelody]);
+    let theDuration = theMelody.stringDuration[indexObstacleMelody];
     
-    handleObstacles(theNote, theDuration, theMelody.stringNote.length);   
+    handleObstacles(theNote, theDuration, theMelody.stringNote.length,);   
 
     //Winner condition
-    if(obstaclesArray.length == 0 && counterMelody == theMelody.stringNote.length){
+    if(obstaclesArray.length == 0 && indexObstacleMelody == theMelody.stringNote.length){
         //The player wins
         setTimeout(() => {
             player.y = 290;
@@ -120,21 +111,7 @@ function animate(){
     }else{
         //Update player position
         player.y = moveOne(document.getElementById("number").innerText);
-
-        //Print lines of notes
-        /*
-            let lineValue = fromCharToNote(document.getElementById("note").innerText);
-            ctx.strokeStyle = "grey";
-
-            ctx.moveTo(0, canvas.height - (notesHeight*lineValue) );
-            ctx.lineTo(canvas.width, canvas.height - (notesHeight*lineValue) );
-        
-            ctx.moveTo(0, canvas.height - (notesHeight*lineValue) - notesHeight  );
-	        ctx.lineTo(canvas.width, canvas.height - (notesHeight*lineValue) - notesHeight);
-
-            ctx.stroke();
-        */
-        
+        //printLinesNotes(ctx);    
     }
 
     player.update();
@@ -144,6 +121,8 @@ function animate(){
     handleParticles();
     requestAnimationFrame(animate);
     frame++;
+    console.log('counterMelody: '+indexObstacleMelody);
+    console.log('indexMelody: '+indexCurrentPlayerNote);
 }
 
 /* VIEW */

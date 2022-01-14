@@ -9,7 +9,7 @@ var DEBUGCANVAS = null;
 var mediaStreamSource = null;
 var detectorElem, canvasElem,waveCanvas,pitchElem,noteElem,detuneElem,detuneAmount;
 var trumpetButton  = false;
-var frequencyValueFromDB = 520; //Per attutire la sensibilità
+var frequencyValueFromDB = 450; //Per attutire la sensibilità
 
 window.onload = function() {
 	audioContext = new AudioContext();
@@ -88,7 +88,8 @@ var buflen = 2048;
 var buf = new Float32Array( buflen );
 
 function fromCharToNote(stringa){
-	switch(stringa){
+if(stringa != 'undefined'){
+	switch(popLastChar(stringa)){
 		case 'A':
 			return 9;
 			break;
@@ -150,6 +151,7 @@ function fromCharToNote(stringa){
 			break;
 	}
 }
+}
 function noteFromPitch( frequency ) {
 	// 440 Hz = La4
 	var noteNum = 12 * (Math.log( frequency / 440 )/Math.log(2) );
@@ -180,7 +182,7 @@ function modePlayedInstrument(){
 		document.getElementById('flute').style.backgroundColor='gold';
 		document.getElementById('flute').style.color='black';
 	}else {
-		frequencyValueFromDB = 520;
+		frequencyValueFromDB = 450;
 		document.getElementById('flute').style.backgroundColor='green';
 		document.getElementById('flute').style.color='white';
 		document.getElementById('trumpet').style.backgroundColor='gold';
