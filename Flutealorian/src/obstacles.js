@@ -9,7 +9,7 @@ class Obstacle{
         this.bottom = (notesHeight*this.note) - this.stack;
         this.x = canvas.width; //Da dove iniziano a comparire i blocchi
         this.width = 60*duration;
-        this.color = 'darkgrey';
+        this.color = 'gold';
         this.counted = false;
         this.endGame = false;
         this.collision = false;
@@ -38,11 +38,13 @@ class Obstacle{
             if(this.width<=60){
                 c.drawImage(laser, this.x, 0, this.width, this.top);
                 c.drawImage(laser, this.x, canvas.height - this.bottom, this.width, this.bottom);
-            
+            }else if( this.note == 0|| this.note == 11 ){
+                c.drawImage(grafite, this.x, 0, this.width, this.top);
+                c.drawImage(grafite, this.x, canvas.height - this.bottom, this.width, this.bottom);
             }else{
                 c.fillStyle = this.color;
                 c.fillRect(this.x, 0, this.width, this.top);
-                c.fillRect(this.x,canvas.height - this.bottom, this.width, this.bottom);
+                c.fillRect(this.x,canvas.height - this.bottom, this.width, this.bottom); 
             }
             
 

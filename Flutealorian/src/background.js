@@ -103,9 +103,10 @@ function realLengthMelody(melody){
 //Draw end of the game
 function endGame(c){
     c.font = "70px Georgia";
-    c.strokeStyle = 'red';
+    c.strokeStyle = 'white';
     c.lineWidth = 2;
-    c.strokeText('YOU WIN !! SCORE: '+score.innerText+'/'+theMelody.stringNote.length, 300,290);
+    c.strokeText('YOU WIN !! SCORE: '+score.innerText+'/'+countNotes(theMelody.stringNote), 300,290);
+    ctx.drawImage(by,510, 160, 80, 80);
 }
 
 function changeBackground(v){backgroundImage = v;}
