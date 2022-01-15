@@ -18,7 +18,7 @@ canvas.height = 600;
 var theMelody = new Melody(myNotesChar,myNotesDur);
 var notesHeight = canvas.height / 12;
 var score = document.getElementById('score');
-var life = document.getElementById('life');
+var lifeScore = document.getElementById('points');
 var velocity = 4;
 var distance = 120;
 var backgroundSpeed = 5;
@@ -86,7 +86,7 @@ function handleCollision(){
             )){
                 score.innerText = score.innerText - 1;
                 score.style.backgroundColor = 'red';
-                life.style.backgroundColor = 'red';
+                lifeScore.style.backgroundColor = 'red';
 
                 if(score.innerText == 0){
                     gameOver(ctx);
@@ -96,7 +96,7 @@ function handleCollision(){
                     player.collision = true;
                     setTimeout(() => {
                         score.style.backgroundColor = 'black';
-                        life.style.backgroundColor = 'black';
+                        lifeScore.style.backgroundColor = 'black';
                         player.collision = false;
                     }, 1000);
                 }
