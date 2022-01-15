@@ -12,12 +12,21 @@ canvas.width = window.innerWidth - 10;
 canvas.height = 600;
 
 //SetUp Melodies
-
-/* Elements for the game */
-
-var theMelody = new Melody(myNotesChar,myNotesDur);
-var notesHeight = canvas.height / 12;
+var theMelody =  new Melody([],[]);
 var score = document.getElementById('score');
+/* Elements for the game */
+const loadFromDatabase = async () => {
+    await getValuesFromDB();
+    // do something else here after asyncMidiFunction completes
+    console.log(myNotesChar);
+    theMelody = new Melody(myNotesChar,myNotesDur);
+    console.log(myNotesChar);
+    score.innerText = countNotes(theMelody.stringNote);
+}
+
+loadFromDatabase();
+
+var notesHeight = canvas.height / 12;
 var lifeScore = document.getElementById('points');
 var velocity = 4;
 var distance = 120;
@@ -48,8 +57,6 @@ laser.src = 'Ostacolo_1.png';
 grafite.src = 'Grafite.png';
 by.src = 'BY.png';
 tower.src = 'Ostacolo_2.png';
-
-score.innerText = countNotes(theMelody.stringNote);
 
 /* FUNCTIONS */
 
@@ -112,7 +119,7 @@ function animate(){
 
     let theNote = fromCharToNote(theMelody.stringNote[indexObstacleMelody]);
     let theDuration = theMelody.stringDuration[indexObstacleMelody];
-    
+
     handleObstacles(theNote, theDuration, theMelody.stringNote.length,);   
 
     //Winner condition

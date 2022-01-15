@@ -18,7 +18,7 @@ var timeArray = [];
 var melodyArray = [];
 var melodyToUpload = [];
 
-export class DB{
+class DB{
   constructor(){
   }
 
@@ -44,6 +44,14 @@ export class DB{
     });
   }
 
+  getNoteArray(){
+    return noteArray;
+  }
+
+  getDurationArray(){
+    return durationArray;
+  }
+
   getDataInCustom(callback){
 
     docRef.get().then((doc) => {
@@ -54,7 +62,6 @@ export class DB{
     });
 
   }
-
 
   async asyncMidiFunction() {
     console.log("async");
