@@ -59,9 +59,9 @@ export class CustomFunctions{
           else{
             var x = arrayStep[this.noteNames.indexOf(this.melody[i].name)];
           }
-          var y = -this.timeArray[i]*80;
+          var y = -this.timeArray[i]*100;
           
-          coins.create(x, y, 'coin 4').setOrigin(0.5, 1).setDisplaySize(50, this.durArray[i]*80);
+          coins.create(x, y, 'coin 4').setOrigin(0.5, 1).setDisplaySize(50, this.durArray[i]*100);
           
           /* switch (this.melody[i].duration) {
             case 1:
