@@ -79,6 +79,7 @@ class Obstacle{
                 indexCurrentPlayerNote++;
                 this.counted = true;
                 obstaclesArray.pop(obstaclesArray[0]);
+                if(obstaclesArray.length == 0) endOfTheGame = true;
             }
         this.draw(ctx);
     }

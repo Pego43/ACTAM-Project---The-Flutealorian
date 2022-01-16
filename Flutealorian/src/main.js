@@ -11,21 +11,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth - 10;
 canvas.height = 600;
 
-//SetUp Melodies
-var theMelody =  new Melody([],[]);
-var score = document.getElementById('score');
-/* Elements for the game */
-const loadFromDatabase = async () => {
-    await getValuesFromDB();
-    // do something else here after asyncMidiFunction completes
-    console.log(myNotesChar);
-    theMelody = new Melody(myNotesChar,myNotesDur);
-    console.log(myNotesChar);
-    score.innerText = countNotes(theMelody.stringNote);
-}
-
-loadFromDatabase();
-
 var notesHeight = canvas.height / 12;
 var lifeScore = document.getElementById('points');
 var velocity = 4;
@@ -33,6 +18,7 @@ var distance = 120;
 var backgroundSpeed = 5;
 var stack = 40;
 var charNoteObstacles = 0;
+var endOfTheGame = false;
 
 
 let spacePressed = false;
@@ -44,6 +30,27 @@ let PlayAndStop = true;
 
 const noteStrings = ["C", "C#-Db", "D", "D#-Eb", "E", "F", "F#-Gb", "G", "G#-Ab", "A", "A#-Bb", "B"];
 
+//SetUp Melodies
+
+//  With no Database
+//var theMelody = new Melody(myNotesChar,myNotesDur);
+
+//  With Database
+//----------------------------------------------------------------------//
+var theMelody = new Melody([],[]);  
+
+const loadFromDatabase = async () => {
+    await getValuesFromDB();
+    // do something else here after asyncMidiFunction completes
+    var song = new Melody(myNotesChar,myNotesDur);
+    theMelody = song;
+}
+
+loadFromDatabase();
+//----------------------------------------------------------------------*/
+
+var score = document.getElementById('score');
+//score.innerText = countNotes(theMelody.stringNote);
 const background = new Background(2400,canvas.height,backgroundSpeed,player,backgroundSpeed);
 const bang = new Image();
 const mando = new Image();
@@ -83,6 +90,14 @@ function moveOne(n){
     }
 }
 
+function scoreSetting(){
+    if(frame==0){
+        setTimeout(() => {
+            score.innerText = countNotes(theMelody.stringNote);
+        }, 1000);
+    }
+}
+
 //Detection of collision
 function handleCollision(){
     for(let i=0; i <obstaclesArray.length; i++){
@@ -114,6 +129,7 @@ function handleCollision(){
 /* CONTROLLER */
 
 function animate(){
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background.handleBackground(backgroundImage);
 
@@ -123,7 +139,7 @@ function animate(){
     handleObstacles(theNote, theDuration, theMelody.stringNote.length,);   
 
     //Winner condition
-    if(obstaclesArray.length == 0 && indexObstacleMelody == theMelody.stringNote.length){
+    if(obstaclesArray.length == 0 && indexObstacleMelody == theMelody.stringNote.length && endOfTheGame){
         //The player wins
         endGame(ctx);    
     }else{
@@ -142,7 +158,10 @@ function animate(){
 }
 
 /* VIEW */
-animate();
+scoreSetting();
+animate(); 
+
+
 
 
 

@@ -89,6 +89,13 @@ function gameOver(c){
     c.strokeText('Game Over', 290,290);
 }
 
+function loading(c){
+    c.font = "70px Georgia";
+    c.strokeStyle = 'gold';
+    c.lineWidth = 3;
+    c.strokeText('Loading...', 290,290);
+}
+
 //Draw the score
 function drawUpdateScore(c){
     //Draw Score
