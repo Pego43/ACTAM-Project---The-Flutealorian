@@ -11,7 +11,7 @@ var db = firebaseApp.firestore();
 
 const collectionRef = db.collection('Melody');
 
-const docRef = collectionRef.doc("RicNumeroUno");
+var docRef = collectionRef.doc("Astronaut kid");
 var noteArray = [];
 var durationArray = [];
 var timeArray = [];
@@ -59,7 +59,9 @@ export class DB{
   async asyncMidiFunction() {
     console.log("async");
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../prova3.mid");
+    const midi = await Midi.fromUrl("../Astronaut kid.mid");
+    
+    //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name
     //get the tracks

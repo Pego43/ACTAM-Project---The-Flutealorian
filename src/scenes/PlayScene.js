@@ -6,7 +6,8 @@ import { DB } from "../Firebase.js";
 const backgroundHeight = 2000;
 const backgroundWidth = window.innerWidth-20;
 var canvasWidth = window.innerWidth-20;
-var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;    
+var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-350;
+
 //KEYBOARD input
 var keys = "awsedftgyhujkolpòà";
 
@@ -62,10 +63,8 @@ export class PlayScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.image('piano', 'assets/piano keyboard actam.png');
     this.load.image('space1', 'assets/Space1.jpg');
     this.load.image('space2', 'assets/Space2.jpg');
     this.load.image('spaceV1', 'assets/Space1V.jpg');
@@ -130,7 +129,8 @@ export class PlayScene extends Phaser.Scene {
     //COINS
     const layer1 = this.add.layer();
     
-    const pianoSprite = this.add.sprite(0, startY, 'ground').setOrigin(0,0).setScale(6,10);
+    //const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setScale(6,10);
+    const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setDisplaySize(canvasWidth,300);
 
     layer1.add([pianoSprite]);
 
@@ -189,7 +189,6 @@ export class PlayScene extends Phaser.Scene {
     layer1.sendToBack(particles);
 
     this.physics.add.overlap(line, coins, function(player, coin){
-      console.log(coin);
       overlapping = true;
       if(noteOn){
         if(pressedOnce){

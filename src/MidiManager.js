@@ -11,7 +11,7 @@ export class MidiManager{
 
     async asyncMidiFunction() {
         // load a midi file in the browser
-        const midi = await Midi.fromUrl("../provaMidiFile2.mid");
+        //const midi = await Midi.fromUrl("../provaMidiFile2.mid");
         //the file name decoded from the first track
         const name = midi.name
         //get the tracks

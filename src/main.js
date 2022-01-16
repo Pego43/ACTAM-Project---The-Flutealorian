@@ -2,7 +2,7 @@
 const backgroundHeight = 2000;
 const backgroundWidth = 3000;
 var canvasWidth = window.innerWidth-20;
-var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-400;
+var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-350;
 
 import { LoadScene } from "./scenes/LoadScene.js";
 import { MenuScene } from "./scenes/MenuScene.js";
@@ -15,6 +15,9 @@ let game = new Phaser.Game({
     scene: [
         LoadScene, MenuScene, PlayScene
     ], 
+    dom:{
+      createContainer: true,
+    },
     physics:{
       default: 'arcade',
       arcade:{
