@@ -9,7 +9,7 @@ var firebaseApp = firebase.initializeApp({
 
 var db = firebaseApp.firestore();
 
-const collectionRef = db.collection('Melody');
+var collectionRef = db.collection('Melody');
 
 var docRef = collectionRef.doc("Prova quarti");
 var noteArray = [];
@@ -18,6 +18,7 @@ var timeArray = [];
 var melodyArray = [];
 var melodyToUpload = [];
 var songTempo;
+var collectionName = '';
 
 export class DB {
   constructor() {
@@ -46,15 +47,25 @@ export class DB {
     docRef = collectionRef.doc(song);
   }
 
+  setSceneMicrophoneGame(song){
+    await db.collection('MicrophoneSongs').doc('SongSelection').set({songName: song});
+    return;
+  }
+
   getSongTempo(){
     return songTempo;
   }
 
-  getDocNames() {
+  getDocNames(button) {
+    if(button == 1){
+      collectionName = "Melody";
+    } else if (button == 2){
+      collectionName = "MicrophoneSongs";
+    }
     // Print each document 
     var songs = new Array();
     songs = [];
-    db.collection("Melody").onSnapshot((querySnapshot) => {
+    db.collection(collectionName).onSnapshot((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         songs.push(doc.id); // For doc name
       })
@@ -75,8 +86,11 @@ export class DB {
 
 
   async asyncMidiFunction() {
+    /* collectionRef = db.collection('MicrophoneSongs');
+    docRef = collectionRef.doc("Prince of Egypt"); */
+
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../16quarti 120bpm.mid");
+    const midi = await Midi.fromUrl("../provaMidiFile2.mid");
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name
