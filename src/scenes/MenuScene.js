@@ -43,16 +43,18 @@ export class MenuScene extends Phaser.Scene {
         var input = this.input;
 
 
-        var options = db.getDocNames();
+        var options1 = db.getDocNames(1);
+        var options2 = db.getDocNames(2);
 
 
         //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
-
+        //right button
         let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList1 = CreateDropDownList(this, x/2 +150, y/2 +50, options).layout()
+        var dropDownList1 = CreateDropDownList(this, x/2 +150, y/2 +50, options1).layout()
 
+        //left button
         let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList2 = CreateDropDownList(this, x/2 -150, y/2 +50, options).layout()
+        var dropDownList2 = CreateDropDownList(this, x/2 -150, y/2 +50, options2).layout()
 
 
         //this.scene.start(CST.SCENES.PLAY);
@@ -79,10 +81,14 @@ export class MenuScene extends Phaser.Scene {
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
             if(songSelected != '')
-                this.scene.start(CST.SCENES.PLAY, songSelected);
+                //this.scene.start(CST.SCENES.PLAY, songSelected);
+                db.setSceneMicrophoneGame(songSelected);
+                location.href = "../../Flutealorian/src/index.html";
         })
+    }
 
-
+    getSelectedSong(){
+        return songSelected;
     }
 }
 

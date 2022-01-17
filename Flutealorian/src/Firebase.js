@@ -9,9 +9,9 @@ var firebaseApp = firebase.initializeApp({
 
 var db = firebaseApp.firestore();
 
-const collectionRef = db.collection('Melody');
+const collectionRef = db.collection('MicrophoneSongs');
 
-const docRef = collectionRef.doc("RicNumeroUno");
+const docRef = collectionRef.doc("Prince of Egypt");
 var noteArray = [];
 var durationArray = [];
 var timeArray = [];
@@ -28,7 +28,7 @@ class DB{
       if(!doc.exists)
         return;
       var c = doc.data();
-      melodyArray = doc.get("melodyToUpload");
+      melodyArray = doc.get("melody");
         //var t = JSON.stringify(c)
         //const obj = JSON.parse(t);
         //noteArray = obj.melody.split(',');
@@ -44,12 +44,8 @@ class DB{
     });
   }
 
-  getNoteArray(){
-    return noteArray;
-  }
-
-  getDurationArray(){
-    return durationArray;
+  setSceneMelody(song){
+    docRef = collectionRef.doc(song);
   }
 
   getDataInCustom(callback){
