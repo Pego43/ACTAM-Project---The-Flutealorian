@@ -48,7 +48,8 @@ export class DB {
   }
 
   setSceneMicrophoneGame(song){
-    db.collection('MicrophoneSongs').doc('SongSelection').set(song);
+    await db.collection('MicrophoneSongs').doc('SongSelection').set({songName: song});
+    return;
   }
 
   getSongTempo(){

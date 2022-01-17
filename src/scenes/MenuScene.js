@@ -2,6 +2,7 @@ const COLOR_PRIMARY = 0xff0066;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
 var songSelected = '';
+var db = new DB();
 
 import { CST } from "./CST.js";
 import { DB } from "../Firebase.js";
@@ -34,7 +35,6 @@ export class MenuScene extends Phaser.Scene {
 
     }
     create() {
-        var db = new DB();
         var x = this.game.renderer.width;
         var y = this.game.renderer.height;
         this.add.image(0, 0, "loading1").setOrigin(0).setDisplaySize(x, y);
@@ -81,7 +81,6 @@ export class MenuScene extends Phaser.Scene {
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
             if(songSelected != '')
-                //this.scene.start(CST.SCENES.PLAY, songSelected);
                 db.setSceneMicrophoneGame(songSelected);
                 location.href = "../../Flutealorian/src/index.html";
         })
