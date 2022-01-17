@@ -12,6 +12,8 @@ export class MenuScene extends Phaser.Scene {
     }
     init(data) {
 
+
+
         var element = document.createElement('style');
 
         document.head.appendChild(element);

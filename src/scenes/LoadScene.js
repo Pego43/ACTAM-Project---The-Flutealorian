@@ -9,6 +9,7 @@ export class LoadScene extends Phaser.Scene {
 
     }
     preload(){
+        //this.load.image("loading1","./assets/loading1.jpg");
 
     }
     create(){
