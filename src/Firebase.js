@@ -18,23 +18,23 @@ var timeArray = [];
 var melodyArray = [];
 var melodyToUpload = [];
 
-export class DB{
-  constructor(){
+export class DB {
+  constructor() {
   }
 
-  initializeLocalVariables(){
+  initializeLocalVariables() {
     console.log("initLocal");
     docRef.get().then((doc) => {
-      if(!doc.exists)
+      if (!doc.exists)
         return;
       var c = doc.data();
       melodyArray = doc.get("melodyToUpload");
-        //var t = JSON.stringify(c)
-        //const obj = JSON.parse(t);
-        //noteArray = obj.melody.split(',');
-        //dArray = obj.duration.split(',').map(Number);
-        //custom = new CustomFunctions(dArray, noteArray);
-        //noteArray.push(c)
+      //var t = JSON.stringify(c)
+      //const obj = JSON.parse(t);
+      //noteArray = obj.melody.split(',');
+      //dArray = obj.duration.split(',').map(Number);
+      //custom = new CustomFunctions(dArray, noteArray);
+      //noteArray.push(c)
       melodyArray.forEach(element => {
         noteArray.push(element.Note);
         durationArray.push(element.Duration);
@@ -44,20 +44,22 @@ export class DB{
     });
   }
 
-  getDocNames(){
+  getDocNames() {
     // Print each document 
+    var songs = new Array();
     db.collection("Melody").onSnapshot((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            console.log("documents: "+ doc.id); // For doc name
-        })
+      querySnapshot.forEach((doc) => {
+        songs.push(doc.id); // For doc name
+      })
     })
+    return songs;
   }
 
-  getDataInCustom(callback){
+  getDataInCustom(callback) {
 
     docRef.get().then((doc) => {
-      if(!doc.exists)
-      return;
+      if (!doc.exists)
+        return;
       console.log("custom");
       callback(durationArray, noteArray, timeArray);
     });
@@ -75,21 +77,21 @@ export class DB{
     const name = midi.name
     //get the tracks
     midi.tracks.forEach(track => {
-        //tracks have notes and controlChanges
-        //notes are an array
-        const notes = track.notes
-        notes.forEach(note => {
-            var noteToUpload = new Object();
-            //note.midi, note.time, note.duration, note.name
-            //this.noteArray.push(note.midi);
-            console.log(note.duration)
-            noteToUpload.Note = note.name;
-            noteToUpload.Duration = note.duration;
-            noteToUpload.Time = note.time;
-            melodyToUpload.push(noteToUpload);
-        })
-        console.log(melodyToUpload);
-        docRef.set({melodyToUpload});
+      //tracks have notes and controlChanges
+      //notes are an array
+      const notes = track.notes
+      notes.forEach(note => {
+        var noteToUpload = new Object();
+        //note.midi, note.time, note.duration, note.name
+        //this.noteArray.push(note.midi);
+        console.log(note.duration)
+        noteToUpload.Note = note.name;
+        noteToUpload.Duration = note.duration;
+        noteToUpload.Time = note.time;
+        melodyToUpload.push(noteToUpload);
+      })
+      console.log(melodyToUpload);
+      docRef.set({ melodyToUpload });
     })
     return;
   }

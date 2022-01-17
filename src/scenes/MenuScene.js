@@ -36,6 +36,7 @@ export class MenuScene extends Phaser.Scene {
 
     }
     create() {
+        var db = new DB();
         var x = this.game.renderer.width;
         var y = this.game.renderer.height;
         this.add.image(0, 0, "loading1").setOrigin(0).setDisplaySize(x, y);
@@ -43,7 +44,8 @@ export class MenuScene extends Phaser.Scene {
         var add = this.add;
         var input = this.input;
 
-        var options = ['Sample Dream', 'Jazz Club After Hours', 'better', 'Disco Loco'];
+
+        var options = db.getDocNames();
 
         
         
