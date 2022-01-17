@@ -17,18 +17,20 @@ var durationArray = [];
 var timeArray = [];
 var melodyArray = [];
 var melodyToUpload = [];
+var songTempo;
 
 class DB {
   constructor() {
   }
 
-  initializeLocalVariables() {
-    console.log("initLocal");
+  async initializeLocalVariables() {
+    console.log("prima");
     docRef.get().then((doc) => {
       if (!doc.exists)
         return;
       var c = doc.data();
       melodyArray = doc.get("melody");
+      songTempo = doc.get("tempo");
       //var t = JSON.stringify(c)
       //const obj = JSON.parse(t);
       //noteArray = obj.melody.split(',');
@@ -40,7 +42,9 @@ class DB {
         durationArray.push(element.Duration);
         timeArray.push(element.Time);
       });
-      console.log(noteArray);
+      console.log(durationArray);
+      if(durationArray.length == melodyArray.length)
+        return;
     });
   }
 
@@ -53,7 +57,16 @@ class DB {
   }
 
   getDurationArray() {
-    return durationArray;
+    console.log("dopo");
+    var normDurationArray = new Array();
+    var fourthDuration = 60/songTempo;
+    console.log(durationArray);
+    durationArray.forEach(element => {
+      normDurationArray.push(Math.round(element/fourthDuration));
+      console.log(element);
+    });
+    console.log(normDurationArray);
+    return normDurationArray;
   }
 
   getDataInCustom(callback) {

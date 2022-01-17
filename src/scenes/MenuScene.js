@@ -41,9 +41,6 @@ export class MenuScene extends Phaser.Scene {
 
         var add = this.add;
         var input = this.input;
-
-
-        var options = db.getDocNames();
         var items = [
             {
                 name: '?',

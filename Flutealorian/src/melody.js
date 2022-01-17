@@ -27,7 +27,7 @@ function countNotes(nt){
 var myNotesChar = [];
 var myNotesDur = [];
 
-myNotesChar =   ['E4','Ab4','B4','D5','C5','D5','B4','E4','B4','A4','--',
+/* myNotesChar =   ['E4','Ab4','B4','D5','C5','D5','B4','E4','B4','A4','--',
                 'E4','Ab4','B4','D5','C5','D5','B4','--',
                 'E5','D5','C5','D5','B4','C5','B4','A4','B4','--',
                 'G4','C4','G4','F#4','C4','F#4','E4'
@@ -36,20 +36,28 @@ myNotesDur =    [1,1,1,1,1,0.5,0.5,1,1,1,1,
                 1,1,1,1,1,1,1,1,
                 1,1,1,1,2,1,1,1,3,1,
                 1,1,1,1,2,3,5
-                ];
+                ]; */
 
 
 //The Mandalorian Theme
-myNotesChar = ['G4','G4','G4','G4','G4','G4','C5','Bb5','F4','G4','Ab4','Bb4','Ab4','G4','F4','G4','G4','G4','G4','G4','G4','C5','D5','Bb4','C5','D5','Eb5','D5','C5','Bb4','G4','F4','D4','C4','Bb4','G4','C4','E4','Ab4','G4','Ab4','B4','C5'];
-myNotesDur = [0.25,0.25,0.5,0.25,0.25,0.5,0.5,2,0.25,0.25,2,0.25,0.25,0.25,1,0.25,0.25,0.5,0.25,0.25,0.5,0.5,2,0.25,0.25,2,0.25,0.25,0.25,1,0.25,1,0.25,1,0.25,2,0.33,0.33,0.33,0.25,1,2,4];
+//myNotesChar = ['G4','G4','G4','G4','G4','G4','C5','Bb5','F4','G4','Ab4','Bb4','Ab4','G4','F4','G4','G4','G4','G4','G4','G4','C5','D5','Bb4','C5','D5','Eb5','D5','C5','Bb4','G4','F4','D4','C4','Bb4','G4','C4','E4','Ab4','G4','Ab4','B4','C5'];
+//myNotesDur = [0.25,0.25,0.5,0.25,0.25,0.5,0.5,2,0.25,0.25,2,0.25,0.25,0.25,1,0.25,0.25,0.5,0.25,0.25,0.5,0.5,2,0.25,0.25,2,0.25,0.25,0.25,1,0.25,1,0.25,1,0.25,2,0.33,0.33,0.33,0.25,1,2,4];
 
 
 var db = new DB();
 
 async function getValuesFromDB(){
-    db.initializeLocalVariables();
+    /* db.initializeLocalVariables();
     myNotesChar = db.getNoteArray();
-    myNotesDur = db.getDurationArray(); 
+    myNotesDur = db.getDurationArray(); */ 
+    
+    const loadFromDatabase = async () => {
+        await db.initializeLocalVariables();
+        // do something else here after initializeLocalVariables completes
+        myNotesChar = db.getNoteArray();
+        myNotesDur = db.getDurationArray(); 
+      }
+    loadFromDatabase();
     return;
 }
 

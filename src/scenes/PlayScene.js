@@ -34,7 +34,7 @@ var prevCoin = null;
 var overlapping = false;
 var particles;
 var emitter;
-var startY = 400;
+var startY = canvasHeight-200;
 var synth = null;
 
 //Variables for background

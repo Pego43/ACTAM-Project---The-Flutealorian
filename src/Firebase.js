@@ -32,7 +32,6 @@ export class DB {
       var c = doc.data();
       melodyArray = doc.get("melody");
       songTempo = doc.get("tempo");
-      console.log(songTempo);
 
       melodyArray.forEach(element => {
         noteArray.push(element.Note);
@@ -48,7 +47,7 @@ export class DB {
   }
 
   setSceneMicrophoneGame(song){
-    await db.collection('MicrophoneSongs').doc('SongSelection').set({songName: song});
+    db.collection('MicrophoneSongs').doc('SongSelection').set({songName: song});
     return;
   }
 
