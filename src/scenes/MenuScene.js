@@ -44,15 +44,52 @@ export class MenuScene extends Phaser.Scene {
 
 
         var options = db.getDocNames();
+        var items = [
+            {
+                name: '?',
+                children: [
+                    {
+                        name: 'Istruzioni gioco 1',
+
+                    },
+
+                ],
+                children: [
+                    {
+                        name: 'Istruzioni gioco 2',
+
+                    },
+
+                ]
+            },
+
+        ];
+        
+        var scene = this,menu = undefined;
+        menu = createMenu(scene, 15, 15, items, function (button) {
+        });
+        this.input.on('pointerdown', function (pointer) {
+            if (menu === undefined) {
+                menu = createMenu(scene, 15, 15, items, function (button) {
+                });
+            } else if (!menu.isInTouching(pointer)) {
+                menu.collapse();
+                menu = createMenu(scene, 15, 15, items, function (button) {
+                });;
+            }
+        }, this);
+
+        
+
 
 
         //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
 
         let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList1 = CreateDropDownList(this, x/2 +150, y/2 +50, options).layout()
+        var dropDownList1 = CreateDropDownList(this, x / 2 + 150, y / 2 + 50, options).layout()
 
         let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList2 = CreateDropDownList(this, x/2 -150, y/2 +50, options).layout()
+        var dropDownList2 = CreateDropDownList(this, x / 2 - 150, y / 2 + 50, options).layout()
 
 
         //this.scene.start(CST.SCENES.PLAY);
@@ -72,13 +109,13 @@ export class MenuScene extends Phaser.Scene {
 
         playButton1.setInteractive();
         playButton1.on("pointerup", () => {
-            if(songSelected != '')
+            if (songSelected != '')
                 this.scene.start(CST.SCENES.PLAY, songSelected);
         })
 
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
-            if(songSelected != '')
+            if (songSelected != '')
                 this.scene.start(CST.SCENES.PLAY, songSelected);
         })
 
@@ -210,4 +247,67 @@ var CreateTextObject = function (scene, text) {
         fontSize: '20px'
     })
     return textObject;
+}
+
+var createMenu = function (scene, x, y, items, onClick) {
+    var exapndOrientation = 'y';
+    var easeOrientation = 'y';
+
+    var menu = scene.rexUI.add.menu({
+        x: x,
+        y: y,
+        orientation: exapndOrientation,
+        // subMenuSide: 'right',
+
+        items: items,
+        createButtonCallback: function (item, i, items) {
+            return scene.rexUI.add.label({
+                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+                text: scene.add.text(0, 0, item.name, {
+                    fontSize: '20px'
+                }),
+                icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
+                space: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    icon: 10
+                }
+            })
+        },
+
+        // easeIn: 500,
+        easeIn: {
+            duration: 500,
+            orientation: easeOrientation
+        },
+
+        // easeOut: 100,
+        easeOut: {
+            duration: 100,
+            orientation: easeOrientation
+        }
+
+        // expandEvent: 'button.over'
+    });
+
+    menu
+        .on('button.over', function (button) {
+            button.getElement('background').setStrokeStyle(1, 0xffffff);
+        })
+        .on('button.out', function (button) {
+            button.getElement('background').setStrokeStyle();
+        })
+        .on('button.click', function (button) {
+            onClick(button);
+        })
+        .on('popup.complete', function (subMenu) {
+            console.log('popup.complete')
+        })
+        .on('scaledown.complete', function () {
+            console.log('scaledown.complete')
+        })
+
+    return menu;
 }

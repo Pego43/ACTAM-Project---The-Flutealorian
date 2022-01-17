@@ -3,10 +3,10 @@ import { CustomFunctions } from "../CustomFunctions.js";
 import { CustomSound } from "../CustomSound.js";
 import { DB } from "../Firebase.js";
 
-const backgroundHeight = window.innerHeight-20;;
-const backgroundWidth = window.innerWidth-20;
-var canvasWidth = window.innerWidth-20;
-var canvasHeight = window.innerHeight-20;
+const backgroundHeight = window.innerHeight - 20;;
+const backgroundWidth = window.innerWidth - 20;
+var canvasWidth = window.innerWidth - 20;
+var canvasHeight = window.innerHeight - 20;
 
 //KEYBOARD input
 var keys = "awsedftgyhujkolpòà";
@@ -48,6 +48,7 @@ const sound = new CustomSound();
 var custom = null;
 var sampler;
 var selectedSong = '';
+var buttonback;
 
 const COLOR_PRIMARY = 0x89CFF0;
 const COLOR_LIGHT = 0x00FFFF;
@@ -64,7 +65,7 @@ export class PlayScene extends Phaser.Scene {
     })
   }
 
-  init(data){
+  init(data) {
     selectedSong = data;
   }
 
@@ -84,6 +85,7 @@ export class PlayScene extends Phaser.Scene {
     this.load.audio('metronome', ['assets/metronomo_bip.wav']);
     this.load.image('line', 'assets/lineaACTAM.png');
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
+    this.load.image('backbutton', 'assets/b_button.jpg', 193, 71);
     //this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
   }
 
@@ -106,6 +108,7 @@ export class PlayScene extends Phaser.Scene {
     backgroundV1.setVelocityY(- backgroundSpeed);
     backgroundV2.setVelocityY(- backgroundSpeed);
 
+
     //stores the note steps in an array
     for (let i = 0; i < nNote; i++) {
       nextStep = ((step / 2) + i * step);
@@ -113,7 +116,7 @@ export class PlayScene extends Phaser.Scene {
     }
 
     //PLAYER
-    player = this.physics.add.sprite(20, startY+48, 'character_right').setScale(0.30);
+    player = this.physics.add.sprite(20, startY + 48, 'character_right').setScale(0.30);
     line = this.physics.add.sprite(20, startY, 'line').setScale(0.30);
 
     //ANIMATION
@@ -130,14 +133,16 @@ export class PlayScene extends Phaser.Scene {
       repeat: -1
     });
 
+
+
     //CHARACTER INITIALIZATION
     player.anims.play('flying_right');
 
     //COINS
     const layer1 = this.add.layer();
-    
+
     //const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setScale(6,10);
-    const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setDisplaySize(canvasWidth,200);
+    const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0, 0).setDisplaySize(canvasWidth, 200);
 
     layer1.add([pianoSprite]);
 
@@ -164,16 +169,16 @@ export class PlayScene extends Phaser.Scene {
     loadFromDatabase(); */
 
     db.initializeLocalVariables();
-      db.getDataInCustom(function(duration, notes, time){
-        custom = new CustomFunctions(duration, notes, time);
-        custom.melodyToSpace();
-        custom.notesToCoins(arrayStep, coins, db.getSongTempo());
-        coins.setVelocityY(154);
-        for (let i = 0; i < coins.getChildren().length; i++) {
-          layer1.add([coins.getChildren()[i]]);
-        }
-      })
-    
+    db.getDataInCustom(function (duration, notes, time) {
+      custom = new CustomFunctions(duration, notes, time);
+      custom.melodyToSpace();
+      custom.notesToCoins(arrayStep, coins, db.getSongTempo());
+      coins.setVelocityY(154);
+      for (let i = 0; i < coins.getChildren().length; i++) {
+        layer1.add([coins.getChildren()[i]]);
+      }
+    })
+
     layer1.add([player, line]);
 
     //SCORE
@@ -192,15 +197,15 @@ export class PlayScene extends Phaser.Scene {
     particles = this.add.particles('flares');
 
     emitter = particles.createEmitter({
-        frame: 'blue',
-        lifespan: 200,
-        speed: { min: 300, max: 500 },
-        angle: 270,
-        gravityY: 30,
-        scale: { start: 0.5, end: 0 },
-        quantity: 2,
-        blendMode: 'ADD',
-        visible: false
+      frame: 'blue',
+      lifespan: 200,
+      speed: { min: 300, max: 500 },
+      angle: 270,
+      gravityY: 30,
+      scale: { start: 0.5, end: 0 },
+      quantity: 2,
+      blendMode: 'ADD',
+      visible: false
     });
     layer1.add([particles]);
     layer1.sendToBack(particles);
@@ -208,37 +213,37 @@ export class PlayScene extends Phaser.Scene {
     var otherOnce = true;
     var startTime;
 
-    this.physics.add.overlap(line, coins, function(player, coin){
+    this.physics.add.overlap(line, coins, function (player, coin) {
       overlapping = true;
-      if(once){
+      if (once) {
         startTime = performance.now();
         once = false;
       }
-      if(otherOnce && coin != prevCoin && prevCoin!=null){
+      if (otherOnce && coin != prevCoin && prevCoin != null) {
         otherOnce = false;
         var endTime = performance.now();
-          var timeDiff = endTime - startTime; //in ms
-          // strip the ms
-          timeDiff /= 1000;
-          // get seconds 
-          var seconds = timeDiff;
-          console.log(seconds + " seconds");
+        var timeDiff = endTime - startTime; //in ms
+        // strip the ms
+        timeDiff /= 1000;
+        // get seconds 
+        var seconds = timeDiff;
+        console.log(seconds + " seconds");
       }
-      if(noteOn){
-        if(pressedOnce){
+      if (noteOn) {
+        if (pressedOnce) {
           prevCoin = coin;
           score += 10;
           layer1.sendToBack(coin);
           emitter.setVisible(true);
         }
-        if(coin != prevCoin && !pressedOnce){
+        if (coin != prevCoin && !pressedOnce) {
           emitter.setVisible(false);
-        } else if(coin == prevCoin && !pressedOnce){
+        } else if (coin == prevCoin && !pressedOnce) {
           score += 10;
           layer1.sendToBack(coin);
         }
       }
-      if((line.y-2) <= Math.round(coin.y-(coin.displayHeight/2))){
+      if ((line.y - 2) <= Math.round(coin.y - (coin.displayHeight / 2))) {
         overlapping = false;
         prevCoin = coin;
         /* if(otherOnce){
@@ -254,11 +259,17 @@ export class PlayScene extends Phaser.Scene {
       }
       scoreText.setText('Score: ' + score);
     }, null, this);
+
+    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(.15);
+    buttonback.setInteractive();
+    buttonback.on("pointerup", () => {
+      this.scene.start(CST.SCENES.MENU);
+    })
   }
 
   update() {
     // Movement of the character with keybord
-    
+
     /* window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
       if(!overlapping){
@@ -292,47 +303,47 @@ export class PlayScene extends Phaser.Scene {
         emitter.setVisible(false);
       }
     }); */
-    if(!overlapping){
-        emitter.setVisible(false);
+    if (!overlapping) {
+      emitter.setVisible(false);
     }
     // Movement with MIDI 
-    
-      for (var input of midi.inputs.values()){
-        
-        input.onmidimessage = function (message){
-          var noteIndex = midi_notes.indexOf(message.data[1]);
-          player.x = arrayStep[noteIndex];
-          line.x = arrayStep[noteIndex];
-          
-          //if note on
-          if(message.data[0] == 144){
-            noteOn = true;
-            if(message.repeat){
-              pressedOnce = false;
-            } else {
-              pressedOnce = true;
-            }
-            
-            emitter.setPosition(line.x, line.y);
 
-            //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
-            synth.triggerAttack(noteNames[noteIndex], Tone.now());
+    for (var input of midi.inputs.values()) {
 
-            if (player.x <= arrayStep[noteIndex]) {
-              player.anims.play('flying_right');
-            } else {
-              //Movement to the left
-              player.anims.play('flying_left');
-            }
-          } else if(message.data[0] == 128){
-            noteOn = false;
-            emitter.setVisible(false);
-            //sampler.triggerRelease(noteNames[noteIndex], Tone.now());
-            synth.triggerRelease(noteNames[noteIndex], Tone.now());
+      input.onmidimessage = function (message) {
+        var noteIndex = midi_notes.indexOf(message.data[1]);
+        player.x = arrayStep[noteIndex];
+        line.x = arrayStep[noteIndex];
+
+        //if note on
+        if (message.data[0] == 144) {
+          noteOn = true;
+          if (message.repeat) {
+            pressedOnce = false;
+          } else {
+            pressedOnce = true;
           }
+
+          emitter.setPosition(line.x, line.y);
+
+          //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
+          synth.triggerAttack(noteNames[noteIndex], Tone.now());
+
+          if (player.x <= arrayStep[noteIndex]) {
+            player.anims.play('flying_right');
+          } else {
+            //Movement to the left
+            player.anims.play('flying_left');
+          }
+        } else if (message.data[0] == 128) {
+          noteOn = false;
+          emitter.setVisible(false);
+          //sampler.triggerRelease(noteNames[noteIndex], Tone.now());
+          synth.triggerRelease(noteNames[noteIndex], Tone.now());
         }
       }
-    
+    }
+
     //message.data[1]->value of the note pressed
 
     // Background movement controlled orizontally
