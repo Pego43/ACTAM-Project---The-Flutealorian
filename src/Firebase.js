@@ -11,7 +11,7 @@ var db = firebaseApp.firestore();
 
 const collectionRef = db.collection('Melody');
 
-var docRef = collectionRef.doc("Astronaut kid");
+var docRef = collectionRef.doc("Prova quarti");
 var noteArray = [];
 var durationArray = [];
 var timeArray = [];
@@ -44,6 +44,15 @@ export class DB{
     });
   }
 
+  getDocNames(){
+    // Print each document 
+    db.collection("Melody").onSnapshot((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            console.log("documents: "+ doc.id); // For doc name
+        })
+    })
+  }
+
   getDataInCustom(callback){
 
     docRef.get().then((doc) => {
@@ -59,8 +68,8 @@ export class DB{
   async asyncMidiFunction() {
     console.log("async");
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../Astronaut kid.mid");
-    
+    const midi = await Midi.fromUrl("../16quarti 100bpm.mid");
+    console.log(midi.header.tempos[0].bpm);
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name
@@ -73,7 +82,7 @@ export class DB{
             var noteToUpload = new Object();
             //note.midi, note.time, note.duration, note.name
             //this.noteArray.push(note.midi);
-            console.log(note.name)
+            console.log(note.duration)
             noteToUpload.Note = note.name;
             noteToUpload.Duration = note.duration;
             noteToUpload.Time = note.time;

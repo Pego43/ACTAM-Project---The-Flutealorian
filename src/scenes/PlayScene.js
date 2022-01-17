@@ -3,10 +3,10 @@ import { CustomFunctions } from "../CustomFunctions.js";
 import { CustomSound } from "../CustomSound.js";
 import { DB } from "../Firebase.js";
 
-const backgroundHeight = 2000;
+const backgroundHeight = window.innerHeight-20;;
 const backgroundWidth = window.innerWidth-20;
 var canvasWidth = window.innerWidth-20;
-var canvasHeight = ((canvasWidth*backgroundHeight)/backgroundWidth)-350;
+var canvasHeight = window.innerHeight-20;
 
 //KEYBOARD input
 var keys = "awsedftgyhujkolpòà";
@@ -19,7 +19,6 @@ var noteOn = false;
 //48 is C, and 60 is the upper C
 var nNote = 25;
 var step = ((canvasWidth / nNote));
-var platforms;
 var player;
 var arrayStep = [];
 var nextStep;
@@ -35,7 +34,7 @@ var prevCoin = null;
 var overlapping = false;
 var particles;
 var emitter;
-var startY = 650;
+var startY = 400;
 var synth = null;
 
 //Variables for background
@@ -49,7 +48,9 @@ const sound = new CustomSound();
 var custom = null;
 var sampler;
 
-
+const COLOR_PRIMARY = 0x89CFF0;
+const COLOR_LIGHT = 0x00FFFF;
+const COLOR_DARK = 0x0000FF;
 
 //promise.then( (db.getNotes()) => custom = new CustomFunction(db.getNotes(), db.getDuration()));
 //var custom = new CustomFunctions(db.getNotes(), db.getDuration());
@@ -78,6 +79,7 @@ export class PlayScene extends Phaser.Scene {
     this.load.audio('metronome', ['assets/metronomo_bip.wav']);
     this.load.image('line', 'assets/lineaACTAM.png');
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
+    //this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
   }
 
   create() {
@@ -106,8 +108,8 @@ export class PlayScene extends Phaser.Scene {
     }
 
     //PLAYER
-    player = this.physics.add.sprite(100, startY+48, 'character_right').setScale(0.30);
-    line = this.physics.add.sprite(100, startY, 'line').setScale(0.30);
+    player = this.physics.add.sprite(20, startY+48, 'character_right').setScale(0.30);
+    line = this.physics.add.sprite(20, startY, 'line').setScale(0.30);
 
     //ANIMATION
     this.anims.create({
@@ -130,14 +132,15 @@ export class PlayScene extends Phaser.Scene {
     const layer1 = this.add.layer();
     
     //const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setScale(6,10);
-    const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setDisplaySize(canvasWidth,300);
+    const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setDisplaySize(canvasWidth,200);
 
     layer1.add([pianoSprite]);
 
     coins = this.physics.add.group();
 
+    db.getDocNames();
+
     const loadFromDatabase = async () => {
-      console.log("inizio async");
       await db.asyncMidiFunction();
       // do something else here after asyncMidiFunction completes
       db.initializeLocalVariables();
@@ -145,7 +148,7 @@ export class PlayScene extends Phaser.Scene {
         custom = new CustomFunctions(duration, notes, time);
         custom.melodyToSpace();
         custom.notesToCoins(arrayStep, coins);
-        coins.setVelocityY(120);
+        coins.setVelocityY(150);
         for (let i = 0; i < coins.getChildren().length; i++) {
           layer1.add([coins.getChildren()[i]]);
         }
@@ -154,7 +157,6 @@ export class PlayScene extends Phaser.Scene {
     }
     
     loadFromDatabase();
-    console.log("finish");
     
     layer1.add([player, line]);
 
@@ -162,7 +164,6 @@ export class PlayScene extends Phaser.Scene {
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //SOUND
-    //sound.createGain();
     synth = new Tone.PolySynth().toDestination();
     /* sampler = new Tone.Sampler({
       urls: {
@@ -187,9 +188,26 @@ export class PlayScene extends Phaser.Scene {
     });
     layer1.add([particles]);
     layer1.sendToBack(particles);
+    var once = true;
+    var otherOnce = true;
+    var startTime;
 
     this.physics.add.overlap(line, coins, function(player, coin){
       overlapping = true;
+      if(once){
+        startTime = performance.now();
+        once = false;
+      }
+      if(otherOnce && coin != prevCoin && prevCoin!=null){
+        otherOnce = false;
+        var endTime = performance.now();
+          var timeDiff = endTime - startTime; //in ms
+          // strip the ms
+          timeDiff /= 1000;
+          // get seconds 
+          var seconds = timeDiff;
+          console.log(seconds + " seconds");
+      }
       if(noteOn){
         if(pressedOnce){
           prevCoin = coin;
@@ -204,8 +222,19 @@ export class PlayScene extends Phaser.Scene {
           layer1.sendToBack(coin);
         }
       }
-      if((line.y-5) <= Math.round(coin.y-(coin.displayHeight/2))){
+      if((line.y-2) <= Math.round(coin.y-(coin.displayHeight/2))){
         overlapping = false;
+        prevCoin = coin;
+        /* if(otherOnce){
+          otherOnce = false;
+          var endTime = performance.now();
+          var timeDiff = endTime - startTime; //in ms
+          // strip the ms
+          timeDiff /= 1000;
+          // get seconds 
+          var seconds = timeDiff;
+          console.log(seconds + " seconds");
+        } */
       }
       scoreText.setText('Score: ' + score);
     }, null, this);

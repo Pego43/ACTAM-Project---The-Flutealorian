@@ -1,7 +1,5 @@
 /** @type {import("../typings/phaser")} */
 //import UIPlugin from '../node_modules/phaser3-rex-plugins/templates/ui/ui-plugin.js';
-const backgroundHeight = 2000;
-const backgroundWidth = 3000;
 var canvasWidth = window.innerWidth - 30;
 var canvasHeight = window.innerHeight - 30;
 
@@ -24,33 +22,5 @@ let game = new Phaser.Game({
     }
   },
 });
-
-/*  Orizontal background movement
-var config = {
- type: Phaser.AUTO,
- width: canvasWidth,
- height: canvasHeight, 
- physics:{
-   default: 'arcade',
-   arcade:{
-     gravity: { y: 0},
-     debug: false
-   }
- },
- scene: {
-     preload: preload,
-     create: create,
-     update: update
- }
-};
-
-
-
-var config = {
-   
- };
-
-var game = new Phaser.Game(config);
-*/
 
 
