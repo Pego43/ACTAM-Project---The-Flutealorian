@@ -17,6 +17,7 @@ var durationArray = [];
 var timeArray = [];
 var melodyArray = [];
 var melodyToUpload = [];
+var songTempo;
 
 export class DB {
   constructor() {
@@ -28,13 +29,10 @@ export class DB {
       if (!doc.exists)
         return;
       var c = doc.data();
-      melodyArray = doc.get("melodyToUpload");
-      //var t = JSON.stringify(c)
-      //const obj = JSON.parse(t);
-      //noteArray = obj.melody.split(',');
-      //dArray = obj.duration.split(',').map(Number);
-      //custom = new CustomFunctions(dArray, noteArray);
-      //noteArray.push(c)
+      melodyArray = doc.get("melody");
+      songTempo = doc.get("tempo");
+      console.log(songTempo);
+
       melodyArray.forEach(element => {
         noteArray.push(element.Note);
         durationArray.push(element.Duration);
@@ -46,6 +44,10 @@ export class DB {
 
   setSceneMelody(song){
     docRef = collectionRef.doc(song);
+  }
+
+  getSongTempo(){
+    return songTempo;
   }
 
   getDocNames() {
@@ -73,10 +75,8 @@ export class DB {
 
 
   async asyncMidiFunction() {
-    console.log("async");
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../Astronaut kid.mid");
-    console.log(midi.header.tempos[0].bpm);
+    const midi = await Midi.fromUrl("../16quarti 120bpm.mid");
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name
@@ -96,7 +96,7 @@ export class DB {
         melodyToUpload.push(noteToUpload);
       })
       console.log(melodyToUpload);
-      docRef.set({ melodyToUpload });
+      docRef.set({ tempo: midi.header.tempos[0].bpm, melody: melodyToUpload });
     })
     return;
   }

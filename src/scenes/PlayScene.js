@@ -145,8 +145,8 @@ export class PlayScene extends Phaser.Scene {
 
     db.setSceneMelody(selectedSong);
 
-    /* TO LOAD MIDI FILES ON DB
-    const loadFromDatabase = async () => {
+    // TO LOAD MIDI FILES ON DB
+    /* const loadFromDatabase = async () => {
       await db.asyncMidiFunction();
       // do something else here after asyncMidiFunction completes
       db.initializeLocalVariables();
@@ -161,14 +161,14 @@ export class PlayScene extends Phaser.Scene {
       })
     } 
     
-    loadFromDatabase();*/
+    loadFromDatabase(); */
 
     db.initializeLocalVariables();
       db.getDataInCustom(function(duration, notes, time){
         custom = new CustomFunctions(duration, notes, time);
         custom.melodyToSpace();
-        custom.notesToCoins(arrayStep, coins);
-        coins.setVelocityY(150);
+        custom.notesToCoins(arrayStep, coins, db.getSongTempo());
+        coins.setVelocityY(154);
         for (let i = 0; i < coins.getChildren().length; i++) {
           layer1.add([coins.getChildren()[i]]);
         }
