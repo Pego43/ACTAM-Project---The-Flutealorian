@@ -9,7 +9,7 @@ class Obstacle{
         this.bottom = (notesHeight*this.note) - this.stack;
         this.x = canvas.width; //Da dove iniziano a comparire i blocchi
         this.width = 60*duration;
-        this.color = 'gold';
+        this.color = 'darkgray';
         this.counted = false;
         this.endGame = false;
         this.collision = false;
