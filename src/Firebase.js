@@ -44,14 +44,20 @@ export class DB {
     });
   }
 
+  setSceneMelody(song){
+    docRef = collectionRef.doc(song);
+  }
+
   getDocNames() {
     // Print each document 
     var songs = new Array();
+    songs = [];
     db.collection("Melody").onSnapshot((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         songs.push(doc.id); // For doc name
       })
     })
+    console.log(songs);
     return songs;
   }
 
@@ -60,7 +66,6 @@ export class DB {
     docRef.get().then((doc) => {
       if (!doc.exists)
         return;
-      console.log("custom");
       callback(durationArray, noteArray, timeArray);
     });
 
@@ -70,7 +75,7 @@ export class DB {
   async asyncMidiFunction() {
     console.log("async");
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../16quarti 100bpm.mid");
+    const midi = await Midi.fromUrl("../Astronaut kid.mid");
     console.log(midi.header.tempos[0].bpm);
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track

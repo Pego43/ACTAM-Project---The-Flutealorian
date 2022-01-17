@@ -1,6 +1,7 @@
 const COLOR_PRIMARY = 0xff0066;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
+var songSelected = '';
 
 import { CST } from "./CST.js";
 import { DB } from "../Firebase.js";
@@ -11,8 +12,6 @@ export class MenuScene extends Phaser.Scene {
         })
     }
     init(data) {
-
-
 
         var element = document.createElement('style');
 
@@ -33,7 +32,6 @@ export class MenuScene extends Phaser.Scene {
         this.load.image("loading1", "./assets/loading1.jpg");
         this.load.image("start_button", "./assets/start_button.jpg");
 
-
     }
     create() {
         var db = new DB();
@@ -46,9 +44,6 @@ export class MenuScene extends Phaser.Scene {
 
 
         var options = db.getDocNames();
-
-        
-        
 
 
         //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
@@ -77,17 +72,21 @@ export class MenuScene extends Phaser.Scene {
 
         playButton1.setInteractive();
         playButton1.on("pointerup", () => {
-            this.scene.start(CST.SCENES.PLAY);
+            if(songSelected != '')
+                this.scene.start(CST.SCENES.PLAY, songSelected);
         })
 
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
-            this.scene.start(CST.SCENES.PLAY);
+            if(songSelected != '')
+                this.scene.start(CST.SCENES.PLAY, songSelected);
         })
 
 
     }
 }
+
+//DROP DOWN MENU FUNCTIONS
 var CreateDropDownList = function (scene, x, y, options) {
     var maxTextSize = GetMaxTextObjectSize(scene, options);
 
@@ -98,7 +97,7 @@ var CreateDropDownList = function (scene, x, y, options) {
 
         icon: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 10, COLOR_LIGHT),
 
-        text: CreateTextObject(scene, '')
+        text: CreateTextObject(scene, 'Song selection')
             .setFixedSize(maxTextSize.width, maxTextSize.height),
 
         // action:
@@ -128,6 +127,7 @@ var CreateDropDownList = function (scene, x, y, options) {
                     menuY = label.bottom;
                 menu = CreatePopupList(scene, menuX, menuY, options, function (button) {
                     label.setData('value', button.text);
+                    songSelected = button.text;
                     menu.collapse();
                     menu = undefined;
                 });
@@ -202,7 +202,7 @@ var GetMaxTextObjectSize = function (scene, contentArray) {
     }
     textObject.destroy();
 
-    return { width: 80, height: height };
+    return { width: 170, height: height };
 }
 
 var CreateTextObject = function (scene, text) {

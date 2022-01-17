@@ -47,6 +47,7 @@ var db = new DB();
 const sound = new CustomSound();
 var custom = null;
 var sampler;
+var selectedSong = '';
 
 const COLOR_PRIMARY = 0x89CFF0;
 const COLOR_LIGHT = 0x00FFFF;
@@ -61,6 +62,10 @@ export class PlayScene extends Phaser.Scene {
     super({
       key: CST.SCENES.PLAY
     })
+  }
+
+  init(data){
+    selectedSong = data;
   }
 
   preload() {
@@ -138,8 +143,9 @@ export class PlayScene extends Phaser.Scene {
 
     coins = this.physics.add.group();
 
-    db.getDocNames();
+    db.setSceneMelody(selectedSong);
 
+    /* TO LOAD MIDI FILES ON DB
     const loadFromDatabase = async () => {
       await db.asyncMidiFunction();
       // do something else here after asyncMidiFunction completes
@@ -152,11 +158,21 @@ export class PlayScene extends Phaser.Scene {
         for (let i = 0; i < coins.getChildren().length; i++) {
           layer1.add([coins.getChildren()[i]]);
         }
-        console.log("fine async");
       })
-    }
+    } 
     
-    loadFromDatabase();
+    loadFromDatabase();*/
+
+    db.initializeLocalVariables();
+      db.getDataInCustom(function(duration, notes, time){
+        custom = new CustomFunctions(duration, notes, time);
+        custom.melodyToSpace();
+        custom.notesToCoins(arrayStep, coins);
+        coins.setVelocityY(150);
+        for (let i = 0; i < coins.getChildren().length; i++) {
+          layer1.add([coins.getChildren()[i]]);
+        }
+      })
     
     layer1.add([player, line]);
 
