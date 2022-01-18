@@ -178,7 +178,7 @@ function modePlayedInstrument(val){
 			break;
 		case 1:
 			instrumentTrumpet = true;
-			frequencySensibility = 450;
+			frequencySensibility = 200;
 			setThreeButtonColors('trumpet','flute','voice');
 			break;
 		case 2:
