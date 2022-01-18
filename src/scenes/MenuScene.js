@@ -1,7 +1,8 @@
 const COLOR_PRIMARY = 0xff0066;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
-var songSelected = '';
+var windSongSelected = '';
+var pianoSongSelected = '';
 var db = new DB();
 
 import { CST } from "./CST.js";
@@ -83,13 +84,13 @@ export class MenuScene extends Phaser.Scene {
 
 
         //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
-        //right button
+        //right button, piano mode
         let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList1 = CreateDropDownList(this, x/2 +150, y/2 +50, options1).layout()
+        var dropDownList1 = CreateDropDownList(this, x/2 +150, y/2 +50, options1, true).layout()
 
-        //left button
+        //left button, wind mode
         let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList2 = CreateDropDownList(this, x/2 -150, y/2 +50, options2).layout()
+        var dropDownList2 = CreateDropDownList(this, x/2 -150, y/2 +50, options2, false).layout()
 
 
         //this.scene.start(CST.SCENES.PLAY);
@@ -109,25 +110,20 @@ export class MenuScene extends Phaser.Scene {
 
         playButton1.setInteractive();
         playButton1.on("pointerup", () => {
-            if (songSelected != '')
-                this.scene.start(CST.SCENES.PLAY, songSelected);
+            if (pianoSongSelected != '')
+                this.scene.start(CST.SCENES.PLAY, pianoSongSelected);
         })
 
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
-            if(songSelected != '')
-                db.setSceneMicrophoneGame(songSelected);
+            if(windSongSelected != '')
                 location.href = "../../Flutealorian/src/index.html";
         })
-    }
-
-    getSelectedSong(){
-        return songSelected;
     }
 }
 
 //DROP DOWN MENU FUNCTIONS
-var CreateDropDownList = function (scene, x, y, options) {
+var CreateDropDownList = function (scene, x, y, options, mode) {
     var maxTextSize = GetMaxTextObjectSize(scene, options);
 
     var label = scene.rexUI.add.label({
@@ -167,7 +163,14 @@ var CreateDropDownList = function (scene, x, y, options) {
                     menuY = label.bottom;
                 menu = CreatePopupList(scene, menuX, menuY, options, function (button) {
                     label.setData('value', button.text);
-                    songSelected = button.text;
+                    if(mode){
+                        //piano mode
+                        pianoSongSelected = button.text;
+                    } else {
+                        //wind mode
+                        windSongSelected = button.text;
+                        db.setSceneMicrophoneGame(windSongSelected);
+                    }
                     menu.collapse();
                     menu = undefined;
                 });

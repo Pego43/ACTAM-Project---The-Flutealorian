@@ -47,18 +47,17 @@ myNotesDur =    [1,1,1,1,1,0.5,0.5,1,1,1,1,
 var db = new DB();
 
 async function getValuesFromDB(){
-    /* db.initializeLocalVariables();
+    db.initializeLocalVariables();
     myNotesChar = db.getNoteArray();
-    myNotesDur = db.getDurationArray(); */ 
-    
-    const loadFromDatabase = async () => {
+    myNotesDur = db.getDurationArray(); 
+    /* const loadFromDatabase = async () => {
         await db.initializeLocalVariables();
         // do something else here after initializeLocalVariables completes
         myNotesChar = db.getNoteArray();
         myNotesDur = db.getDurationArray(); 
       }
     loadFromDatabase();
-    return;
+    return; */
 }
 
 
