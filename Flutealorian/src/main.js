@@ -46,7 +46,6 @@ const loadFromDatabase = async () => {
     theMelody = song;
 }
 
-loadFromDatabase();
 //----------------------------------------------------------------------*/
 
 var score = document.getElementById('score');
@@ -158,6 +157,7 @@ function animate(){
 }
 
 /* VIEW */
+loadFromDatabase();
 scoreSetting();
 animate(); 
 
