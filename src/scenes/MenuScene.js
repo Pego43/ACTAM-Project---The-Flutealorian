@@ -1,7 +1,9 @@
 const COLOR_PRIMARY = 0xff00ff;
 const COLOR_LIGHT = 0x7700b3;
 const COLOR_DARK = 0x7700b3;
-var songSelected = '';
+
+var windSongSelected = '';
+var pianoSongSelected = '';
 var db = new DB();
 
 import { CST } from "./CST.js";
@@ -94,25 +96,20 @@ export class MenuScene extends Phaser.Scene {
 
         playButton1.setInteractive();
         playButton1.on("pointerup", () => {
-            if (songSelected != '')
-                this.scene.start(CST.SCENES.PLAY, songSelected);
+            if (pianoSongSelected != '')
+                this.scene.start(CST.SCENES.PLAY, pianoSongSelected);
         })
 
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
-            if (songSelected != '')
-                db.setSceneMicrophoneGame(songSelected);
-            location.href = "../../Flutealorian/src/index.html";
+            if(windSongSelected != '')
+                location.href = "../../Flutealorian/src/index.html";
         })
-    }
-
-    getSelectedSong() {
-        return songSelected;
     }
 }
 
 //DROP DOWN MENU FUNCTIONS
-var CreateDropDownList = function (scene, x, y, options) {
+var CreateDropDownList = function (scene, x, y, options, mode) {
     var maxTextSize = GetMaxTextObjectSize(scene, options);
 
     var label = scene.rexUI.add.label({
@@ -152,7 +149,14 @@ var CreateDropDownList = function (scene, x, y, options) {
                     menuY = label.bottom;
                 menu = CreatePopupList(scene, menuX, menuY, options, function (button) {
                     label.setData('value', button.text);
-                    songSelected = button.text;
+                    if(mode){
+                        //piano mode
+                        pianoSongSelected = button.text;
+                    } else {
+                        //wind mode
+                        windSongSelected = button.text;
+                        db.setSceneMicrophoneGame(windSongSelected);
+                    }
                     menu.collapse();
                     menu = undefined;
                 });

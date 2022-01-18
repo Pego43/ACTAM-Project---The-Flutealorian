@@ -161,5 +161,7 @@ function printLinesNotes(c){
             c.stroke();
 }
 
-
+function backButton(){
+    location.href = "../../src/index.html";
+}
 

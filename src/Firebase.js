@@ -25,7 +25,9 @@ export class DB {
   }
 
   initializeLocalVariables() {
-    console.log("initLocal");
+    noteArray = [];
+    durationArray = [];
+    timeArray = [];
     docRef.get().then((doc) => {
       if (!doc.exists)
         return;
@@ -46,7 +48,7 @@ export class DB {
     docRef = collectionRef.doc(song);
   }
 
-  setSceneMicrophoneGame(song){
+  async setSceneMicrophoneGame(song){
     db.collection('MicrophoneSongs').doc('SongSelection').set({songName: song});
     return;
   }
@@ -66,10 +68,10 @@ export class DB {
     songs = [];
     db.collection(collectionName).onSnapshot((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        songs.push(doc.id); // For doc name
+        if(doc.id != "SongSelection")
+          songs.push(doc.id); // For doc name
       })
     })
-    console.log(songs);
     return songs;
   }
 
@@ -85,11 +87,11 @@ export class DB {
 
 
   async asyncMidiFunction() {
-    /* collectionRef = db.collection('MicrophoneSongs');
-    docRef = collectionRef.doc("Prince of Egypt"); */
+    collectionRef = db.collection('MicrophoneSongs');
+    docRef = collectionRef.doc("The Mandalorian Theme");
 
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../provaMidiFile2.mid");
+    const midi = await Midi.fromUrl("../Mandalorian theme.mid");
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name
@@ -108,7 +110,6 @@ export class DB {
         noteToUpload.Time = note.time;
         melodyToUpload.push(noteToUpload);
       })
-      console.log(melodyToUpload);
       docRef.set({ tempo: midi.header.tempos[0].bpm, melody: melodyToUpload });
     })
     return;

@@ -59,9 +59,8 @@ export class CustomFunctions {
       var normNoteDuration = this.durArray[i]/fourthDuration;
       var normNoteTime = this.timeArray[i]/fourthDuration;
 
-      normNoteDuration = Math.round(normNoteDuration);
-      normNoteTime = Math.round(normNoteTime);
-
+      normNoteDuration = normNoteDuration.toFixed(2);
+      normNoteTime = normNoteTime.toFixed(2);
       var y = -(normNoteTime * 50);
       //Adding some space from a note to the other to give the player more reaction time
       y = y - (30 * i);
