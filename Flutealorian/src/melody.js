@@ -26,6 +26,7 @@ function countNotes(nt){
 
 var myNotesChar = [];
 var myNotesDur = [];
+var tempo = 0;
 /*
  myNotesChar =   ['E4','Ab4','B4','D5','C5','D5','B4','E4','B4','A4','--',
                 'E4','Ab4','B4','D5','C5','D5','B4','--',
@@ -47,17 +48,14 @@ myNotesDur =    [1,1,1,1,1,0.5,0.5,1,1,1,1,
 var db = new DB();
 
 async function getValuesFromDB(){
-    db.initializeLocalVariables();
-    myNotesChar = db.getNoteArray();
-    myNotesDur = db.getDurationArray(); 
-    /* const loadFromDatabase = async () => {
-        await db.initializeLocalVariables();
-        // do something else here after initializeLocalVariables completes
+    await db.initializeLocalVariables().then(()=>{
+        console.log("seconda cosa");
         myNotesChar = db.getNoteArray();
         myNotesDur = db.getDurationArray(); 
-      }
-    loadFromDatabase();
-    return; */
+        console.log(myNotesDur);
+        tempo = db.getSongTempo();
+        console.log(tempo);
+    });
 }
 
 

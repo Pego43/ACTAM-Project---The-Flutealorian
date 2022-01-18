@@ -26,22 +26,24 @@ class DB {
 
   async initializeLocalVariables() {
     docRef = collectionRef.doc("SongSelection");
-    docRef.get().then((doc) => {
+    return docRef.get().then((doc) => {
+      console.log("prima cosa");
       if (!doc.exists)
         return;
       songName = doc.get("songName");
       docRef = collectionRef.doc(songName);
       
-      docRef.get().then((doc) => {
+      return docRef.get().then((doc) => {
+        console.log("prima cosa e mezza");
         if (!doc.exists)
           return;
-        var c = doc.data();
+
         melodyArray = doc.get("melody");
         songTempo = doc.get("tempo");
+        console.log(songTempo);
         console.log(melodyArray);
-
+  
         var fourthDuration = 60/songTempo;
-        
         melodyArray.forEach(element => {
           noteArray.push(element.Note);
   
@@ -64,6 +66,10 @@ class DB {
 
   getDurationArray() {
     return durationArray;
+  }
+
+  getSongTempo(){
+    return songTempo;
   }
 
   async asyncMidiFunction() {
@@ -92,4 +98,6 @@ class DB {
     })
     return;
   }
+
+
 }

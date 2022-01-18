@@ -39,11 +39,20 @@ const noteStrings = ["C", "C#-Db", "D", "D#-Eb", "E", "F", "F#-Gb", "G", "G#-Ab"
 //----------------------------------------------------------------------//
 var theMelody = new Melody([],[]);  
 
-const loadFromDatabase = async () => {
-    await getValuesFromDB();
-    // do something else here after asyncMidiFunction completes
-    var song = new Melody(myNotesChar,myNotesDur);
-    theMelody = song;
+async function loadFromDatabase(){
+    getValuesFromDB().then(()=>{
+        console.log("in teoria ultima cosa da fare");
+        // do something else here after getValuesFromDB completes
+        var song = new Melody(myNotesChar,myNotesDur);
+        theMelody = song;
+        //first map: 100 = 0, 110 = 1 , 120 = 2...
+        var z = (tempo/10)-10;
+        //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
+        var vel = tempo + 34 + 3.55*z;
+        velocity = vel/60;
+        console.log(velocity);
+    });
+    
 }
 
 //----------------------------------------------------------------------*/
@@ -90,7 +99,7 @@ function moveOne(n){
 }
 
 function scoreSetting(){
-    if(frame==0){
+    if(frame==0 && tempo==0){
         setTimeout(() => {
             score.innerText = countNotes(theMelody.stringNote);
         }, 1000);

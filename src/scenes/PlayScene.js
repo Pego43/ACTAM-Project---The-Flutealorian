@@ -161,7 +161,7 @@ export class PlayScene extends Phaser.Scene {
       custom.notesToCoins(arrayStep, coins, tempo);
       //first map: 100 = 0, 110 = 1 , 120 = 2...
       var z = (tempo/10)-10;
-      //second map: velocity = f(bpm) = bpm + 35 + 3.75*z;
+      //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
       var vel = tempo + 34 + 3.55*z;
       coins.setVelocityY(vel);
       for (let i = 0; i < coins.getChildren().length; i++) {
