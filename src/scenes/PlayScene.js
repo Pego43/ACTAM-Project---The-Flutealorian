@@ -148,26 +148,13 @@ export class PlayScene extends Phaser.Scene {
 
     coins = this.physics.add.group();
 
-    db.setSceneMelody(selectedSong);
-
     // TO LOAD MIDI FILES ON DB
-    /* const loadFromDatabase = async () => {
+    /* const loadToDatabase = async () => {
       await db.asyncMidiFunction();
-      // do something else here after asyncMidiFunction completes
-      db.initializeLocalVariables();
-      db.getDataInCustom(function(duration, notes, time){
-        custom = new CustomFunctions(duration, notes, time);
-        custom.melodyToSpace();
-        custom.notesToCoins(arrayStep, coins);
-        coins.setVelocityY(150);
-        for (let i = 0; i < coins.getChildren().length; i++) {
-          layer1.add([coins.getChildren()[i]]);
-        }
-      })
     } 
-    
-    loadFromDatabase(); */
+    loadToDatabase(); */
 
+    db.setSceneMelody(selectedSong);
     db.initializeLocalVariables();
     db.getDataInCustom(function (duration, notes, time) {
       custom = new CustomFunctions(duration, notes, time);
