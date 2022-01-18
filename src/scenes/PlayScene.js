@@ -133,8 +133,6 @@ export class PlayScene extends Phaser.Scene {
       repeat: -1
     });
 
-
-
     //CHARACTER INITIALIZATION
     player.anims.play('flying_right');
 
@@ -157,10 +155,15 @@ export class PlayScene extends Phaser.Scene {
     db.setSceneMelody(selectedSong);
     db.initializeLocalVariables();
     db.getDataInCustom(function (duration, notes, time) {
+      var tempo = db.getSongTempo();
       custom = new CustomFunctions(duration, notes, time);
       custom.melodyToSpace();
-      custom.notesToCoins(arrayStep, coins, db.getSongTempo());
-      coins.setVelocityY(154);
+      custom.notesToCoins(arrayStep, coins, tempo);
+      //first map: 100 = 0, 110 = 1 , 120 = 2...
+      var z = (tempo/10)-10;
+      //second map: velocity = f(bpm) = bpm + 35 + 3.75*z;
+      var vel = tempo + 34 + 3.55*z;
+      coins.setVelocityY(vel);
       for (let i = 0; i < coins.getChildren().length; i++) {
         layer1.add([coins.getChildren()[i]]);
       }
@@ -230,7 +233,7 @@ export class PlayScene extends Phaser.Scene {
           layer1.sendToBack(coin);
         }
       }
-      if ((line.y - 2) <= Math.round(coin.y - (coin.displayHeight / 2))) {
+      if ((line.y - 4) <= Math.round(coin.y - (coin.displayHeight / 2))) {
         overlapping = false;
         prevCoin = coin;
         /* if(otherOnce){

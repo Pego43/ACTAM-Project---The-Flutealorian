@@ -88,10 +88,10 @@ export class DB {
 
   async asyncMidiFunction() {
     collectionRef = db.collection('Melody');
-    docRef = collectionRef.doc("Prova quarti");
+    docRef = collectionRef.doc("Quarti 140bpm");
 
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../16quarti 100bpm.mid");
+    const midi = await Midi.fromUrl("../4quarti 140bpm.mid");
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name
