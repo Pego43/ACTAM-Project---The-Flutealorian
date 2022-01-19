@@ -11,7 +11,7 @@ var notesHeight = canvas.height / 12;
 var lifeScore = document.getElementById('points');
 var speedOfTheGame = document.getElementById('speedGame');
 var score = document.getElementById('score');
-var velocity = 4;
+var velocity = 2;
 var distance = 150;
 var backgroundSpeed = 5;
 var stack = 40;
@@ -44,7 +44,7 @@ async function loadFromDatabase(){
         var z = (tempo/10)-10;
         //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
         var vel = tempo + 34 + 3.55*z;
-        //velocity = vel/60;
+        velocity = velocity+ Math.round((vel/60));
     });   
 }
 

@@ -9,7 +9,7 @@ class Obstacle{
         this.top = canvas.height-((notesHeight*this.note)+ notesHeight + this.stack);
         this.bottom = (notesHeight*this.note) - this.stack;
         this.x = canvas.width;
-        this.width = 100*duration;
+        this.width = 60*duration;
         this.color = 'darkgray';
         this.counted = false;
         this.endGame = false;

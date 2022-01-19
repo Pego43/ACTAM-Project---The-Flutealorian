@@ -169,7 +169,7 @@ export class PlayScene extends Phaser.Scene {
     coins = this.physics.add.group();
 
     // TO LOAD MIDI FILES ON DB
-    /*  const loadToDatabase = async () => {
+      /* const loadToDatabase = async () => {
        await db.asyncMidiFunction();
      } 
      loadToDatabase(); */

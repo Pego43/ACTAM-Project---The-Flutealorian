@@ -88,10 +88,10 @@ export class DB {
 
   async asyncMidiFunction() {
     collectionRef = db.collection('MicrophoneSongs');
-    docRef = collectionRef.doc("Pirati dei Caraibi");
+    docRef = collectionRef.doc("Final Countdown");
 
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../PIRATI DEI CARAIBI.mid");
+    const midi = await Midi.fromUrl("../FinalCountdown.mid");
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name

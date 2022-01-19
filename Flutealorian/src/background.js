@@ -113,7 +113,7 @@ function endGame(c){
     c.font = "70px Georgia";
     c.strokeStyle = 'white';
     c.lineWidth = 3;
-    c.strokeText('YOU WIN !! SCORE: '+score.innerText+'/'+countNotes(theMelody.stringNote), 300,290);
+    c.strokeText('FINAL SCORE: '+score.innerText+'/'+countNotes(theMelody.stringNote), 300,290);
     ctx.drawImage(by,510, 160, 80, 80);
     setTimeout(() => {
         player.y = 290;
