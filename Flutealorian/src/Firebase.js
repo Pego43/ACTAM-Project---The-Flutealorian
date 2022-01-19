@@ -27,14 +27,12 @@ class DB {
   async initializeLocalVariables() {
     docRef = collectionRef.doc("SongSelection");
     return docRef.get().then((doc) => {
-      console.log("prima cosa");
       if (!doc.exists)
         return;
       songName = doc.get("songName");
       docRef = collectionRef.doc(songName);
       
       return docRef.get().then((doc) => {
-        console.log("prima cosa e mezza");
         if (!doc.exists)
           return;
 
