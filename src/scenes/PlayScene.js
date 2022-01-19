@@ -89,9 +89,9 @@ export class PlayScene extends Phaser.Scene {
     this.load.audio('metronome', ['assets/metronomo_bip.wav']);
     this.load.image('line', 'assets/lineaACTAM.png');
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
-    this.load.image('backbutton', 'assets/b_button.jpg', 193, 71);
-    this.load.image('pausebutton', 'assets/p_button.png');
-    this.load.image('restartbutton', 'assets/r_button.png');
+    this.load.image('backbutton', 'assets/back.png');
+    this.load.image('pausebutton', 'assets/pause.png');
+    this.load.image('restartbutton', 'assets/restart.png');
     this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
   }
 
@@ -212,7 +212,7 @@ export class PlayScene extends Phaser.Scene {
     layer1.add([player, line]);
 
     //SCORE
-    scoreText = this.add.text(180, 24, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+    scoreText = this.add.text(180, 30, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //SOUND
     synth = new Tone.PolySynth().toDestination();
@@ -283,20 +283,20 @@ export class PlayScene extends Phaser.Scene {
     }, null, this);
 
     //BACKBUTTON
-    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(.15);
+    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(1.2);
     buttonback.setInteractive();
     buttonback.on("pointerup", () => {
       this.scene.start(CST.SCENES.MENU);
     })
 
-    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(.32);
+    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(1.2);
     buttonrestart.setInteractive();
     buttonrestart.on("pointerup", () => {
       this.scene.restart();
     })
 
     //PAUSE BUTTON
-    let buttonpause = this.add.image(16, 16, "pausebutton").setOrigin(0).setDepth(1).setScale(.27);
+    let buttonpause = this.add.image(16, 16, "pausebutton").setOrigin(0).setDepth(1).setScale(1.2);
     buttonpause.setInteractive();
     buttonpause.on("pointerup", () => {
       pauseGame();
