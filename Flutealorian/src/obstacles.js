@@ -8,7 +8,7 @@ class Obstacle{
         this.top = canvas.height-((notesHeight*this.note)+ notesHeight + this.stack);
         this.bottom = (notesHeight*this.note) - this.stack;
         this.x = canvas.width; //Da dove iniziano a comparire i blocchi
-        this.width = 60*duration;
+        this.width = 100*duration;
         this.color = 'darkgray';
         this.counted = false;
         this.endGame = false;
@@ -99,7 +99,7 @@ function handleObstacles(currentNote, currentDur, melodyLength){
         ){
             obstaclesArray.unshift(new Obstacle(currentNote,currentDur,theMelody.stringNote[charNoteObstacles]));
             charNoteObstacles++;
-            indexObstacleMelody++;            
+            indexObstacleMelody++;           
     }
     
     // I create my obstacle
@@ -111,5 +111,4 @@ function handleObstacles(currentNote, currentDur, melodyLength){
     if(obstaclesArray.length > 30){
        obstaclesArray.pop(obstaclesArray[0]);
     }
-
 }
