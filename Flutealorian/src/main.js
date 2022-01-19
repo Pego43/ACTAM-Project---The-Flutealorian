@@ -11,6 +11,7 @@ var notesHeight = canvas.height / 12;
 var lifeScore = document.getElementById('points');
 var speedOfTheGame = document.getElementById('speedGame');
 var score = document.getElementById('score');
+var total = document.getElementById('total');
 var velocity = 2;
 var distance = 150;
 var backgroundSpeed = 5;
@@ -91,9 +92,10 @@ function moveOne(n){
 
 // For setting the initial score
 function scoreSetting(){
-    if(frame==0 && tempo==0){
+    if(frame==0){
         setTimeout(() => {
             score.innerText = countNotes(theMelody.stringNote);
+            total.innerText = countNotes(theMelody.stringNote);
         }, 1000);
     }
 }
@@ -109,6 +111,7 @@ function handleCollision(){
                 score.innerText = score.innerText - 1;
                 score.style.backgroundColor = 'red';
                 lifeScore.style.backgroundColor = 'red';
+                total.style.backgroundColor = 'red';
 
                 if(score.innerText == 0){
                     gameOver(ctx);
@@ -119,8 +122,9 @@ function handleCollision(){
                     setTimeout(() => {
                         score.style.backgroundColor = 'black';
                         lifeScore.style.backgroundColor = 'black';
+                        total.style.backgroundColor = 'black';
                         player.collision = false;
-                    }, 1000);
+                    }, 4000 / velocity);
                 }
             }
     }
