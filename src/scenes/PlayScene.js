@@ -70,7 +70,7 @@ export class PlayScene extends Phaser.Scene {
   }
 
   init(data) {
-
+    selectedSong = data;
   }
 
   preload() {
