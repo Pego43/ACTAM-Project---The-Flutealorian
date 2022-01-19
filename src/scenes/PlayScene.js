@@ -52,6 +52,8 @@ var buttonback;
 var tempo;
 var gamePaused = false;
 var vel;
+var scene;
+var slider;
 
 const COLOR_PRIMARY = 0x89CFF0;
 const COLOR_LIGHT = 0x00FFFF;
@@ -94,6 +96,7 @@ export class PlayScene extends Phaser.Scene {
   }
 
   create() {
+    scene = this.scene;
     /* Vertical background movement */
     backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0, 0);
     backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0, 0);
@@ -142,7 +145,7 @@ export class PlayScene extends Phaser.Scene {
     print0.setColor(COLOR_DARK);
     print0.setFontSize(20);
 
-    var slider = this.rexUI.add.slider({
+    slider = this.rexUI.add.slider({
       x: canvasWidth - 120,
       y: canvasHeight - 40,
       width: 200,
@@ -201,7 +204,6 @@ export class PlayScene extends Phaser.Scene {
         vel = currentTempo + 34 + 3.55 * v;
         if (!gamePaused) {
           coins.setVelocityY(vel);
-          console.log(vel);
         }
       });
     })
@@ -343,10 +345,14 @@ export class PlayScene extends Phaser.Scene {
     for (var input of midi.inputs.values()) {
 
       input.onmidimessage = function (message) {
-        if (message.data[0] == 24) {
+        if (message.data[1] == 36 && message.data[0] == 144) {
           pauseGame();
-        } else if (message.data[0] == 26) {
-          this.scene.restart();
+        } else if (message.data[1] == 38 && message.data[0] == 144) {
+          scene.restart();
+        } else if (message.data[1] == 14){
+          let knobValue = message.data[2];
+          let bpm = (knobValue/127 * 80 + 60).toFixed(0);
+          slider.setValue(knobValue/127);
         }
         else {
           var noteIndex = midi_notes.indexOf(message.data[1]);
