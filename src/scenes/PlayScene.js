@@ -34,7 +34,7 @@ var prevCoin = null;
 var overlapping = false;
 var particles;
 var emitter;
-var startY = canvasHeight-200;
+var startY = canvasHeight - 200;
 var synth = null;
 
 //Variables for background
@@ -49,6 +49,7 @@ var custom = null;
 var sampler;
 var selectedSong = '';
 var buttonback;
+var tempo;
 
 const COLOR_PRIMARY = 0x89CFF0;
 const COLOR_LIGHT = 0x00FFFF;
@@ -86,19 +87,10 @@ export class PlayScene extends Phaser.Scene {
     this.load.image('line', 'assets/lineaACTAM.png');
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
     this.load.image('backbutton', 'assets/b_button.jpg', 193, 71);
-    //this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
+    this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
   }
 
   create() {
-    /* Orizontal background movement */
-    /*
-      background1 = this.physics.add.sprite(x1, 0, 'space1').setOrigin(0,0);
-      background2 = this.physics.add.sprite(x2, 0, 'space2').setOrigin(0,0);
-      background1.setScale(setBackgroundScale);
-      background2.setScale(setBackgroundScale);
-      background1.setVelocityX(- backgroundSpeed);
-      background2.setVelocityX(- backgroundSpeed);
-    */
     /* Vertical background movement */
     backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0, 0);
     backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0, 0);
@@ -144,6 +136,34 @@ export class PlayScene extends Phaser.Scene {
 
     layer1.add([pianoSprite]);
 
+    var print0 = this.add.text(canvasWidth - 220, canvasHeight - 80, "BPM: " + '');
+    print0.setColor(COLOR_DARK);
+    print0.setFontSize(20);
+
+    var slider = this.rexUI.add.slider({
+      x: canvasWidth - 120,
+      y: canvasHeight - 40,
+      width: 200,
+      height: 20,
+      orientation: 'x',
+
+      background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 14, COLOR_PRIMARY),
+      track: this.rexUI.add.roundRectangle(0, 0, 0, 0, 6, COLOR_DARK),
+      thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
+
+      valuechangeCallback: function (value) {
+        var bpm = 0;
+        bpm = (value * 80 + 60).toFixed(0);
+        print0.text = "BPM: " + bpm;
+      },
+      space: {
+        top: 4,
+        bottom: 4
+      },
+      input: 'drag', // 'drag'|'click'
+    })
+      .layout();
+
     coins = this.physics.add.group();
 
     // TO LOAD MIDI FILES ON DB
@@ -155,18 +175,29 @@ export class PlayScene extends Phaser.Scene {
     db.setSceneMelody(selectedSong);
     db.initializeLocalVariables();
     db.getDataInCustom(function (duration, notes, time) {
-      var tempo = db.getSongTempo();
+      tempo = db.getSongTempo();
       custom = new CustomFunctions(duration, notes, time);
       custom.melodyToSpace();
       custom.notesToCoins(arrayStep, coins, tempo);
       //first map: 100 = 0, 110 = 1 , 120 = 2...
-      var z = (tempo/10)-10;
+      var z = (tempo / 10) - 10;
       //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
-      var vel = tempo + 34 + 3.55*z;
+      var vel = tempo + 34 + 3.55 * z;
       coins.setVelocityY(vel);
       for (let i = 0; i < coins.getChildren().length; i++) {
         layer1.add([coins.getChildren()[i]]);
       }
+      slider.setValue((tempo - 60) / 80);
+
+      slider.on('valuechange', function () {
+        let currentTempo = (slider.getValue()* 80 + 60).toFixed(0);
+        currentTempo = parseInt(currentTempo);
+        console.log(currentTempo);
+        var v = (currentTempo / 10) - 10;
+        var vel = currentTempo + 34 + 3.55 * v;
+        coins.setVelocityY(vel);
+        console.log(vel);
+      });
     })
 
     layer1.add([player, line]);
@@ -335,15 +366,6 @@ export class PlayScene extends Phaser.Scene {
     }
 
     //message.data[1]->value of the note pressed
-
-    // Background movement controlled orizontally
-    /*
-      if (background1.x < -canvasWidth) background1.x = canvasWidth + background2.x - backgroundSpeed;
-      else background1.x = background1.x - backgroundSpeed; 
-    
-      if (background2.x < -canvasWidth) background2.x = canvasWidth + background1.x - backgroundSpeed;
-      else background2.x = background2.x - backgroundSpeed;
-    */
 
     // Background movement controlled vertically
 

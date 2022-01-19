@@ -76,22 +76,17 @@ export class MenuScene extends Phaser.Scene {
         var options1 = db.getDocNames(1);
         var options2 = db.getDocNames(2);
 
-
+        var dropDownList1 = CreateDropDownList(this, x / 2 + 150, y / 2 + 75, options1, true).layout()
         //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
-        //right button
+        //right button piano mode
         let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_piano").setDepth(1).setScale(.85);
-        var dropDownList1 = CreateDropDownList(this, x / 2 + 150, y / 2 + 75, options1).layout()
-
-        //left button
+        
+        var dropDownList2 = CreateDropDownList(this, x / 2 - 150, y / 2 + 75, options2, false).layout()
+        //left button wind mode
         let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_wind").setDepth(1).setScale(.85);
-        var dropDownList2 = CreateDropDownList(this, x / 2 - 150, y / 2 + 75, options2).layout()
 
 
         //this.scene.start(CST.SCENES.PLAY);
-
-
-
-
 
 
         playButton1.setInteractive();
