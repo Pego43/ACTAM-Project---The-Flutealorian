@@ -10,7 +10,7 @@ body{
 
 #detector{
     margin: 0px;
-    width: 170px;
+    width: 11%;
     height: 100px;
     margin-left: 1px;
     background-color: black;
@@ -59,7 +59,7 @@ body{
     margin: 1px;
     margin-left: 5px;
     padding-left: 20px;
-    width: 500px;
+    width: 32%;
     height: 100px;
     background-color: black;
     border: 5px solid grey;
@@ -89,9 +89,8 @@ body{
 }
 
 #exitGame{
-    width: 200px;
+    width: 90%;
     height: 20px;
-    margin-left: 10%;
     margin-top: 2px;
     margin-bottom: 5px;
     border-radius: 8px;
@@ -99,7 +98,7 @@ body{
     color: white;
 }
 #options{
-    width: 120px;
+    width: 125px;
     height: 20px;
     background-color:lightskyblue;
     color: black;
@@ -111,24 +110,15 @@ body{
 #waveform{
     margin: 1px;
     margin-left: 2px;
-    width: 500px;
+    width: 20%;
     height: 100px;
     background-color: black;
     border: 5px solid grey;
     border-radius: 8px;
     float: left;
 }
-.sliders{
-    margin: 1px;
-    margin-left: 5px;
-    width: 100px;
-    height: 100px;
-    background-color: black;
-    border: 5px solid grey;
-    border-radius: 8px;
-}
 #slider{
-    width: 300px;
+    width: 10%;
     height: 100px;
     margin-left: 5px;
     background-color: black;
