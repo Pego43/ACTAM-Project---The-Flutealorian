@@ -65,6 +65,7 @@ export class CustomFunctions {
       y -= 100;
       //Adding some space from a note to the other to give the player more reaction time
       y = y - (30 * i);
+      //y = y - (50 * i);
       
       var noteHeight = normNoteDuration * 50;
       coins.create(x, y, 'coin 4').setOrigin(0.5, 1).setDisplaySize(50, noteHeight);

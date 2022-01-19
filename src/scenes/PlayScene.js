@@ -169,11 +169,11 @@ export class PlayScene extends Phaser.Scene {
     coins = this.physics.add.group();
 
     // TO LOAD MIDI FILES ON DB
-   /*  const loadToDatabase = async () => {
-      await db.asyncMidiFunction();
-    } 
-    loadToDatabase(); */
-    
+    /*  const loadToDatabase = async () => {
+       await db.asyncMidiFunction();
+     } 
+     loadToDatabase(); */
+
 
     db.setSceneMelody(selectedSong);
     db.initializeLocalVariables();
@@ -194,18 +194,18 @@ export class PlayScene extends Phaser.Scene {
       slider.setValue((tempo - 60) / 80);
       vel = tempo;
       slider.on('valuechange', function () {
-        let currentTempo = (slider.getValue()* 80 + 60).toFixed(0);
+        let currentTempo = (slider.getValue() * 80 + 60).toFixed(0);
         currentTempo = parseInt(currentTempo);
 
         var v = (currentTempo / 10) - 10;
         vel = currentTempo + 34 + 3.55 * v;
-        if(!gamePaused){
+        if (!gamePaused) {
           coins.setVelocityY(vel);
           console.log(vel);
         }
       });
     })
-    
+
 
     layer1.add([player, line]);
 
@@ -297,14 +297,7 @@ export class PlayScene extends Phaser.Scene {
     let buttonpause = this.add.image(16, 16, "pausebutton").setOrigin(0).setDepth(1).setScale(.27);
     buttonpause.setInteractive();
     buttonpause.on("pointerup", () => {
-      if(!gamePaused){
-        gamePaused = true;
-        coins.setVelocityY(0);
-      } else {
-        gamePaused = false;
-        console.log(vel);
-        coins.setVelocityY(vel);
-      }
+      pauseGame();
     })
   }
 
@@ -347,39 +340,45 @@ export class PlayScene extends Phaser.Scene {
       emitter.setVisible(false);
     }
     // Movement with MIDI 
-
     for (var input of midi.inputs.values()) {
 
       input.onmidimessage = function (message) {
-        var noteIndex = midi_notes.indexOf(message.data[1]);
-        player.x = arrayStep[noteIndex];
-        line.x = arrayStep[noteIndex];
+        if (message.data[0] == 24) {
+          pauseGame();
+        } else if (message.data[0] == 26) {
+          this.scene.restart();
+        }
+        else {
+          var noteIndex = midi_notes.indexOf(message.data[1]);
+          player.x = arrayStep[noteIndex];
+          line.x = arrayStep[noteIndex];
 
-        //if note on
-        if (message.data[0] == 144) {
-          noteOn = true;
-          if (message.repeat) {
-            pressedOnce = false;
-          } else {
-            pressedOnce = true;
+          //if note on
+          if (message.data[0] == 144) {
+            noteOn = true;
+            if (message.repeat) {
+              pressedOnce = false;
+            } else {
+              pressedOnce = true;
+            }
+
+            emitter.setPosition(line.x, line.y);
+
+            //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
+            synth.triggerAttack(noteNames[noteIndex], Tone.now());
+
+            if (player.x <= arrayStep[noteIndex]) {
+              player.anims.play('flying_right');
+            } else {
+              //Movement to the left
+              player.anims.play('flying_left');
+            }
+          } else if (message.data[0] == 128) {
+            noteOn = false;
+            emitter.setVisible(false);
+            //sampler.triggerRelease(noteNames[noteIndex], Tone.now());
+            synth.triggerRelease(noteNames[noteIndex], Tone.now());
           }
-
-          emitter.setPosition(line.x, line.y);
-
-          //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
-          synth.triggerAttack(noteNames[noteIndex], Tone.now());
-
-          if (player.x <= arrayStep[noteIndex]) {
-            player.anims.play('flying_right');
-          } else {
-            //Movement to the left
-            player.anims.play('flying_left');
-          }
-        } else if (message.data[0] == 128) {
-          noteOn = false;
-          emitter.setVisible(false);
-          //sampler.triggerRelease(noteNames[noteIndex], Tone.now());
-          synth.triggerRelease(noteNames[noteIndex], Tone.now());
         }
       }
     }
@@ -393,5 +392,16 @@ export class PlayScene extends Phaser.Scene {
     if (backgroundV2.y > canvasHeight) backgroundV2.y = -canvasHeight + backgroundV1.y - backgroundSpeed;
     else backgroundV2.y = backgroundV2.y + backgroundSpeed;
 
+  }
+}
+
+function pauseGame() {
+  if (!gamePaused) {
+    gamePaused = true;
+    coins.setVelocityY(0);
+  } else {
+    gamePaused = false;
+    console.log(vel);
+    coins.setVelocityY(vel);
   }
 }
