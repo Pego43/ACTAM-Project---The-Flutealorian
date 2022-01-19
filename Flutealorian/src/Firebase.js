@@ -11,40 +11,48 @@ var db = firebaseApp.firestore();
 
 const collectionRef = db.collection('MicrophoneSongs');
 
-const docRef = collectionRef.doc("Prince of Egypt");
+var docRef = collectionRef.doc("Prince of Egypt");
 var noteArray = [];
 var durationArray = [];
 var timeArray = [];
 var melodyArray = [];
 var melodyToUpload = [];
 var songTempo;
+var songName = ''
 
 class DB {
   constructor() {
   }
 
   async initializeLocalVariables() {
-    console.log("prima");
-    docRef.get().then((doc) => {
+    docRef = collectionRef.doc("SongSelection");
+    return docRef.get().then((doc) => {
+      console.log("prima cosa");
       if (!doc.exists)
         return;
-      var c = doc.data();
-      melodyArray = doc.get("melody");
-      songTempo = doc.get("tempo");
-      //var t = JSON.stringify(c)
-      //const obj = JSON.parse(t);
-      //noteArray = obj.melody.split(',');
-      //dArray = obj.duration.split(',').map(Number);
-      //custom = new CustomFunctions(dArray, noteArray);
-      //noteArray.push(c)
-      melodyArray.forEach(element => {
-        noteArray.push(element.Note);
-        durationArray.push(element.Duration);
-        timeArray.push(element.Time);
+      songName = doc.get("songName");
+      docRef = collectionRef.doc(songName);
+      
+      return docRef.get().then((doc) => {
+        console.log("prima cosa e mezza");
+        if (!doc.exists)
+          return;
+
+        melodyArray = doc.get("melody");
+        songTempo = doc.get("tempo");
+        console.log(songTempo);
+        console.log(melodyArray);
+  
+        var fourthDuration = 60/songTempo;
+        melodyArray.forEach(element => {
+          noteArray.push(element.Note);
+  
+          var normDuration =(element.Duration/fourthDuration).toFixed(2);
+          durationArray.push(normDuration);
+  
+          timeArray.push(element.Time);
+        });
       });
-      console.log(durationArray);
-      if(durationArray.length == melodyArray.length)
-        return;
     });
   }
 
@@ -57,27 +65,11 @@ class DB {
   }
 
   getDurationArray() {
-    console.log("dopo");
-    var normDurationArray = new Array();
-    var fourthDuration = 60/songTempo;
-    console.log(durationArray);
-    durationArray.forEach(element => {
-      normDurationArray.push(Math.round(element/fourthDuration));
-      console.log(element);
-    });
-    console.log(normDurationArray);
-    return normDurationArray;
+    return durationArray;
   }
 
-  getDataInCustom(callback) {
-
-    docRef.get().then((doc) => {
-      if (!doc.exists)
-        return;
-      console.log("custom");
-      callback(durationArray, noteArray, timeArray);
-    });
-
+  getSongTempo(){
+    return songTempo;
   }
 
   async asyncMidiFunction() {
@@ -106,4 +98,6 @@ class DB {
     })
     return;
   }
+
+
 }

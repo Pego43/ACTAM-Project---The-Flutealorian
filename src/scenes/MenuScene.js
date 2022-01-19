@@ -1,7 +1,9 @@
-const COLOR_PRIMARY = 0xff0066;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
-var songSelected = '';
+const COLOR_PRIMARY = 0xff00ff;
+const COLOR_LIGHT = 0x7700b3;
+const COLOR_DARK = 0x7700b3;
+
+var windSongSelected = '';
+var pianoSongSelected = '';
 var db = new DB();
 
 import { CST } from "./CST.js";
@@ -14,15 +16,7 @@ export class MenuScene extends Phaser.Scene {
     }
     init(data) {
 
-        var element = document.createElement('style');
 
-        document.head.appendChild(element);
-
-        var sheet = element.sheet;
-
-        var styles = '@font-face { font-family: "tech"; src: url("assets/fonts/ttf/techno_hideo.ttf") format("opentype"); }\n';
-
-        sheet.insertRule(styles, 0);
 
 
     }
@@ -31,13 +25,17 @@ export class MenuScene extends Phaser.Scene {
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         this.load.image("loading1", "./assets/loading1.jpg");
-        this.load.image("start_button", "./assets/start_button.jpg");
+        this.load.image("title", "./assets/title1.png");
+        this.load.image("start_wind", "./assets/wind_mood.png");
+        this.load.image("start_piano", "./assets/piano_mood.png");
 
     }
     create() {
         var x = this.game.renderer.width;
         var y = this.game.renderer.height;
         this.add.image(0, 0, "loading1").setOrigin(0).setDisplaySize(x, y);
+        this.add.image(x / 2, y / 4, "title").setDepth(1);
+
 
         var add = this.add;
         var input = this.input;
@@ -46,88 +44,67 @@ export class MenuScene extends Phaser.Scene {
                 name: '?',
                 children: [
                     {
-                        name: 'Istruzioni gioco 1',
+                        name: 'Piano mode: connect a your midi device, select a song and play! \nWind mode: allow microphone usage, select a song and play! \nYou can either use a flute, a trumpet or even your voice! \nMake sure to enable the feature inside the game. \nOn both modalities you can adjust the speed of the song (BPMs) to meet your training needs.',
 
                     },
 
                 ],
-                children: [
-                    {
-                        name: 'Istruzioni gioco 2',
 
-                    },
-
-                ]
             },
 
         ];
-        
-        var scene = this,menu = undefined;
+
+        var scene = this, menu = undefined;
         menu = createMenu(scene, 15, 15, items, function (button) {
-        });
+        }).setDepth(2);
         this.input.on('pointerdown', function (pointer) {
             if (menu === undefined) {
                 menu = createMenu(scene, 15, 15, items, function (button) {
                 });
+                menu.setDepth(2);
             } else if (!menu.isInTouching(pointer)) {
                 menu.collapse();
                 menu = createMenu(scene, 15, 15, items, function (button) {
-                });;
+                });
+                menu.setDepth(2);
             }
         }, this);
 
-        
+
+
 
         var options1 = db.getDocNames(1);
         var options2 = db.getDocNames(2);
 
-
+        var dropDownList1 = CreateDropDownList(this, x / 2 + 150, y / 2 + 75, options1, true).layout()
         //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
-        //right button
-        let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList1 = CreateDropDownList(this, x/2 +150, y/2 +50, options1).layout()
-
-        //left button
-        let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_button").setDepth(1).setScale(.3);
-        var dropDownList2 = CreateDropDownList(this, x/2 -150, y/2 +50, options2).layout()
+        //right button piano mode
+        let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_piano").setDepth(1).setScale(.85);
+        
+        var dropDownList2 = CreateDropDownList(this, x / 2 - 150, y / 2 + 75, options2, false).layout()
+        //left button wind mode
+        let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_wind").setDepth(1).setScale(.85);
 
 
         //this.scene.start(CST.SCENES.PLAY);
 
 
-        WebFont.load({
-            custom: {
-                families: ['tech']
-            },
-            active: function () {
-                add.text(x / 3, y / 4, 'Select one song and Play!', { fontFamily: 'tech', fontSize: 30, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
-
-            }
-        });
-
-
-
         playButton1.setInteractive();
         playButton1.on("pointerup", () => {
-            if (songSelected != '')
-                this.scene.start(CST.SCENES.PLAY, songSelected);
+            if (pianoSongSelected != '')
+                this.scene.start(CST.SCENES.PLAY, pianoSongSelected);
         })
 
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
-            if(songSelected != '')
-                db.setSceneMicrophoneGame(songSelected);
+            if(windSongSelected != '')
                 location.href = "../../Flutealorian/src/index.html";
         })
-    }
-
-    getSelectedSong(){
-        return songSelected;
     }
 }
 
 //DROP DOWN MENU FUNCTIONS
-var CreateDropDownList = function (scene, x, y, options) {
+var CreateDropDownList = function (scene, x, y, options, mode) {
     var maxTextSize = GetMaxTextObjectSize(scene, options);
 
     var label = scene.rexUI.add.label({
@@ -167,7 +144,14 @@ var CreateDropDownList = function (scene, x, y, options) {
                     menuY = label.bottom;
                 menu = CreatePopupList(scene, menuX, menuY, options, function (button) {
                     label.setData('value', button.text);
-                    songSelected = button.text;
+                    if(mode){
+                        //piano mode
+                        pianoSongSelected = button.text;
+                    } else {
+                        //wind mode
+                        windSongSelected = button.text;
+                        db.setSceneMicrophoneGame(windSongSelected);
+                    }
                     menu.collapse();
                     menu = undefined;
                 });
@@ -265,10 +249,10 @@ var createMenu = function (scene, x, y, items, onClick) {
         items: items,
         createButtonCallback: function (item, i, items) {
             return scene.rexUI.add.label({
-                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY).setDepth(2),
                 text: scene.add.text(0, 0, item.name, {
                     fontSize: '20px'
-                }),
+                }).setDepth(2),
                 icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
                 space: {
                     left: 10,
@@ -282,7 +266,7 @@ var createMenu = function (scene, x, y, items, onClick) {
 
         // easeIn: 500,
         easeIn: {
-            duration: 500,
+            duration: 0,
             orientation: easeOrientation
         },
 
@@ -297,10 +281,10 @@ var createMenu = function (scene, x, y, items, onClick) {
 
     menu
         .on('button.over', function (button) {
-            button.getElement('background').setStrokeStyle(1, 0xffffff);
+            button.getElement('background').setStrokeStyle(1, 0xffffff).setDepth(2);
         })
         .on('button.out', function (button) {
-            button.getElement('background').setStrokeStyle();
+            button.getElement('background').setStrokeStyle().setDepth(2);
         })
         .on('button.click', function (button) {
             onClick(button);

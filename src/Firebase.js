@@ -48,7 +48,7 @@ export class DB {
     docRef = collectionRef.doc(song);
   }
 
-  setSceneMicrophoneGame(song){
+  async setSceneMicrophoneGame(song){
     db.collection('MicrophoneSongs').doc('SongSelection').set({songName: song});
     return;
   }
@@ -87,11 +87,11 @@ export class DB {
 
 
   async asyncMidiFunction() {
-    collectionRef = db.collection('Melody');
-    docRef = collectionRef.doc("Quarti 140bpm");
+    collectionRef = db.collection('MicrophoneSongs');
+    docRef = collectionRef.doc("The Mandalorian Theme");
 
     // load a midi file in the browser
-    const midi = await Midi.fromUrl("../4quarti 140bpm.mid");
+    const midi = await Midi.fromUrl("../Mandalorian theme.mid");
     //docRef = collectionRef.doc(name of user uploaded midi);
     //the file name decoded from the first track
     const name = midi.name

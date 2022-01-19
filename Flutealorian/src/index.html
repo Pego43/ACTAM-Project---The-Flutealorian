@@ -41,9 +41,9 @@
     <canvas id="waveform" defer></canvas>
 
     <div id='slider'>
-        <button id='exitGame'>EXIT</button>
+        <button id='exitGame' onClick="backButton();">BACK TO MENU'</button>
         <button id='options'>GAME SPEED</button>
-        <input type="range" min="1" max="8" step="1" value="4" onchange = "velocity=parseFloat(this.value)"></input>
+        <input type="range" min="1" max="6" step="1" value="4" onchange = "velocity=parseFloat(this.value)"></input>
         <button id='options'>BACKGROUND SPEED</button>
         <input type="range" min="1" max="8" step="1" value="5" onchange = "backgroundSpeed=parseFloat(this.value)"></input>
     </div>
