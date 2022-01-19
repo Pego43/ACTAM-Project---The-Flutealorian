@@ -44,7 +44,7 @@ export class MenuScene extends Phaser.Scene {
                 name: '?',
                 children: [
                     {
-                        name: ' Welcome to Flutealorian!\n To start playing, just\n select a song and press the button\n for the appropriate mode.',
+                        name: 'Piano mode: connect a your midi device, select a song and play! \nWind mode: allow microphone usage, select a song and play! \nYou can either use a flute, a trumpet or even your voice! \nMake sure to enable the feature inside the game. \nOn both modalities you can adjust the speed of the song (BPMs) to meet your training needs.',
 
                     },
 
