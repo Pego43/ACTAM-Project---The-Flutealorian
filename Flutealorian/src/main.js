@@ -13,8 +13,10 @@ canvas.height = 600;
 
 var notesHeight = canvas.height / 12;
 var lifeScore = document.getElementById('points');
+var speedOfTheGame = document.getElementById('speedGame');
+var speedOfTheBackground = document.getElementById('speedBack');
 var velocity = 4;
-var distance = 120;
+var distance = 150;
 var backgroundSpeed = 5;
 var stack = 40;
 var charNoteObstacles = 0;
@@ -49,7 +51,7 @@ async function loadFromDatabase(){
         var z = (tempo/10)-10;
         //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
         var vel = tempo + 34 + 3.55*z;
-        velocity = vel/60;
+        //velocity = vel/60;
         console.log(velocity);
     });
     
@@ -58,7 +60,6 @@ async function loadFromDatabase(){
 //----------------------------------------------------------------------*/
 
 var score = document.getElementById('score');
-//score.innerText = countNotes(theMelody.stringNote);
 const background = new Background(2400,canvas.height,backgroundSpeed,player,backgroundSpeed);
 const bang = new Image();
 const mando = new Image();
@@ -141,10 +142,15 @@ function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background.handleBackground(backgroundImage);
 
+    speedOfTheGame.style.backgroundColor = 'lightskyblue';
+    speedOfTheGame.style.color = 'black';
+    speedOfTheGame.innerText = velocity;
+
+
     let theNote = fromCharToNote(theMelody.stringNote[indexObstacleMelody]);
     let theDuration = theMelody.stringDuration[indexObstacleMelody];
 
-    handleObstacles(theNote, theDuration, theMelody.stringNote.length,);   
+    handleObstacles(theNote, theDuration, theMelody.stringNote.length);   
 
     //Winner condition
     if(obstaclesArray.length == 0 && indexObstacleMelody == theMelody.stringNote.length && endOfTheGame){
@@ -155,7 +161,7 @@ function animate(){
         player.y = moveOne(document.getElementById("number").innerText);
         //printLinesNotes(ctx);    
     }
-
+    
     player.update();
     player.draw();
     if(!player.collision && handleCollision()) return;
