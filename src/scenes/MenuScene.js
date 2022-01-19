@@ -17,20 +17,12 @@ export class MenuScene extends Phaser.Scene {
     }
     init(data) {
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     }
     preload() {
 
  
 
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-<<<<<<< Updated upstream
-        this.load.scenePlugin('rexwebfontloaderplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexwebfontloaderplugin.min.js','rexWebFont','rexWebFont');
-=======
->>>>>>> Stashed changes
         this.load.image("loading1", "./assets/loading1.jpg");
         this.load.image("title", "./assets/title1.png");
         this.load.image("start_wind", "./assets/wind_mood.png");
