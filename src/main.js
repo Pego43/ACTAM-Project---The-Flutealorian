@@ -1,5 +1,6 @@
 /** @type {import("../typings/phaser")} */
 //import UIPlugin from '../node_modules/phaser3-rex-plugins/templates/ui/ui-plugin.js';
+//simport WebFontLoaderPlugin from '../node_modules/phaser3-rex-plugins/plugins/webfontloader-plugin.js';
 var canvasWidth = window.innerWidth - 30;
 var canvasHeight = window.innerHeight - 30;
 
@@ -20,7 +21,7 @@ let game = new Phaser.Game({
       gravity: { y: 0 },
       debug: false
     }
-  },
+  }
 });
 
 

@@ -8,6 +8,7 @@ var db = new DB();
 
 import { CST } from "./CST.js";
 import { DB } from "../Firebase.js";
+
 export class MenuScene extends Phaser.Scene {
     constructor() {
         super({
@@ -17,17 +18,29 @@ export class MenuScene extends Phaser.Scene {
     init(data) {
 
 
-
-
     }
     preload() {
 
+ 
+
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-        this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+        this.load.scenePlugin('rexwebfontloaderplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexwebfontloaderplugin.min.js','rexWebFont','rexWebFont');
         this.load.image("loading1", "./assets/loading1.jpg");
         this.load.image("title", "./assets/title1.png");
         this.load.image("start_wind", "./assets/wind_mood.png");
         this.load.image("start_piano", "./assets/piano_mood.png");
+
+        
+    
+
+        this.load.rexWebFont({
+            google: {
+                families: ['Bangers']
+            },
+            // testString: undefined,
+            // testInterval: 20,
+        });
+    
 
     }
     create() {
