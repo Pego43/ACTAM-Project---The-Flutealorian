@@ -50,6 +50,8 @@ var sampler;
 var selectedSong = '';
 var buttonback;
 var tempo;
+var gamePaused = false;
+var vel;
 
 const COLOR_PRIMARY = 0x89CFF0;
 const COLOR_LIGHT = 0x00FFFF;
@@ -57,7 +59,6 @@ const COLOR_DARK = 0x0000FF;
 
 //promise.then( (db.getNotes()) => custom = new CustomFunction(db.getNotes(), db.getDuration()));
 //var custom = new CustomFunctions(db.getNotes(), db.getDuration());
-
 
 export class PlayScene extends Phaser.Scene {
   constructor() {
@@ -87,6 +88,7 @@ export class PlayScene extends Phaser.Scene {
     this.load.image('line', 'assets/lineaACTAM.png');
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
     this.load.image('backbutton', 'assets/b_button.jpg', 193, 71);
+    this.load.image('pausebutton', 'assets/p_button.png');
     this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
   }
 
@@ -99,7 +101,6 @@ export class PlayScene extends Phaser.Scene {
     backgroundV2.setScale(setBackgroundScale);
     backgroundV1.setVelocityY(- backgroundSpeed);
     backgroundV2.setVelocityY(- backgroundSpeed);
-
 
     //stores the note steps in an array
     for (let i = 0; i < nNote; i++) {
@@ -131,12 +132,12 @@ export class PlayScene extends Phaser.Scene {
     //COINS
     const layer1 = this.add.layer();
 
-    //const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0,0).setScale(6,10);
     const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0, 0).setDisplaySize(canvasWidth, 200);
 
     layer1.add([pianoSprite]);
 
-    var print0 = this.add.text(canvasWidth - 220, canvasHeight - 80, "BPM: " + '');
+    const bpmBackground = this.rexUI.add.roundRectangle(canvasWidth - 120, canvasHeight - 70, 200, 10, 20, COLOR_LIGHT);
+    var print0 = this.add.text(canvasWidth - 200, canvasHeight - 80, "BPM: " + '');
     print0.setColor(COLOR_DARK);
     print0.setFontSize(20);
 
@@ -182,28 +183,31 @@ export class PlayScene extends Phaser.Scene {
       //first map: 100 = 0, 110 = 1 , 120 = 2...
       var z = (tempo / 10) - 10;
       //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
-      var vel = tempo + 34 + 3.55 * z;
-      coins.setVelocityY(vel);
+      var coinVel = tempo + 34 + 3.55 * z;
+      coins.setVelocityY(coinVel);
       for (let i = 0; i < coins.getChildren().length; i++) {
         layer1.add([coins.getChildren()[i]]);
       }
+      //SLIDER CHANGE
       slider.setValue((tempo - 60) / 80);
-
+      vel = tempo;
       slider.on('valuechange', function () {
         let currentTempo = (slider.getValue()* 80 + 60).toFixed(0);
         currentTempo = parseInt(currentTempo);
-        console.log(currentTempo);
+
         var v = (currentTempo / 10) - 10;
-        var vel = currentTempo + 34 + 3.55 * v;
-        coins.setVelocityY(vel);
-        console.log(vel);
+        vel = currentTempo + 34 + 3.55 * v;
+        if(!gamePaused){
+          coins.setVelocityY(vel);
+          console.log(vel);
+        }
       });
     })
 
     layer1.add([player, line]);
 
     //SCORE
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+    scoreText = this.add.text(180, 24, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //SOUND
     synth = new Tone.PolySynth().toDestination();
@@ -230,10 +234,11 @@ export class PlayScene extends Phaser.Scene {
     });
     layer1.add([particles]);
     layer1.sendToBack(particles);
+
+    //CHARACTER-COIN OVERLAP FUNCTION
     var once = true;
     var otherOnce = true;
     var startTime;
-
     this.physics.add.overlap(line, coins, function (player, coin) {
       overlapping = true;
       if (once) {
@@ -258,33 +263,39 @@ export class PlayScene extends Phaser.Scene {
           emitter.setVisible(true);
         }
         if (coin != prevCoin && !pressedOnce) {
-          emitter.setVisible(false);
+          //emitter.setVisible(false);
         } else if (coin == prevCoin && !pressedOnce) {
           score += 10;
           layer1.sendToBack(coin);
         }
       }
-      if ((line.y - 4) <= Math.round(coin.y - (coin.displayHeight / 2))) {
+      if ((line.y - 2) <= Math.round(coin.y - (coin.displayHeight / 2))) {
         overlapping = false;
+        console.log(overlapping);
         prevCoin = coin;
-        /* if(otherOnce){
-          otherOnce = false;
-          var endTime = performance.now();
-          var timeDiff = endTime - startTime; //in ms
-          // strip the ms
-          timeDiff /= 1000;
-          // get seconds 
-          var seconds = timeDiff;
-          console.log(seconds + " seconds");
-        } */
       }
       scoreText.setText('Score: ' + score);
     }, null, this);
 
+    //BACKBUTTON
     let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(.15);
     buttonback.setInteractive();
     buttonback.on("pointerup", () => {
       this.scene.start(CST.SCENES.MENU);
+    })
+
+    //PAUSE BUTTON
+    let buttonpause = this.add.image(16, 16, "pausebutton").setOrigin(0).setDepth(1).setScale(.27);
+    buttonpause.setInteractive();
+    buttonpause.on("pointerup", () => {
+      if(!gamePaused){
+        gamePaused = true;
+        coins.setVelocityY(0);
+      } else {
+        gamePaused = false;
+        console.log(vel);
+        coins.setVelocityY(vel);
+      }
     })
   }
 
@@ -293,23 +304,19 @@ export class PlayScene extends Phaser.Scene {
 
     /* window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
-      if(!overlapping){
-        emitter.setVisible(false);
-      }
       if(!e.repeat){
         if (noteIndex >= 0 && noteIndex < keys.length) {
           player.x = arrayStep[noteIndex];
           line.x = arrayStep[noteIndex];
-
           emitter.setPosition(line.x, line.y);
-          sound.play(noteIndex);
+          //synth.triggerAttack(noteNames[noteIndex], Tone.now());
           noteOn = true;
-          if (player.x <= arrayStep[noteIndex]) {
+          /* if (player.x <= arrayStep[noteIndex]) {
             player.anims.play('flying_right');
           } else {
             //Movement to the left
             player.anims.play('flying_left');
-          }
+          } 
         }
       pressedOnce = true;
       } else {
@@ -322,8 +329,11 @@ export class PlayScene extends Phaser.Scene {
       if (noteIndex >= 0 && noteIndex < keys.length) {
         noteOn = false;
         emitter.setVisible(false);
+        //synth.triggerRelease(noteNames[noteIndex], Tone.now());
       }
-    }); */
+    }); 
+    */
+
     if (!overlapping) {
       emitter.setVisible(false);
     }
@@ -364,7 +374,6 @@ export class PlayScene extends Phaser.Scene {
         }
       }
     }
-
     //message.data[1]->value of the note pressed
 
     // Background movement controlled vertically
