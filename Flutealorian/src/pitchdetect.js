@@ -10,7 +10,7 @@ var mediaStreamSource = null;
 var detectorElem, canvasElem,waveCanvas,pitchElem,noteElem,detuneElem,detuneAmount;
 var instrumentTrumpet  = false;
 var frequencySensibility = 450; // Variable for control the sensibility of the frequencies
-var maxFrequency = 2093;
+//var maxFrequency = 2093;
 
 window.onload = function() {
 	audioContext = new AudioContext();
@@ -277,7 +277,7 @@ function updatePitch() {
  	} else{
 	 	pitch = ac;
 		 //Check the maxFrequency
-		 if(Math.round(pitch) >= frequencySensibility && Math.round(pitch) < maxFrequency ){
+		 if(Math.round(pitch) >= frequencySensibility /*&& Math.round(pitch) < maxFrequency*/ ){
 			pitchElem.innerText = Math.round( pitch ) ;
 			if(instrumentTrumpet) var note = trumpetNoteFromPitch(pitch);	
 			else var note =  noteFromPitch( pitch );
