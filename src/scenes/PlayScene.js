@@ -177,12 +177,6 @@ export class PlayScene extends Phaser.Scene {
     //SCORE
     scoreText = this.add.text(180, 24, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
-    // TO LOAD MIDI FILES ON DB
-    /* const loadToDatabase = async () => {
-     await db.asyncMidiFunction();
-    } 
-    loadToDatabase(); */
-
     //COINS
     coins = this.physics.add.group();
 
@@ -274,14 +268,14 @@ export class PlayScene extends Phaser.Scene {
     }, null, this);
 
     //BACK BUTTON
-    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(.15);
+    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(1.2);
     buttonback.setInteractive();
     buttonback.on("pointerup", () => {
       this.scene.start(CST.SCENES.MENU);
     })
 
     //RESTART BUTTON
-    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(.32);
+    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(1.2);
     buttonrestart.setInteractive();
     buttonrestart.on("pointerup", () => {
       this.scene.restart();
