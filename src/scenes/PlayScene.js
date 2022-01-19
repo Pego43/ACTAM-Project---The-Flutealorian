@@ -89,6 +89,7 @@ export class PlayScene extends Phaser.Scene {
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
     this.load.image('backbutton', 'assets/b_button.jpg', 193, 71);
     this.load.image('pausebutton', 'assets/p_button.png');
+    this.load.image('restartbutton', 'assets/r_button.png');
     this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
   }
 
@@ -168,7 +169,7 @@ export class PlayScene extends Phaser.Scene {
     coins = this.physics.add.group();
 
     // TO LOAD MIDI FILES ON DB
-    /* const loadToDatabase = async () => {
+   /*  const loadToDatabase = async () => {
       await db.asyncMidiFunction();
     } 
     loadToDatabase(); */
@@ -282,6 +283,12 @@ export class PlayScene extends Phaser.Scene {
     buttonback.setInteractive();
     buttonback.on("pointerup", () => {
       this.scene.start(CST.SCENES.MENU);
+    })
+
+    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(.32);
+    buttonrestart.setInteractive();
+    buttonrestart.on("pointerup", () => {
+      this.scene.restart();
     })
 
     //PAUSE BUTTON

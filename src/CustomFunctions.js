@@ -62,6 +62,7 @@ export class CustomFunctions {
       normNoteDuration = normNoteDuration.toFixed(2);
       normNoteTime = normNoteTime.toFixed(2);
       var y = -(normNoteTime * 50);
+      y -= 100;
       //Adding some space from a note to the other to give the player more reaction time
       y = y - (30 * i);
       
