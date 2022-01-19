@@ -1,13 +1,14 @@
 const obstaclesArray = [];
 
 class Obstacle{
+    // Constructor
     constructor(note, duration, charNote){
         this.note = note;
         this.duration = duration;
         this.stack = stack;
         this.top = canvas.height-((notesHeight*this.note)+ notesHeight + this.stack);
         this.bottom = (notesHeight*this.note) - this.stack;
-        this.x = canvas.width; //Da dove iniziano a comparire i blocchi
+        this.x = canvas.width;
         this.width = 100*duration;
         this.color = 'darkgray';
         this.counted = false;
@@ -17,6 +18,7 @@ class Obstacle{
         this.charNote = charNote; 
     }
 
+    // Draw the obstacle
     draw(c){
         if(this.note == -1){
             // Note doesn't not identified
@@ -49,15 +51,13 @@ class Obstacle{
                 c.fillRect(this.x, 0, this.width, this.top);
                 c.fillRect(this.x,canvas.height - this.bottom, this.width, this.bottom); 
             }
-            
-
             /* Draw the notes */
             c.lineWidth = 3;
-            //Notes taken
+            // Notes taken
             if(player.x >= this.x-5 && !player.collision)c.strokeStyle = 'lightgreen';
-            //Notes not available
+            // Notes not available
             else if (player.collision && player.collision) c.strokeStyle = 'red';
-            //Notes to take
+            // Notes to take
             else c.strokeStyle = background.colorText;
 
             //If there are note with # ore b
@@ -71,7 +71,8 @@ class Obstacle{
             }
         }
     }
-    
+
+    // Update of the obstacle
     update(v){
         this.speed = v;
         this.x -= this.speed;
@@ -85,6 +86,9 @@ class Obstacle{
     }
 }
 
+/* Functions */
+
+// Function for identify the notes undefined
 function undefinedNote(n){
     if (n.innerText == 'undefined'){
         n.innerText = '';
@@ -92,8 +96,10 @@ function undefinedNote(n){
     return n;
 }
 
+// Function for create the obstacles and update their positions
 function handleObstacles(currentNote, currentDur, melodyLength){
     
+    // Creation of the obstacle
     if( (indexObstacleMelody == 0 && indexObstacleMelody < melodyLength)    ||
         (indexObstacleMelody < melodyLength && (obstaclesArray[0].x + obstaclesArray[0].width + distance <= canvas.width) )
         ){
@@ -102,12 +108,12 @@ function handleObstacles(currentNote, currentDur, melodyLength){
             indexObstacleMelody++;           
     }
     
-    // I create my obstacle
+    // Update of the obstacles
         for(let i=0; i < obstaclesArray.length; i++){
             obstaclesArray[i].update(velocity);
         }
 
-    //I delete an obstacle if the length of the array is more then a number
+    // Delete the obstalces
     if(obstaclesArray.length > 30){
        obstaclesArray.pop(obstaclesArray[0]);
     }

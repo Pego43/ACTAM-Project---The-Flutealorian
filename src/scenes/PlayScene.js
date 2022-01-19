@@ -173,6 +173,7 @@ export class PlayScene extends Phaser.Scene {
       await db.asyncMidiFunction();
     } 
     loadToDatabase(); */
+    
 
     db.setSceneMelody(selectedSong);
     db.initializeLocalVariables();
@@ -204,6 +205,7 @@ export class PlayScene extends Phaser.Scene {
         }
       });
     })
+    
 
     layer1.add([player, line]);
 

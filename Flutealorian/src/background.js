@@ -81,19 +81,15 @@ class Background{
         }
 }
 
+/* Functions */
+
+// Function for show the game over
 function gameOver(c){
     c.drawImage(bang,player.x,player.y,100,100);
     c.font = "70px Georgia";
     c.strokeStyle = '#090';
     c.lineWidth = 3;
     c.strokeText('Game Over', 290,290);
-}
-
-function loading(c){
-    c.font = "70px Georgia";
-    c.strokeStyle = 'gold';
-    c.lineWidth = 3;
-    c.strokeText('Loading...', 290,290);
 }
 
 //Draw the score
@@ -124,8 +120,10 @@ function endGame(c){
     }, 1000);
 }
 
+// Function for change the background
 function changeBackground(v){backgroundImage = v;}
 
+//Function for setting on/off two buttons 
 function setTwoButtonColors(on,off){
     document.getElementById(on).style.backgroundColor='green';
 	document.getElementById(on).style.color='white';
@@ -133,6 +131,7 @@ function setTwoButtonColors(on,off){
 	document.getElementById(off).style.color='black';
 }
 
+//Function for setting on/off three buttons
 function setThreeButtonColors(on,off1,off2){
     document.getElementById(on).style.backgroundColor='green';
 	document.getElementById(on).style.color='white';
@@ -143,11 +142,13 @@ function setThreeButtonColors(on,off1,off2){
 
 }
 
+// Function for setting play and stop button
 function buttonsGame(){
     if(PlayAndStop) setTwoButtonColors('playButton','stopButton');
 	else setTwoButtonColors('stopButton','playButton');
 }
 
+// Functions for print the position of the player
 function printLinesNotes(c){
             let lineValue = fromCharToNote(document.getElementById("note").innerText);
             c.strokeStyle = "grey";
@@ -161,6 +162,7 @@ function printLinesNotes(c){
             c.stroke();
 }
 
+// Function for back to the menu of the game 
 function backButton(){
     location.href = "../../src/index.html";
 }

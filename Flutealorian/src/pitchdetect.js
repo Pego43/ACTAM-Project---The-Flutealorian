@@ -9,12 +9,13 @@ var DEBUGCANVAS = null;
 var mediaStreamSource = null;
 var detectorElem, canvasElem,waveCanvas,pitchElem,noteElem,detuneElem,detuneAmount;
 var instrumentTrumpet  = false;
-var frequencySensibility = 450; //Per attutire la sensibilità
+var frequencySensibility = 450; // Variable for control the sensibility of the frequencies
+//var maxFrequency = 2093;
 
 window.onload = function() {
 	audioContext = new AudioContext();
 	audioContext.resume();
-	MAX_SIZE = Math.max(4,Math.floor(audioContext.sampleRate/5000));// corresponds to a 5kHz signal
+	MAX_SIZE = Math.max(4,Math.floor(audioContext.sampleRate / 5000));// corresponds to a 5kHz signal
 
 	detectorElem = document.getElementById( "detector" );
 	canvasElem = document.getElementById( "output" );
@@ -275,7 +276,8 @@ function updatePitch() {
 		numberElem.innerText = "--";
  	} else{
 	 	pitch = ac;
-		 if(Math.round(pitch) >= frequencySensibility){
+		 //Check the maxFrequency
+		 if(Math.round(pitch) >= frequencySensibility /*&& Math.round(pitch) < maxFrequency*/ ){
 			pitchElem.innerText = Math.round( pitch ) ;
 			if(instrumentTrumpet) var note = trumpetNoteFromPitch(pitch);	
 			else var note =  noteFromPitch( pitch );

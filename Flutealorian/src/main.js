@@ -1,27 +1,22 @@
-// TODO
-
-// Sistemare lo score...per ora non si incrementa
-
-// https://tomhess.net/Tools/DelayCalculator.aspx
-
 /* SETUP */
-// Canvas setup
+
+// Setup Canvas
 const canvas = document.getElementById('canvasGame');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth - 10;
 canvas.height = 600;
 
+// Setup variables
 var notesHeight = canvas.height / 12;
 var lifeScore = document.getElementById('points');
 var speedOfTheGame = document.getElementById('speedGame');
-var speedOfTheBackground = document.getElementById('speedBack');
+var score = document.getElementById('score');
 var velocity = 4;
 var distance = 150;
 var backgroundSpeed = 5;
 var stack = 40;
 var charNoteObstacles = 0;
 var endOfTheGame = false;
-
 
 let spacePressed = false;
 let frame = 0;
@@ -32,15 +27,13 @@ let PlayAndStop = true;
 
 const noteStrings = ["C", "C#-Db", "D", "D#-Eb", "E", "F", "F#-Gb", "G", "G#-Ab", "A", "A#-Bb", "B"];
 
-//SetUp Melodies
+//SetUp Melody
 
-//  With no Database
+//Without Database
 //var theMelody = new Melody(myNotesChar,myNotesDur);
 
 //  With Database
-//----------------------------------------------------------------------//
 var theMelody = new Melody([],[]);  
-
 async function loadFromDatabase(){
     getValuesFromDB().then(()=>{
         console.log("in teoria ultima cosa da fare");
@@ -52,14 +45,10 @@ async function loadFromDatabase(){
         //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
         var vel = tempo + 34 + 3.55*z;
         //velocity = vel/60;
-        console.log(velocity);
-    });
-    
+    });   
 }
 
-//----------------------------------------------------------------------*/
-
-var score = document.getElementById('score');
+// Setupt images
 const background = new Background(2400,canvas.height,backgroundSpeed,player,backgroundSpeed);
 const bang = new Image();
 const mando = new Image();
@@ -76,13 +65,14 @@ tower.src = 'Ostacolo_2.png';
 
 /* FUNCTIONS */
 
-//True becomes False or viceversa
+// True becomes False or viceversa
 function trueOrFalse(e){
     if(e) e=false;
     else e=true;
     return e;
 }
 
+// For start and stop the game
 function PlayMe(){
     if(!PlayAndStop){
         PlayAndStop = true;
@@ -90,7 +80,7 @@ function PlayMe(){
     }
 }
 
-//Movement of the player
+// Movement of the player
 function moveOne(n){
     if(n>=0 && n<12){
         return (canvas.height - player.height) - (notesHeight*n);
@@ -99,6 +89,7 @@ function moveOne(n){
     }
 }
 
+// For setting the initial score
 function scoreSetting(){
     if(frame==0 && tempo==0){
         setTimeout(() => {
@@ -107,7 +98,7 @@ function scoreSetting(){
     }
 }
 
-//Detection of collision
+// Detection of collision
 function handleCollision(){
     for(let i=0; i <obstaclesArray.length; i++){
         if  ( !player.collision && player.x < obstaclesArray[i].x + obstaclesArray[i].width && player.x + player.width > obstaclesArray[i].x &&
@@ -137,6 +128,7 @@ function handleCollision(){
 
 /* CONTROLLER */
 
+// Function for the animation of tha game
 function animate(){
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -172,6 +164,7 @@ function animate(){
 }
 
 /* VIEW */
+
 loadFromDatabase();
 scoreSetting();
 animate(); 
