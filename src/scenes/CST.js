@@ -10,10 +10,4 @@ export const CST = {
         PLAY: "play_button.png",
         TITLE: "title_bg.jpg"
     },
-    AUDIO: {
-        TITLE: "shuinvy-childhood.mp3"
-    },
-    SPRITE: {
-        CAT: "cat.png"
-    }
 }

@@ -1,66 +1,60 @@
+const COLOR_PRIMARY = 0x89CFF0;
+const COLOR_LIGHT = 0x00FFFF;
+const COLOR_DARK = 0x0000FF;
+
 import { CST } from "./CST.js";
 import { CustomFunctions } from "../CustomFunctions.js";
-import { CustomSound } from "../CustomSound.js";
 import { DB } from "../Firebase.js";
 
-const backgroundHeight = window.innerHeight - 20;;
-const backgroundWidth = window.innerWidth - 20;
-var canvasWidth = window.innerWidth - 20;
-var canvasHeight = window.innerHeight - 20;
-
-//KEYBOARD input
-var keys = "awsedftgyhujkolpòà";
-
-//MIDI input (da gestire perchè inizialmente da errore)
-var midi = await navigator.requestMIDIAccess();
-var midi_notes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72];
-var noteNames = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'];
-var noteOn = false;
-//48 is C, and 60 is the upper C
-var nNote = 25;
-var step = ((canvasWidth / nNote));
-var player;
-var arrayStep = [];
-var nextStep;
-var coins;
-var notes = [];
+var scene;
 var score = 0;
-var scoreText;
-var background1, background2, backgroundV1, backgroundV2;
-var line;
-var pressedOnce = false;
-var consumedBar = 0;
-var prevCoin = null;
-var overlapping = false;
-var particles;
-var emitter;
-var startY = canvasHeight - 200;
-var synth = null;
-
 //Variables for background
+const backgroundWidth = window.innerWidth - 20;
+var canvasWidth = backgroundWidth;
+var canvasHeight = window.innerHeight - 20;
 var setBackgroundScale = canvasWidth / backgroundWidth;
 var x1 = 0;
 var x2 = canvasWidth;
 var x3 = canvasHeight
 var backgroundSpeed = 1;
-var db = new DB();
-const sound = new CustomSound();
-var custom = null;
-var sampler;
-var selectedSong = '';
-var buttonback;
-var tempo;
-var gamePaused = false;
-var vel;
-var scene;
+var backgroundV1, backgroundV2;
+//player positions
+var arrayStep = [];
+var nextStep;
+var nNote = 25;
+var step = ((canvasWidth / nNote));
+//player
+var player;
+var line;
+var startY = canvasHeight - 200;
+var particles;
+var emitter;
+var scoreText;
+//coins and melody
 var slider;
-
-const COLOR_PRIMARY = 0x89CFF0;
-const COLOR_LIGHT = 0x00FFFF;
-const COLOR_DARK = 0x0000FF;
-
-//promise.then( (db.getNotes()) => custom = new CustomFunction(db.getNotes(), db.getDuration()));
-//var custom = new CustomFunctions(db.getNotes(), db.getDuration());
+var db = new DB();
+var selectedSong = '';
+var tempo;
+var custom = null;
+var prevCoin = null;
+var coins;
+var vel;
+var gamePaused = false;
+//coin-player interaction
+var overlapping = false;
+var noteOn = false;
+var pressedOnce = false;
+var coinList = new Array();
+//sound
+var synth = null;
+var sampler;
+//KEYBOARD input to debug
+var keys = "awsedftgyhujkolpòà";
+//MIDI input
+var midi = await navigator.requestMIDIAccess();
+var midi_notes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72];
+var noteNames = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
+  'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'];
 
 export class PlayScene extends Phaser.Scene {
   constructor() {
@@ -74,19 +68,14 @@ export class PlayScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('ground', 'assets/platform.png');
     this.load.image('piano', 'assets/piano keyboard actam.png');
     this.load.image('space1', 'assets/Space1.jpg');
     this.load.image('space2', 'assets/Space2.jpg');
     this.load.image('spaceV1', 'assets/Space1V.jpg');
     this.load.image('spaceV2', 'assets/Space1V.jpg');
-    this.load.image('coin 1', 'assets/money_square 1.png');
-    this.load.image('coin 2', 'assets/money_square 2.png');
-    this.load.image('coin 3', 'assets/money_square 3.png');
     this.load.image('coin 4', 'assets/money_square 4.png');
     this.load.spritesheet('character_right', 'assets/M_steps_R.png', { frameWidth: 200, frameHeight: 300 });
     this.load.spritesheet('character_left', 'assets/M_steps_L.png', { frameWidth: 200, frameHeight: 300 });
-    this.load.audio('metronome', ['assets/metronomo_bip.wav']);
     this.load.image('line', 'assets/lineaACTAM.png');
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
     this.load.image('backbutton', 'assets/back.png');
@@ -96,17 +85,20 @@ export class PlayScene extends Phaser.Scene {
   }
 
   create() {
+    //INITIALIZING GAME VARS
+    score = 0;
     scene = this.scene;
+    coinList = [];
+
     /* Vertical background movement */
     backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0, 0);
     backgroundV2 = this.physics.add.sprite(0, -x3, 'spaceV2').setOrigin(0, 0);
-
     backgroundV1.setScale(setBackgroundScale);
     backgroundV2.setScale(setBackgroundScale);
     backgroundV1.setVelocityY(- backgroundSpeed);
     backgroundV2.setVelocityY(- backgroundSpeed);
 
-    //stores the note steps in an array
+    //storing all possible character positions (corresponding to the piano keys)
     for (let i = 0; i < nNote; i++) {
       nextStep = ((step / 2) + i * step);
       arrayStep[i] = nextStep;
@@ -114,7 +106,22 @@ export class PlayScene extends Phaser.Scene {
 
     //PLAYER
     player = this.physics.add.sprite(20, startY + 48, 'character_right').setScale(0.30);
+    //collider to get coins
     line = this.physics.add.sprite(20, startY, 'line').setScale(0.30);
+
+    //Particles to indicate tha player is getting the right notes
+    particles = this.add.particles('flares');
+    emitter = particles.createEmitter({
+      frame: 'blue',
+      lifespan: 200,
+      speed: { min: 300, max: 500 },
+      angle: 270,
+      gravityY: 30,
+      scale: { start: 0.5, end: 0 },
+      quantity: 2,
+      blendMode: 'ADD',
+      visible: false
+    });
 
     //ANIMATION
     this.anims.create({
@@ -123,23 +130,21 @@ export class PlayScene extends Phaser.Scene {
       frameRate: 5,
       repeat: -1
     });
-    this.anims.create({
-      key: 'flying_left',
-      frames: this.anims.generateFrameNumbers('character_left', { start: 0, end: 2 }),
-      frameRate: 5,
-      repeat: -1
-    });
 
-    //CHARACTER INITIALIZATION
+    //CHARACTER ANIMATION
     player.anims.play('flying_right');
 
-    //COINS
-    const layer1 = this.add.layer();
-
+    //PIANO KEYBOARD IMAGE 
     const pianoSprite = this.add.sprite(0, startY, 'piano').setOrigin(0, 0).setDisplaySize(canvasWidth, 200);
 
+    //LAYER OBJECT -> to make coins disappear under the keyboard when getting them
+    const layer1 = this.add.layer();
     layer1.add([pianoSprite]);
+    layer1.add([player, line]);
+    layer1.add([particles]);
+    layer1.sendToBack(particles);
 
+    //BPM slider and text
     const bpmBackground = this.rexUI.add.roundRectangle(canvasWidth - 120, canvasHeight - 70, 200, 10, 20, COLOR_LIGHT);
     var print0 = this.add.text(canvasWidth - 200, canvasHeight - 80, "BPM: " + '');
     print0.setColor(COLOR_DARK);
@@ -158,7 +163,7 @@ export class PlayScene extends Phaser.Scene {
 
       valuechangeCallback: function (value) {
         var bpm = 0;
-        bpm = (value * 80 + 60).toFixed(0);
+        bpm = normToTempo(value);
         print0.text = "BPM: " + bpm;
       },
       space: {
@@ -169,50 +174,48 @@ export class PlayScene extends Phaser.Scene {
     })
       .layout();
 
-    coins = this.physics.add.group();
+    //SCORE
+    scoreText = this.add.text(180, 24, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     // TO LOAD MIDI FILES ON DB
-      /* const loadToDatabase = async () => {
-       await db.asyncMidiFunction();
-     } 
-     loadToDatabase(); */
+    /* const loadToDatabase = async () => {
+     await db.asyncMidiFunction();
+    } 
+    loadToDatabase(); */
 
+    //COINS
+    coins = this.physics.add.group();
 
     db.setSceneMelody(selectedSong);
     db.initializeLocalVariables();
     db.getDataInCustom(function (duration, notes, time) {
       tempo = db.getSongTempo();
       custom = new CustomFunctions(duration, notes, time);
-      custom.melodyToSpace();
       custom.notesToCoins(arrayStep, coins, tempo);
+      //Setting coins velocity
       //first map: 100 = 0, 110 = 1 , 120 = 2...
       var z = (tempo / 10) - 10;
       //second map: velocity = f(bpm) = bpm + 34 + 3.55*z;
-      var coinVel = tempo + 34 + 3.55 * z;
+      var coinVel = tempoToGameVelocity(tempo, z);
       coins.setVelocityY(coinVel);
+      //adding each coin to the highest layer
       for (let i = 0; i < coins.getChildren().length; i++) {
         layer1.add([coins.getChildren()[i]]);
       }
+
       //SLIDER CHANGE
       slider.setValue((tempo - 60) / 80);
       vel = tempo;
       slider.on('valuechange', function () {
-        let currentTempo = (slider.getValue() * 80 + 60).toFixed(0);
+        let currentTempo = normToTempo(slider.getValue());
         currentTempo = parseInt(currentTempo);
-
         var v = (currentTempo / 10) - 10;
-        vel = currentTempo + 34 + 3.55 * v;
+        vel = tempoToGameVelocity(currentTempo, v);
         if (!gamePaused) {
           coins.setVelocityY(vel);
         }
       });
     })
-
-
-    layer1.add([player, line]);
-
-    //SCORE
-    scoreText = this.add.text(180, 30, 'score: 0', { fontSize: '32px', fill: '#FFF' });
 
     //SOUND
     synth = new Tone.PolySynth().toDestination();
@@ -224,28 +227,14 @@ export class PlayScene extends Phaser.Scene {
       baseUrl: "https://tonejs.github.io/audio/casio/",
     }).toDestination(); */
 
-    particles = this.add.particles('flares');
-
-    emitter = particles.createEmitter({
-      frame: 'blue',
-      lifespan: 200,
-      speed: { min: 300, max: 500 },
-      angle: 270,
-      gravityY: 30,
-      scale: { start: 0.5, end: 0 },
-      quantity: 2,
-      blendMode: 'ADD',
-      visible: false
-    });
-    layer1.add([particles]);
-    layer1.sendToBack(particles);
-
     //CHARACTER-COIN OVERLAP FUNCTION
     var once = true;
     var otherOnce = true;
     var startTime;
+    var firstOverlap = true;
     this.physics.add.overlap(line, coins, function (player, coin) {
       overlapping = true;
+      //time calculation for bpm and coin velocity
       if (once) {
         startTime = performance.now();
         once = false;
@@ -260,36 +249,39 @@ export class PlayScene extends Phaser.Scene {
         var seconds = timeDiff;
         console.log(seconds + " seconds");
       }
+      //COIN-PLAYER INTERACTION
+      if(coin != prevCoin && prevCoin != null){
+        console.log("next coin");
+        firstOverlap = true;
+      }
+      //what to do when getting a note right
       if (noteOn) {
-        if (pressedOnce) {
-          prevCoin = coin;
+        if(firstOverlap){ //getting a coin
+          coinList.push(coin);
+          firstOverlap = false;
+        }
+        if(coinList.length <= 1){ //only coin taken pressing a key
           score += 10;
           layer1.sendToBack(coin);
           emitter.setVisible(true);
+        } 
+        else { //kept pressed since last coin
+          emitter.setVisible(false);
         }
-        if (coin != prevCoin && !pressedOnce) {
-          //emitter.setVisible(false);
-        } else if (coin == prevCoin && !pressedOnce) {
-          score += 10;
-          layer1.sendToBack(coin);
-        }
-      }
-      if ((line.y - 2) <= Math.round(coin.y - (coin.displayHeight / 2))) {
-        overlapping = false;
-        console.log(overlapping);
         prevCoin = coin;
       }
       scoreText.setText('Score: ' + score);
     }, null, this);
 
-    //BACKBUTTON
-    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(1.2);
+    //BACK BUTTON
+    let buttonback = this.add.image(canvasWidth - 170, 16, "backbutton").setOrigin(0).setDepth(1).setScale(.15);
     buttonback.setInteractive();
     buttonback.on("pointerup", () => {
       this.scene.start(CST.SCENES.MENU);
     })
 
-    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(1.2);
+    //RESTART BUTTON
+    let buttonrestart = this.add.image(canvasWidth - 350, 16, "restartbutton").setOrigin(0).setDepth(1).setScale(.32);
     buttonrestart.setInteractive();
     buttonrestart.on("pointerup", () => {
       this.scene.restart();
@@ -304,8 +296,7 @@ export class PlayScene extends Phaser.Scene {
   }
 
   update() {
-    // Movement of the character with keybord
-
+    // Movement of the character with keybord DEBUG ONLY
     /* window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
       if(!e.repeat){
@@ -315,19 +306,12 @@ export class PlayScene extends Phaser.Scene {
           emitter.setPosition(line.x, line.y);
           //synth.triggerAttack(noteNames[noteIndex], Tone.now());
           noteOn = true;
-          /* if (player.x <= arrayStep[noteIndex]) {
-            player.anims.play('flying_right');
-          } else {
-            //Movement to the left
-            player.anims.play('flying_left');
-          } 
         }
       pressedOnce = true;
       } else {
       pressedOnce = false;
     }
     });
-
     window.addEventListener("keyup", (e) => {
       var noteIndex = keys.indexOf(e.key);
       if (noteIndex >= 0 && noteIndex < keys.length) {
@@ -341,54 +325,47 @@ export class PlayScene extends Phaser.Scene {
     if (!overlapping) {
       emitter.setVisible(false);
     }
+    overlapping = false;
+
+    //message.data[0]->midi element status
+    //message.data[1]->midi element id
+    //message.data[2]->midi element value
     // Movement with MIDI 
     for (var input of midi.inputs.values()) {
-
       input.onmidimessage = function (message) {
-        if (message.data[1] == 36 && message.data[0] == 144) {
+        if (message.data[1] == 36 && message.data[0] == 144) {//pause pad
           pauseGame();
-        } else if (message.data[1] == 38 && message.data[0] == 144) {
+        } 
+        else if (message.data[1] == 38 && message.data[0] == 144) { //restart pad
           scene.restart();
-        } else if (message.data[1] == 14){
-          let knobValue = message.data[2];
-          let bpm = (knobValue/127 * 80 + 60).toFixed(0);
-          slider.setValue(knobValue/127);
+        } 
+        else if (message.data[1] == 14) { //tempo slider
+          let normKnobValue = message.data[2] / 127;
+          slider.setValue(normKnobValue);
         }
-        else {
+        else { //keyboard
           var noteIndex = midi_notes.indexOf(message.data[1]);
           player.x = arrayStep[noteIndex];
           line.x = arrayStep[noteIndex];
 
-          //if note on
-          if (message.data[0] == 144) {
+          if (message.data[0] == 144) { //if note on
             noteOn = true;
-            if (message.repeat) {
-              pressedOnce = false;
-            } else {
-              pressedOnce = true;
-            }
-
             emitter.setPosition(line.x, line.y);
 
             //sampler.triggerAttack(noteNames[noteIndex], Tone.now());
             synth.triggerAttack(noteNames[noteIndex], Tone.now());
-
-            if (player.x <= arrayStep[noteIndex]) {
-              player.anims.play('flying_right');
-            } else {
-              //Movement to the left
-              player.anims.play('flying_left');
-            }
-          } else if (message.data[0] == 128) {
+          } 
+          else if (message.data[0] == 128) { //is note off
             noteOn = false;
             emitter.setVisible(false);
+            coinList = [];
+
             //sampler.triggerRelease(noteNames[noteIndex], Tone.now());
             synth.triggerRelease(noteNames[noteIndex], Tone.now());
           }
         }
       }
     }
-    //message.data[1]->value of the note pressed
 
     // Background movement controlled vertically
 
@@ -410,4 +387,12 @@ function pauseGame() {
     console.log(vel);
     coins.setVelocityY(vel);
   }
+}
+
+function tempoToGameVelocity(tempo, bpmIndex) {
+  return tempo + 69 + 7 * bpmIndex;
+}
+
+function normToTempo(normValue) {
+  return (normValue * 80 + 60).toFixed(0);
 }

@@ -15,9 +15,6 @@ export class MenuScene extends Phaser.Scene {
             key: CST.SCENES.MENU
         })
     }
-    init(data) {
-
-    }
     preload() {
 
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
@@ -25,32 +22,34 @@ export class MenuScene extends Phaser.Scene {
         this.load.image("title", "./assets/title1.png");
         this.load.image("start_wind", "./assets/wind_mood.png");
         this.load.image("start_piano", "./assets/piano_mood.png");
-    
+
     }
     create() {
         var x = this.game.renderer.width;
         var y = this.game.renderer.height;
+        //BACKGROUND
         this.add.image(0, 0, "loading1").setOrigin(0).setDisplaySize(x, y);
-        this.add.image(x / 2, y / 4, "title").setDepth(1);
-        
-
-        var add = this.add;
-        var input = this.input;
+        //TITLE
+        this.add.image(x / 2, y / 4, "title").setDepth(0);
+        //TUTORIAL TEXT
         var items = [
             {
                 name: '?',
                 children: [
                     {
-                        name: 'Piano mode: connect a your midi device, select a song and play! \nWind mode: allow microphone usage, select a song and play! \nYou can either use a flute, a trumpet or even your voice! \nMake sure to enable the feature inside the game. \nOn both modalities you can adjust the speed of the song (BPMs) to meet your training needs.',
-
+                        name: 'Piano mode: connect a midi device, select a song and play!',
                     },
-
+                    {
+                        name: 'Wind mode: allow microphone usage, select a song and play! \nYou can either use a flute, a trumpet or even your voice! \nMake sure to enable the feature inside the game.',
+                    },
+                    {
+                        name: 'On both modalities you can adjust the speed of the song (BPMs)\n to meet your training needs.',
+                    },
                 ],
-
             },
-
         ];
 
+        //TUTORIAL MENU
         var scene = this, menu = undefined;
         menu = createMenu(scene, 15, 15, items, function (button) {
         }).setDepth(2);
@@ -67,27 +66,31 @@ export class MenuScene extends Phaser.Scene {
             }
         }, this);
 
+        //song lists
         var options1 = db.getDocNames(1);
         var options2 = db.getDocNames(2);
 
+        
+        //drop down menu piano mode
+        const dropDownList1 = CreateDropDownList(this, x / 2 + 150, y / 2 + 75, options1, true).layout();
+        //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
+
+        //drop down menu wind mode
+        const dropDownList2 = CreateDropDownList(this, x / 2 - 150, y / 2 + 75, options2, false).layout();
+        
         //right button piano mode
         let playButton1 = this.add.image(x / 2 + 150, y / 2, "start_piano").setDepth(0).setScale(.85);
-        var dropDownList1 = CreateDropDownList(this, x / 2 + 150, y / 2 + 75, options1, true).layout();
-        //this.add.text(this.game.renderer.width /2, this.game.renderer.height /2 , 'Select one song and Play!', { fontFamily: 'tech', fontSize: 80, color: '#FF1493' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(1);
-        
-        //left button wind mode
-        let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_wind").setDepth(0).setScale(.85);
-        var dropDownList2 = CreateDropDownList(this, x / 2 - 150, y / 2 + 75, options2, false).layout();
-
         playButton1.setInteractive();
         playButton1.on("pointerup", () => {
             if (pianoSongSelected != '')
                 this.scene.start(CST.SCENES.PLAY, pianoSongSelected);
         })
 
+        //left button wind mode
+        let playButton2 = this.add.image(x / 2 - 150, y / 2, "start_wind").setDepth(0).setScale(.85);
         playButton2.setInteractive();
         playButton2.on("pointerup", () => {
-            if(windSongSelected != '')
+            if (windSongSelected != '')
                 location.href = "../../Flutealorian/src/index.html";
         })
     }
@@ -106,8 +109,6 @@ var CreateDropDownList = function (scene, x, y, options, mode) {
 
         text: CreateTextObject(scene, 'Song selection')
             .setFixedSize(maxTextSize.width, maxTextSize.height),
-
-        // action:
 
         space: {
             left: 10,
@@ -134,7 +135,7 @@ var CreateDropDownList = function (scene, x, y, options, mode) {
                     menuY = label.bottom;
                 menu = CreatePopupList(scene, menuX, menuY, options, function (button) {
                     label.setData('value', button.text);
-                    if(mode){
+                    if (mode) {
                         //piano mode
                         pianoSongSelected = button.text;
                     } else {
@@ -177,19 +178,15 @@ var CreatePopupList = function (scene, x, y, options, onClick) {
             })
         },
 
-        // easeIn: 500,
         easeIn: {
             duration: 500,
             orientation: 'y'
         },
 
-        // easeOut: 100,
         easeOut: {
             duration: 100,
             orientation: 'y'
         }
-
-        // expandEvent: 'button.over'
     });
 
     menu
@@ -226,6 +223,7 @@ var CreateTextObject = function (scene, text) {
     return textObject;
 }
 
+//TUTORIAL MENU FUNCTION
 var createMenu = function (scene, x, y, items, onClick) {
     var exapndOrientation = 'y';
     var easeOrientation = 'y';
@@ -234,12 +232,11 @@ var createMenu = function (scene, x, y, items, onClick) {
         x: x,
         y: y,
         orientation: exapndOrientation,
-        // subMenuSide: 'right',
 
         items: items,
         createButtonCallback: function (item, i, items) {
             return scene.rexUI.add.label({
-                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY).setDepth(2),
+                background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_DARK).setDepth(2),
                 text: scene.add.text(0, 0, item.name, {
                     fontSize: '20px'
                 }).setDepth(2),
@@ -254,19 +251,15 @@ var createMenu = function (scene, x, y, items, onClick) {
             })
         },
 
-        // easeIn: 500,
         easeIn: {
             duration: 0,
             orientation: easeOrientation
         },
 
-        // easeOut: 100,
         easeOut: {
             duration: 100,
             orientation: easeOrientation
         }
-
-        // expandEvent: 'button.over'
     });
 
     menu
