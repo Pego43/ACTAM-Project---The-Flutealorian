@@ -100,14 +100,12 @@ export class DB {
       //tracks have notes and controlChanges
       //notes are an array
       const notes = track.notes
-      notes.forEach(note => {
+      notes.forEach(note => { //for each note insert in noteToUpload object
         var noteToUpload = new Object();
-        //note.midi, note.time, note.duration, note.name
-        //this.noteArray.push(note.midi);
-        console.log(note.duration)
         noteToUpload.Note = note.name;
         noteToUpload.Duration = note.duration;
         noteToUpload.Time = note.time;
+        //melodyToUpload is an array of note objects
         melodyToUpload.push(noteToUpload);
       })
       docRef.set({ tempo: midi.header.tempos[0].bpm, melody: melodyToUpload });
