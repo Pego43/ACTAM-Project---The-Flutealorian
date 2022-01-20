@@ -8,6 +8,7 @@ import { DB } from "../Firebase.js";
 
 var scene;
 var score = 0;
+var finalScoreText;
 //Variables for background
 const backgroundWidth = window.innerWidth - 20;
 var canvasWidth = backgroundWidth;
@@ -40,11 +41,12 @@ var prevCoin = null;
 var coins;
 var vel;
 var gamePaused = false;
+var setCoins = false;
 //coin-player interaction
 var overlapping = false;
 var noteOn = false;
-var pressedOnce = false;
 var coinList = new Array();
+var coinCounter = 0;
 //sound
 var synth = null;
 var sampler;
@@ -89,6 +91,8 @@ export class PlayScene extends Phaser.Scene {
     score = 0;
     scene = this.scene;
     coinList = [];
+    coinCounter = 0;
+    setCoins = false;
 
     /* Vertical background movement */
     backgroundV1 = this.physics.add.sprite(0, x1, 'spaceV1').setOrigin(0, 0);
@@ -107,7 +111,7 @@ export class PlayScene extends Phaser.Scene {
     //PLAYER
     player = this.physics.add.sprite(20, startY + 48, 'character_right').setScale(0.30);
     //collider to get coins
-    line = this.physics.add.sprite(20, startY, 'line').setScale(0.30);
+    line = this.physics.add.sprite(20, startY, 'line').setDisplaySize(30, 1);
 
     //Particles to indicate tha player is getting the right notes
     particles = this.add.particles('flares');
@@ -175,7 +179,9 @@ export class PlayScene extends Phaser.Scene {
       .layout();
 
     //SCORE
-    scoreText = this.add.text(180, 24, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+    scoreText = this.add.text(180, 26, 'score: 0', { fontSize: '32px', fill: '#FFF' });
+    finalScoreText = this.add.text(canvasWidth/2, canvasHeight/2, '', { fontSize: '55px', fill: '#FFF' }).setOrigin(0.5, 0.5);
+    finalScoreText.text = '';
 
     //COINS
     coins = this.physics.add.group();
@@ -196,7 +202,7 @@ export class PlayScene extends Phaser.Scene {
       for (let i = 0; i < coins.getChildren().length; i++) {
         layer1.add([coins.getChildren()[i]]);
       }
-
+      setCoins = true;
       //SLIDER CHANGE
       slider.setValue((tempo - 60) / 80);
       vel = tempo;
@@ -229,7 +235,7 @@ export class PlayScene extends Phaser.Scene {
     this.physics.add.overlap(line, coins, function (player, coin) {
       overlapping = true;
       //time calculation for bpm and coin velocity
-      if (once) {
+      /* if (once) {
         startTime = performance.now();
         once = false;
       }
@@ -242,7 +248,7 @@ export class PlayScene extends Phaser.Scene {
         // get seconds 
         var seconds = timeDiff;
         console.log(seconds + " seconds");
-      }
+      } */
       //COIN-PLAYER INTERACTION
       if(coin != prevCoin && prevCoin != null){
         console.log("next coin");
@@ -253,6 +259,8 @@ export class PlayScene extends Phaser.Scene {
         if(firstOverlap){ //getting a coin
           coinList.push(coin);
           firstOverlap = false;
+          coinCounter += 1;
+          console.log(coinCounter);
         }
         if(coinList.length <= 1){ //only coin taken pressing a key
           score += 10;
@@ -290,7 +298,13 @@ export class PlayScene extends Phaser.Scene {
   }
 
   update() {
-    // Movement of the character with keybord DEBUG ONLY
+    if(setCoins && coins != null){
+      if(coins.getChildren()[coins.getChildren().length-1].y > canvasHeight){
+        finalScoreText.text = "You got " + coinCounter + " / " + coins.getChildren().length + " coins";
+        setCoins = false;
+      }
+    }
+    // Movement of the charzcter with keybord DEBUG ONLY
     /* window.addEventListener("keydown", (e) => {
       var noteIndex = keys.indexOf(e.key);
       if(!e.repeat){
@@ -313,7 +327,7 @@ export class PlayScene extends Phaser.Scene {
         emitter.setVisible(false);
         //synth.triggerRelease(noteNames[noteIndex], Tone.now());
       }
-    }); 
+    });
     */
 
     if (!overlapping) {
