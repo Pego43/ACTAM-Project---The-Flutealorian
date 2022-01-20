@@ -5,6 +5,13 @@ const COLOR_DARK = 0x7700b3;
 var windSongSelected = '';
 var pianoSongSelected = '';
 var db = new DB();
+//Put true if you want to upload files
+const uploadOnDatabase = false;
+// put MicrophoneSongs for wind mode / Melody for piano mode
+const modeName = 'MicrophoneSongs';
+const songName = "Prova";
+//local midi path
+const midiPath = "../16quarti 120bpm.mid";
 
 import { CST } from "./CST.js";
 import { DB } from "../Firebase.js";
@@ -26,11 +33,13 @@ export class MenuScene extends Phaser.Scene {
     }
     create() {
         // TO LOAD MIDI FILES ON DB
-        /* const loadToDatabase = async () => {
-            //put here collection, song, and midi path of the midi you want to load
-            await db.asyncMidiFunction('MicrophoneSongs', "Prova", "../16quarti 120bpm.mid");
+        if (uploadOnDatabase) {
+            const loadToDatabase = async () => {
+                //put here collection, song, and midi path of the midi you want to load
+                await db.asyncMidiFunction(modeName, songName, midiPath);
+            }
+            loadToDatabase();
         }
-        loadToDatabase(); */
 
         var x = this.game.renderer.width;
         var y = this.game.renderer.height;
