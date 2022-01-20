@@ -140,7 +140,7 @@ function animate(){
 
     speedOfTheGame.style.backgroundColor = 'lightskyblue';
     speedOfTheGame.style.color = 'black';
-    speedOfTheGame.innerText = velocity;
+    speedOfTheGame.innerText = (30*velocity);
 
 
     let theNote = fromCharToNote(theMelody.stringNote[indexObstacleMelody]);
