@@ -7,19 +7,19 @@
 - Ricard Plandolit
 
 ## How to run this code:
-1. open on Visual Studio Code
+1. Open on Visual Studio Code
 2. Install Live Server extention
-3. Run the index.html file with "Go Live"
+3. Run the ACTAM.Project2122-TraningGame/src/index.html file with "Go Live"
 
 # Documentation:
-1. [What is Flutealorian](#what is)
+1. [What is Flutealorian](#what)
 2. [Game Modalities](#modes)
 3. [Libraries](#libraries)
 4. [Input](#input)
 5. [Repo structure](#repo)
 6. [Further developments](#future)
 
-# What is Flutealorian <a name = "what is"></a>
+# What is Flutealorian <a name = "what"></a>
  **Advanced Coding Tools and Metodologies Project**
 Videogame (inspired by the Star Wars® universe) in which the player must make his/her character move by playng a musical instrument.
 The Goal: to learn to play an instrument having fun.
