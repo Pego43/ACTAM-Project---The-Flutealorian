@@ -23,11 +23,12 @@
 **Advanced Coding Tools and Metodologies Project**:
 Videogame (inspired by the Star Wars® universe) in which the player must make his/her character move by playng a musical instrument.
 The Goal: to learn to play an instrument having fun.
-![image](https://user-images.githubusercontent.com/56070706/150505287-5827121d-b807-467e-9fe7-4130df3ab988.png)
 
 # Game Modalities <a name = "modes"></a>  
 Piano Mode: get the highest score playing the notes correctly through a MIDI piano.
+![image](https://user-images.githubusercontent.com/56070706/150505483-602517b3-a395-43b1-ac48-8f284c9904fc.png)
 Wind Mode: avoid as many obstacles as possible by playing a wind instrument (Flute/Trumpet/any…).
+![image](https://user-images.githubusercontent.com/56070706/150505543-d64e3557-8691-48ee-b545-9def5fbfe40c.png)
 
 # Libraries <a name = "libraries"></a>  
 - Phaser.js, to develop part of the game and make it run smoothly and in an optimized way
