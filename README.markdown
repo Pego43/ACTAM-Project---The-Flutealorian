@@ -44,7 +44,7 @@ Wind Mode: avoid as many obstacles as possible by playing a wind instrument (Flu
 - Microphone input: allow microphone usage to control the character in wind mode
 
 # Repo Structure <a name = "repo"></a>
-- Flutealorian/src folder: contains all wind mode code
+- Flutealorian/src folder: contains all wind mode code and assets
 - src/scenes folder: contains main menu and piano mode code
 - src/ folder: contains modules used in src/scenes (CustomSound.js was used before instead of the Tone.js library, not used anymore)
 - src/assets folder: contains all assets used in menu and piano mode
