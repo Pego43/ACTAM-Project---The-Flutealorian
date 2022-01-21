@@ -1,4 +1,4 @@
-# FLUTEALORIAN
+![title1](https://user-images.githubusercontent.com/56070706/150507770-d06c6668-4fd9-4d2e-af2a-a41d930eb23e.png)
 
 ### Authors
 - Gabriele Perego
@@ -41,6 +41,9 @@ Wind Mode: avoid as many obstacles as possible by playing a wind instrument (Flu
 
 ## Input <a name = "input"></a>
 - Midi input: using midi messages we mapped the keyboard, 2 pads and a knob to control respectively the character on piano mode, pause and restart button and BPM's of the song
+
+![Alesis-V-Mini](https://user-images.githubusercontent.com/56070706/150507710-bf8c73a2-a3fa-47be-9f29-fe93a9231dcd.jpg)
+
 - Microphone input: allow microphone usage to control the character in wind mode
 
 ## Repo Structure <a name = "repo"></a>
