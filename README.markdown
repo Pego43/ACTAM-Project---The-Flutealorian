@@ -20,11 +20,10 @@
 6. [Further developments](#future)
 
 # What is Flutealorian <a name = "what"></a>
- **Advanced Coding Tools and Metodologies Project**
+**Advanced Coding Tools and Metodologies Project**:
 Videogame (inspired by the Star Wars® universe) in which the player must make his/her character move by playng a musical instrument.
 The Goal: to learn to play an instrument having fun.
-![image](https://user-images.githubusercontent.com/56070706/150500057-a2b3c235-1320-44a0-940f-5bbd9f1a049d.png)
-
+![image](https://user-images.githubusercontent.com/56070706/150505287-5827121d-b807-467e-9fe7-4130df3ab988.png)
 
 # Game Modalities <a name = "modes"></a>  
 Piano Mode: get the highest score playing the notes correctly through a MIDI piano.
