@@ -61,3 +61,8 @@ Wind Mode: avoid as many obstacles as possible by playing a wind instrument (Flu
 - Synth sound modification
 - Playing accompaniment music
 - Remote storage of high-score
+
+
+*This project is not primarily intended for or directed towards commercial advantage or monetary compensation*
+
+![M_fly](https://user-images.githubusercontent.com/56070706/150508101-28106b50-2dc3-458d-bfa9-9348e04e04e3.png)
