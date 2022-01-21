@@ -1,10 +1,10 @@
 ## FLUTEALORIAN
 
 ### Authors
-- [Gabriele Perego]
-- [Enrico Roncuzzi]
-- [Samuele Del Moro]
-- [Ricard Plandolit]
+- Gabriele Perego
+- Enrico Roncuzzi
+- Samuele Del Moro
+- Ricard Plandolit
 
 ## How to run this code:
 1. open on Visual Studio Code
