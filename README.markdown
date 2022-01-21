@@ -36,10 +36,10 @@ Wind Mode: avoid as many obstacles as possible by playing a wind instrument (Flu
 # Libraries <a name = "libraries"></a>  
 - Phaser.js, to develop part of the game and make it run smoothly and in an optimized way
 - Tone.js, to play sound when hitting the midi keyboard keys
-- Tone.js/midi to use midi files (containing the game's melodies) to store them easily on the firebase database
+- Tone.js/midi, to use midi files (containing the game's melodies) to store them easily on the firebase database
 - Firebase package, to store melodies in a remote fashion in order to have them always available
 
-# Input <a name = "input"></a>  
+# Input <a name = "input"></a>
 - Midi input: using midi messages we mapped the keyboard, 2 pads and a knob to control respectively the character on piano mode, pause and restart button and BPM's of the song
 - Microphone input: allow microphone usage to control the character in wind mode
 
@@ -50,7 +50,7 @@ Wind Mode: avoid as many obstacles as possible by playing a wind instrument (Flu
 - src/assets folder: contains all assets used in menu and piano mode
 - Midi Files folder: contains midi files uploaded on the firebase (not useful to make the code run)
 
-# Future developments <a name = "future"></a>  
+# Future developments <a name = "future"></a>
 - No octave restrictions on wind mode
 - Chords on piano mode
 - Midi file from user
